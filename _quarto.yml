@@ -6,6 +6,8 @@ book:
   title: "Meta-Analysis Workshop"
   author: "Daniel W.A. Noble"
   date: today
+  sidebar:
+    logo: figs/logo.png
   chapters:
     - index.qmd
     - introduction-to-meta.qmd
