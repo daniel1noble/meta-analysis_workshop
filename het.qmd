@@ -90,23 +90,17 @@ We'll now use this model to calculate various heterogeneity statistics in additi
 
 $I^2$ estimates are probably most commonly presented in the literature [@Higgins2003; @Higgins2002; @Nakagawa2017; @Senior2016; @Borenstein2019]. There are different forms of $I^2$ that can be calculated, but the one that describes the proportion of effect size variation after accounting for total sampling variation is $I_{total}^2$ [@NakagawaSantos2012]. Assuming we're using our multilevel model described above, it's calculated as follows:
 
-$$ 
-\begin{equation} 
-I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}} \
-(\#eq:itot)
-\end{equation} 
 $$
+I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}}
+$$ {#eq-itot}
 
 where $\sigma^2_{total} = \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}$ is the total effect size variance and $\sigma^2_{m}$ is the 'typical' sampling error variance calculated as:
 
 $$
-\begin{equation} 
-\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left[ \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right] \
-(\#eq:w)
-\end{equation} 
-$$
+\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left[ \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right]
+$$ {#eq-w}
 
-where *k* is the number of studies and the weights, $w_{i} = \frac{1}{v_{i}}$, can be calculated using the inverse of the sampling variance ($v_{i}$) for each effect size, *i*. Below, we'll make use of the `orchaRd` R package [[vers. 2.0](https://github.com/daniel1noble/orchaRd); @Nakagawa2021c] to calculate various $I^2$ metrics. In fact, we can simply change what is in the numerator of eqn \@ref(eq:itot) to calculate a multitude of different $I^2$ metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We'll do this below:
+where *k* is the number of studies and the weights, $w_{i} = \frac{1}{v_{i}}$, can be calculated using the inverse of the sampling variance ($v_{i}$) for each effect size, *i*. Below, we'll make use of the `orchaRd` R package [[vers. 2.0](https://github.com/daniel1noble/orchaRd); @Nakagawa2021c] to calculate various $I^2$ metrics. In fact, we can simply change what is in the numerator of @eq-itot to calculate a multitude of different $I^2$ metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We'll do this below:
 
 ```{r}
 #| label: i2
@@ -175,12 +169,9 @@ Prediction intervals (PI) are probably the best and most intuitive way to report
 
 Prediction intervals can be calculated in a similar way to confidence intervals but instead of just using the standard error, like we do with confidence interval construction we add in the extra random effect variance estimates. For our model above, PI can be calculated as follows:
 
-$$ 
-\begin{equation} 
-PI \sim  \bar{u} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}
-(\#eq:pi)
-\end{equation} 
 $$
+PI \sim  \bar{u} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}
+$$ {#eq-pi}
 
 We can get these quite easily using the `predict` function in `metafor`:
 
@@ -251,11 +242,8 @@ print(MLMA)
 You will probably have noticed that $I^2$ looks awfully familiar. It looks a lot like the way we might calculate $R^2$ described by @NakagawaSchielzeth2013. Well, you would be correct! Often we also want to quantify how much variation is explained by our moderators and random effects in our multilevel meta-regression model [@Nakagawa2017ab; @NakagawaSchielzeth2013]. This is done using $R^2$. We can calculate different $R^2$ values depending on whether we ignore or include random effects in the numerator. If only the variation explained by moderators is included in the numerator than we call this $R_{marginal}^2$, which is defined as:
 
 $$
-\begin{equation} 
-R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}} \
-(\#eq:r2)
-\end{equation} 
-$$
+R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}
+$$ {#eq-r2}
 
 Note that this formula does not include $\sigma^2_{m}$ as sampling error variance is assumed to be known in meta-analysis. We won't go into the details on how to calculate and interpret these because we'll cover this in a later tutorial on [publication bias](pub-bias1.qmd). Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.
 

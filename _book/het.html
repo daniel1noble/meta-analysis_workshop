@@ -395,20 +395,14 @@ e_{i} \sim N(0, \sigma_{e}^2)
 <section id="proportion-of-total-heterogeneity-i_total2" class="level3">
 <h3 class="anchored" data-anchor-id="proportion-of-total-heterogeneity-i_total2">Proportion of Total Heterogeneity: <span class="math inline">\(I_{total}^2\)</span></h3>
 <p><span class="math inline">\(I^2\)</span> estimates are probably most commonly presented in the literature <span class="citation" data-cites="Higgins2003 Higgins2002 Nakagawa2017 Senior2016 Borenstein2019">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-Higgins2002" role="doc-biblioref">Higgins and Thompson, 2002</a>; <a href="#ref-Higgins2003" role="doc-biblioref">Higgins et al., 2003</a>; <a href="#ref-Nakagawa2017" role="doc-biblioref">Nakagawa et al., 2017a</a>; <a href="#ref-Senior2016" role="doc-biblioref">Senior et al., 2016</a>)</span>. There are different forms of <span class="math inline">\(I^2\)</span> that can be calculated, but the one that describes the proportion of effect size variation after accounting for total sampling variation is <span class="math inline">\(I_{total}^2\)</span> <span class="citation" data-cites="NakagawaSantos2012">(<a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>)</span>. Assuming we’re using our multilevel model described above, it’s calculated as follows:</p>
-<p><span class="math display">\[
-\begin{equation}
-I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}} \
-(\#eq:itot)
-\end{equation}
-\]</span></p>
+<p><span id="eq-itot"><span class="math display">\[
+I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}}
+\tag{5.1}\]</span></span></p>
 <p>where <span class="math inline">\(\sigma^2_{total} = \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}\)</span> is the total effect size variance and <span class="math inline">\(\sigma^2_{m}\)</span> is the ‘typical’ sampling error variance calculated as:</p>
-<p><span class="math display">\[
-\begin{equation}
-\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left[ \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right] \
-(\#eq:w)
-\end{equation}
-\]</span></p>
-<p>where <em>k</em> is the number of studies and the weights, <span class="math inline">\(w_{i} = \frac{1}{v_{i}}\)</span>, can be calculated using the inverse of the sampling variance (<span class="math inline">\(v_{i}\)</span>) for each effect size, <em>i</em>. Below, we’ll make use of the <code>orchaRd</code> R package [<a href="https://github.com/daniel1noble/orchaRd">vers. 2.0</a>; <span class="citation" data-cites="Nakagawa2021c">Nakagawa et al. (<a href="#ref-Nakagawa2021c" role="doc-biblioref">2021</a>)</span>] to calculate various <span class="math inline">\(I^2\)</span> metrics. In fact, we can simply change what is in the numerator of eqn @ref(eq:itot) to calculate a multitude of different <span class="math inline">\(I^2\)</span> metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We’ll do this below:</p>
+<p><span id="eq-w"><span class="math display">\[
+\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left[ \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right]
+\tag{5.2}\]</span></span></p>
+<p>where <em>k</em> is the number of studies and the weights, <span class="math inline">\(w_{i} = \frac{1}{v_{i}}\)</span>, can be calculated using the inverse of the sampling variance (<span class="math inline">\(v_{i}\)</span>) for each effect size, <em>i</em>. Below, we’ll make use of the <code>orchaRd</code> R package [<a href="https://github.com/daniel1noble/orchaRd">vers. 2.0</a>; <span class="citation" data-cites="Nakagawa2021c">Nakagawa et al. (<a href="#ref-Nakagawa2021c" role="doc-biblioref">2021</a>)</span>] to calculate various <span class="math inline">\(I^2\)</span> metrics. In fact, we can simply change what is in the numerator of <a href="#eq-itot" class="quarto-xref">Equation&nbsp;<span>5.1</span></a> to calculate a multitude of different <span class="math inline">\(I^2\)</span> metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We’ll do this below:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -485,12 +479,9 @@ I2_es_ID      37.81 20.0  66.0</code></pre>
 <h3 class="anchored" data-anchor-id="prediction-intervals">Prediction Intervals</h3>
 <p>Prediction intervals (PI) are probably the best and most intuitive way to report heterogeneity of meta-analytic results <span class="citation" data-cites="Borenstein2019 Noble2022 Nakagawa2021c">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-Nakagawa2021c" role="doc-biblioref">Nakagawa et al., 2021</a>; <a href="#ref-Noble2022" role="doc-biblioref">Noble et al., 2022</a>)</span>. Predictions intervals tell us how much we can expect a given effect size to vary across studies. More specifically, if we were to go out and conduct another study or experiment they tell us what the range of effect size estimates we are expected to observe 95% of the time from that new study <span class="citation" data-cites="Borenstein2019 Noble2022 Nakagawa2021c">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-Nakagawa2021c" role="doc-biblioref">Nakagawa et al., 2021</a>; <a href="#ref-Noble2022" role="doc-biblioref">Noble et al., 2022</a>)</span>.</p>
 <p>Prediction intervals can be calculated in a similar way to confidence intervals but instead of just using the standard error, like we do with confidence interval construction we add in the extra random effect variance estimates. For our model above, PI can be calculated as follows:</p>
-<p><span class="math display">\[
-\begin{equation}
+<p><span id="eq-pi"><span class="math display">\[
 PI \sim  \bar{u} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}
-(\#eq:pi)
-\end{equation}
-\]</span></p>
+\tag{5.3}\]</span></span></p>
 <p>We can get these quite easily using the <code>predict</code> function in <code>metafor</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -587,12 +578,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="proportion-of-variation-explained-by-the-model-r2_marginal-and-r2_conditional" class="level3">
 <h3 class="anchored" data-anchor-id="proportion-of-variation-explained-by-the-model-r2_marginal-and-r2_conditional">Proportion of Variation Explained by the Model: <span class="math inline">\(R^2_{marginal}\)</span> and <span class="math inline">\(R^2_{conditional}\)</span></h3>
 <p>You will probably have noticed that <span class="math inline">\(I^2\)</span> looks awfully familiar. It looks a lot like the way we might calculate <span class="math inline">\(R^2\)</span> described by <span class="citation" data-cites="NakagawaSchielzeth2013">Nakagawa and Schielzeth (<a href="#ref-NakagawaSchielzeth2013" role="doc-biblioref">2013</a>)</span>. Well, you would be correct! Often we also want to quantify how much variation is explained by our moderators and random effects in our multilevel meta-regression model <span class="citation" data-cites="Nakagawa2017ab NakagawaSchielzeth2013">(<a href="#ref-NakagawaSchielzeth2013" role="doc-biblioref">Nakagawa and Schielzeth, 2013</a>; <a href="#ref-Nakagawa2017ab" role="doc-biblioref">Nakagawa et al., 2017b</a>)</span>. This is done using <span class="math inline">\(R^2\)</span>. We can calculate different <span class="math inline">\(R^2\)</span> values depending on whether we ignore or include random effects in the numerator. If only the variation explained by moderators is included in the numerator than we call this <span class="math inline">\(R_{marginal}^2\)</span>, which is defined as:</p>
-<p><span class="math display">\[
-\begin{equation}
-R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}} \
-(\#eq:r2)
-\end{equation}
-\]</span></p>
+<p><span id="eq-r2"><span class="math display">\[
+R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}
+\tag{5.4}\]</span></span></p>
 <p>Note that this formula does not include <span class="math inline">\(\sigma^2_{m}\)</span> as sampling error variance is assumed to be known in meta-analysis. We won’t go into the details on how to calculate and interpret these because we’ll cover this in a later tutorial on <a href="./pub-bias1.html">publication bias</a>. Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.</p>
 </section>
 </section>
@@ -1220,192 +1208,180 @@ R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \
 <span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a>$I^2$ estimates are probably most commonly presented in the literature <span class="co">[</span><span class="ot">@Higgins2003; @Higgins2002; @Nakagawa2017; @Senior2016; @Borenstein2019</span><span class="co">]</span>. There are different forms of $I^2$ that can be calculated, but the one that describes the proportion of effect size variation after accounting for total sampling variation is $I_{total}^2$ <span class="co">[</span><span class="ot">@NakagawaSantos2012</span><span class="co">]</span>. Assuming we're using our multilevel model described above, it's calculated as follows:</span>
 <span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>$$ </span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>\begin{equation} </span>
-<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}} \</span>
-<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a>(<span class="sc">\#</span>eq:itot)</span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>where $\sigma^2_{total} = \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}$ is the total effect size variance and $\sigma^2_{m}$ is the 'typical' sampling error variance calculated as:</span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>\begin{equation} </span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left<span class="co">[</span><span class="ot"> \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right</span><span class="co">]</span> \</span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>(<span class="sc">\#</span>eq:w)</span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a>where *k* is the number of studies and the weights, $w_{i} = \frac{1}{v_{i}}$, can be calculated using the inverse of the sampling variance ($v_{i}$) for each effect size, *i*. Below, we'll make use of the <span class="in">`orchaRd`</span> R package [<span class="co">[</span><span class="ot">vers. 2.0</span><span class="co">](https://github.com/daniel1noble/orchaRd)</span>; @Nakagawa2021c] to calculate various $I^2$ metrics. In fact, we can simply change what is in the numerator of eqn \@ref(eq:itot) to calculate a multitude of different $I^2$ metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We'll do this below:</span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a>I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}}</span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a>$$ {#eq-itot}</span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a>where $\sigma^2_{total} = \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}$ is the total effect size variance and $\sigma^2_{m}$ is the 'typical' sampling error variance calculated as:</span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a>\sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left<span class="co">[</span><span class="ot"> \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right</span><span class="co">]</span></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a>$$ {#eq-w}</span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>where *k* is the number of studies and the weights, $w_{i} = \frac{1}{v_{i}}$, can be calculated using the inverse of the sampling variance ($v_{i}$) for each effect size, *i*. Below, we'll make use of the <span class="in">`orchaRd`</span> R package [<span class="co">[</span><span class="ot">vers. 2.0</span><span class="co">](https://github.com/daniel1noble/orchaRd)</span>; @Nakagawa2021c] to calculate various $I^2$ metrics. In fact, we can simply change what is in the numerator of @eq-itot to calculate a multitude of different $I^2$ metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We'll do this below:</span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: i2</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
 <span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: i2</span></span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co"># The orchaRd package has some convenient functions for calculating various I2 estimates including total. We'll load and install that package</span></span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("pacman")</span></span>
-<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(devtools, tidyverse, metafor, patchwork, R.rsp, emmeans, flextable)</span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("daniel1noble/orchaRd", force = TRUE, build_vignettes = TRUE)</span></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="co"># The orchaRd package has some convenient functions for calculating various I2 estimates including total. We'll load and install that package</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("pacman")</span></span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(devtools, tidyverse, metafor, patchwork, R.rsp, emmeans, flextable)</span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("daniel1noble/orchaRd", force = TRUE, build_vignettes = TRUE)</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">i2_ml</span>(MLMA)</span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting $I^2$ Estimates**</span></span>
 <span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">i2_ml</span>(MLMA)</span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="fu">## First Task!</span></span>
 <span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting $I^2$ Estimates**</span></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Interpret the meaning of $I_{Total}^2$ from the multilevel meta-analytic model**</span></span>
 <span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a><span class="fu">## First Answer!</span></span>
 <span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="fu">## First Task!</span></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Overall, we have highly heterogeneous effect size data because sampling variation only contributes to </span><span class="in">`r 100-orchaRd::i2_ml(MLMA)[1]`</span><span class="at">% of the total variation in effects.</span>  </span>
 <span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Interpret the meaning of $I_{Total}^2$ from the multilevel meta-analytic model**</span></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="fu">## Second Task!</span></span>
 <span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## First Answer!</span></span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Interpret the meaning of $I_{study}^2$ from the multilevel meta-analytic model**</span></span>
 <span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Overall, we have highly heterogeneous effect size data because sampling variation only contributes to </span><span class="in">`r 100-orchaRd::i2_ml(MLMA)[1]`</span><span class="at">% of the total variation in effects.</span>  </span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Second Answer!</span></span>
 <span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## Second Task!</span></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;From the multilevel meta-analytic model we find that </span><span class="in">`r orchaRd::i2_ml(MLMA)[3]`</span><span class="at">%  of the total variation in effect size estimates is the result of differences between studies.</span></span>
 <span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Interpret the meaning of $I_{study}^2$ from the multilevel meta-analytic model**</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Second Answer!</span></span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;From the multilevel meta-analytic model we find that </span><span class="in">`r orchaRd::i2_ml(MLMA)[3]`</span><span class="at">%  of the total variation in effect size estimates is the result of differences between studies.</span></span>
-<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Bootstrapping $I^2$ Estimates</span></span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>There are also times that we may want to estimate, and present, uncertainty about these heterogeneity estimates. We can do that by bootstrapping 1000 times:</span>
 <span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Bootstrapping $I^2$ Estimates</span></span>
-<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a>There are also times that we may want to estimate, and present, uncertainty about these heterogeneity estimates. We can do that by bootstrapping 1000 times:</span>
-<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: i2boot</span></span>
-<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
-<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="co"># The orchaRd package has some convenient functions for calculating various I2 estimates including total. We'll load and install that package</span></span>
-<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("pacman")</span></span>
-<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(devtools, tidyverse, metafor, patchwork, R.rsp, emmeans, flextable)</span>
-<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("daniel1noble/orchaRd", force = TRUE, build_vignettes = TRUE)</span></span>
-<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: i2boot</span></span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a><span class="co"># The orchaRd package has some convenient functions for calculating various I2 estimates including total. We'll load and install that package</span></span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("pacman")</span></span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(devtools, tidyverse, metafor, patchwork, R.rsp, emmeans, flextable)</span>
+<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github("daniel1noble/orchaRd", force = TRUE, build_vignettes = TRUE)</span></span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">i2_ml</span>(MLMA, <span class="at">boot =</span> <span class="dv">1000</span>)</span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a>Here, we can now see that $I_{total}^2$ has a fairly narrow 95% confidence interval of ~ 0.97 to 0.99.</span>
 <span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">i2_ml</span>(MLMA, <span class="at">boot =</span> <span class="dv">1000</span>)</span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a><span class="fu">### Prediction Intervals</span></span>
 <span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a>Prediction intervals (PI) are probably the best and most intuitive way to report heterogeneity of meta-analytic results <span class="co">[</span><span class="ot">@Borenstein2019; @Noble2022; @Nakagawa2021c</span><span class="co">]</span>. Predictions intervals tell us how much we can expect a given effect size to vary across studies. More specifically, if we were to go out and conduct another study or experiment they tell us what the range of effect size estimates we are expected to observe 95% of the time from that new study <span class="co">[</span><span class="ot">@Borenstein2019; @Noble2022; @Nakagawa2021c</span><span class="co">]</span>. </span>
 <span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>Here, we can now see that $I_{total}^2$ has a fairly narrow 95% confidence interval of ~ 0.97 to 0.99.</span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>Prediction intervals can be calculated in a similar way to confidence intervals but instead of just using the standard error, like we do with confidence interval construction we add in the extra random effect variance estimates. For our model above, PI can be calculated as follows:</span>
 <span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### Prediction Intervals</span></span>
-<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a>Prediction intervals (PI) are probably the best and most intuitive way to report heterogeneity of meta-analytic results <span class="co">[</span><span class="ot">@Borenstein2019; @Noble2022; @Nakagawa2021c</span><span class="co">]</span>. Predictions intervals tell us how much we can expect a given effect size to vary across studies. More specifically, if we were to go out and conduct another study or experiment they tell us what the range of effect size estimates we are expected to observe 95% of the time from that new study <span class="co">[</span><span class="ot">@Borenstein2019; @Noble2022; @Nakagawa2021c</span><span class="co">]</span>. </span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a>PI \sim  \bar{u} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}</span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a>$$ {#eq-pi}</span>
 <span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a>Prediction intervals can be calculated in a similar way to confidence intervals but instead of just using the standard error, like we do with confidence interval construction we add in the extra random effect variance estimates. For our model above, PI can be calculated as follows:</span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a>We can get these quite easily using the <span class="in">`predict`</span> function in <span class="in">`metafor`</span>:</span>
 <span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a>$$ </span>
-<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a>\begin{equation} </span>
-<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a>PI \sim  \bar{u} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}</span>
-<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a>(<span class="sc">\#</span>eq:pi)</span>
-<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
-<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a>We can get these quite easily using the <span class="in">`predict`</span> function in <span class="in">`metafor`</span>:</span>
-<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pis</span></span>
-<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the prediction intervals</span></span>
-<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(MLMA)</span>
-<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting Prediction Intervals**</span></span>
-<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**If the meta-analytic mean ARR is `r predict(MLMA)[[1]]` what would be the expected range of effect size we would expect in a future study? Are the studies consistent or inconsistent?**</span></span>
-<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Our 95% prediction intervals are wide. Effect sizes (ARR) we are expected to get range from </span><span class="in">`r predict(MLMA)[[5]]`</span><span class="at"> to </span><span class="in">`r predict(MLMA)[[6]]`</span><span class="at">, suggesting a lot of inconsistency between studies. </span></span>
-<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a><span class="fu">### *Q*-tests: Inferential Tests to Determine Excess Heterogeneity </span></span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: pis</span></span>
+<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the prediction intervals</span></span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(MLMA)</span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting Prediction Intervals**</span></span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**If the meta-analytic mean ARR is `r predict(MLMA)[[1]]` what would be the expected range of effect size we would expect in a future study? Are the studies consistent or inconsistent?**</span></span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Our 95% prediction intervals are wide. Effect sizes (ARR) we are expected to get range from </span><span class="in">`r predict(MLMA)[[5]]`</span><span class="at"> to </span><span class="in">`r predict(MLMA)[[6]]`</span><span class="at">, suggesting a lot of inconsistency between studies. </span></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a><span class="fu">### *Q*-tests: Inferential Tests to Determine Excess Heterogeneity </span></span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a>So far we've talked about important heterogeneity statistics that describe, and quantify, the proportion of variability ($I^2$) or the expected range of plausible effect size values which incorporate all the variance estimates (PI). But, how do we know that the heterogeneity in the data is greater than what we would expect by chance? It seems obvious that, if the $I_{total}^2$ is really high (i.e., &gt;85%) there's a lot of variability in effects within and across studies. While these statistics are probably sufficient, *Q* tests can also be useful to more formally be able to make an inferential statement about whether heterogeneity is significantly greater than chance. </span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a>We have already encountered how to calculate the *Q*-statistic when discussing [fixed and random effects](fixed-vs-random.qmd) models. We can use the *Q* statistic now to compare this against a $\chi^2$-distribution to calculate a p-value. [Wolfgang's documentation](https://wviechtb.github.io/metafor/reference/rma.mv.html) (`?rma.mv`) describes what the *Q*-test means:</span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Cochran's 𝑄-test, which tests whether the variability in the observed effect sizes or outcomes is larger than one would expect based on sampling variability (and the given covariances among the sampling errors) alone. A significant test suggests that the true effects/outcomes are heterogeneous. </span></span>
+<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a>We don't need to do anything special to get this test. In fact, this is automatically done by <span class="in">`metafor`</span>:</span>
 <span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a>So far we've talked about important heterogeneity statistics that describe, and quantify, the proportion of variability ($I^2$) or the expected range of plausible effect size values which incorporate all the variance estimates (PI). But, how do we know that the heterogeneity in the data is greater than what we would expect by chance? It seems obvious that, if the $I_{total}^2$ is really high (i.e., &gt;85%) there's a lot of variability in effects within and across studies. While these statistics are probably sufficient, *Q* tests can also be useful to more formally be able to make an inferential statement about whether heterogeneity is significantly greater than chance. </span>
-<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a>We have already encountered how to calculate the *Q*-statistic when discussing [fixed and random effects](fixed-vs-random.qmd) models. We can use the *Q* statistic now to compare this against a $\chi^2$-distribution to calculate a p-value. [Wolfgang's documentation](https://wviechtb.github.io/metafor/reference/rma.mv.html) (`?rma.mv`) describes what the *Q*-test means:</span>
-<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Cochran's 𝑄-test, which tests whether the variability in the observed effect sizes or outcomes is larger than one would expect based on sampling variability (and the given covariances among the sampling errors) alone. A significant test suggests that the true effects/outcomes are heterogeneous. </span></span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: q</span></span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
 <span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a>We don't need to do anything special to get this test. In fact, this is automatically done by <span class="in">`metafor`</span>:</span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(MLMA)</span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: q</span></span>
-<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Describing the *Q*-test**</span></span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
 <span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(MLMA)</span>
-<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Describing the *Q*-test**</span></span>
-<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**How would you describe in a paper the *Q*-test from the `metafor` model above?**</span></span>
-<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Of course, there are a multitude of ways that we could describe this test in words, but one way to describe it in your results section might be as follows:</span></span>
-<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The overall mean ARR across ectotherms was </span><span class="in">`r MLMA$b`</span><span class="at"> and differed significantly from zero (95% CI: </span><span class="in">`r MLMA$ci.lb`</span><span class="at"> to </span><span class="in">`r MLMA$ci.ub`</span><span class="at">, df = </span><span class="in">`r MLMA$ddf`</span><span class="at">, t = </span><span class="in">`r MLMA$b / MLMA$se`</span><span class="at">, p &lt; 0.001). However, there was significant residual heterogeneity (*Q* = </span><span class="in">`r MLMA$QE`</span><span class="at">, df = </span><span class="in">`r dim(MLMA$data)[1]-1`</span><span class="at">, p &lt; 0.001) with estimates expected to range from </span><span class="in">`r predict(MLMA)[[5]]`</span><span class="at"> to </span><span class="in">`r predict(MLMA)[[6]]`</span><span class="at"> (95% Prediction Interval) ($I_{total}^2$ = </span><span class="in">`r orchaRd::i2_ml(MLMA)[1]`</span><span class="at">).</span></span>
-<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a><span class="fu">### Proportion of Variation Explained by the Model: $R^2_{marginal}$ and $R^2_{conditional}$</span></span>
-<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a>You will probably have noticed that $I^2$ looks awfully familiar. It looks a lot like the way we might calculate $R^2$ described by @NakagawaSchielzeth2013. Well, you would be correct! Often we also want to quantify how much variation is explained by our moderators and random effects in our multilevel meta-regression model <span class="co">[</span><span class="ot">@Nakagawa2017ab; @NakagawaSchielzeth2013</span><span class="co">]</span>. This is done using $R^2$. We can calculate different $R^2$ values depending on whether we ignore or include random effects in the numerator. If only the variation explained by moderators is included in the numerator than we call this $R_{marginal}^2$, which is defined as:</span>
-<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>\begin{equation} </span>
-<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a>R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}} \</span>
-<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a>(<span class="sc">\#</span>eq:r2)</span>
-<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a>\end{equation} </span>
-<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a>Note that this formula does not include $\sigma^2_{m}$ as sampling error variance is assumed to be known in meta-analysis. We won't go into the details on how to calculate and interpret these because we'll cover this in a later tutorial on <span class="co">[</span><span class="ot">publication bias</span><span class="co">](pub-bias1.qmd)</span>. Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.</span>
-<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusion**</span></span>
-<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a>Hopefully it's clear from this tutorial why explicitly estimating and reporting upon heterogeneity is so critically important in meta-analysis. Of course, some of these measures are only possible if we known the total sampling variance, which is not possible if one doesn't use a weighted meta-analytic model. While all heterogeneity measures are useful, we agree with @Borenstein2019 and @Nakagawa2021c that prediction intervals are probably the best to present given they are a very intuitive interpretation of heterogeneity. </span>
-<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
-<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
-<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-het</span></span>
-<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**How would you describe in a paper the *Q*-test from the `metafor` model above?**</span></span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Of course, there are a multitude of ways that we could describe this test in words, but one way to describe it in your results section might be as follows:</span></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The overall mean ARR across ectotherms was </span><span class="in">`r MLMA$b`</span><span class="at"> and differed significantly from zero (95% CI: </span><span class="in">`r MLMA$ci.lb`</span><span class="at"> to </span><span class="in">`r MLMA$ci.ub`</span><span class="at">, df = </span><span class="in">`r MLMA$ddf`</span><span class="at">, t = </span><span class="in">`r MLMA$b / MLMA$se`</span><span class="at">, p &lt; 0.001). However, there was significant residual heterogeneity (*Q* = </span><span class="in">`r MLMA$QE`</span><span class="at">, df = </span><span class="in">`r dim(MLMA$data)[1]-1`</span><span class="at">, p &lt; 0.001) with estimates expected to range from </span><span class="in">`r predict(MLMA)[[5]]`</span><span class="at"> to </span><span class="in">`r predict(MLMA)[[6]]`</span><span class="at"> (95% Prediction Interval) ($I_{total}^2$ = </span><span class="in">`r orchaRd::i2_ml(MLMA)[1]`</span><span class="at">).</span></span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a><span class="fu">### Proportion of Variation Explained by the Model: $R^2_{marginal}$ and $R^2_{conditional}$</span></span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>You will probably have noticed that $I^2$ looks awfully familiar. It looks a lot like the way we might calculate $R^2$ described by @NakagawaSchielzeth2013. Well, you would be correct! Often we also want to quantify how much variation is explained by our moderators and random effects in our multilevel meta-regression model <span class="co">[</span><span class="ot">@Nakagawa2017ab; @NakagawaSchielzeth2013</span><span class="co">]</span>. This is done using $R^2$. We can calculate different $R^2$ values depending on whether we ignore or include random effects in the numerator. If only the variation explained by moderators is included in the numerator than we call this $R_{marginal}^2$, which is defined as:</span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a>R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}</span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a>$$ {#eq-r2}</span>
+<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a>Note that this formula does not include $\sigma^2_{m}$ as sampling error variance is assumed to be known in meta-analysis. We won't go into the details on how to calculate and interpret these because we'll cover this in a later tutorial on <span class="co">[</span><span class="ot">publication bias</span><span class="co">](pub-bias1.qmd)</span>. Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.</span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusion**</span></span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a>Hopefully it's clear from this tutorial why explicitly estimating and reporting upon heterogeneity is so critically important in meta-analysis. Of course, some of these measures are only possible if we known the total sampling variance, which is not possible if one doesn't use a weighted meta-analytic model. While all heterogeneity measures are useful, we agree with @Borenstein2019 and @Nakagawa2021c that prediction intervals are probably the best to present given they are a very intuitive interpretation of heterogeneity. </span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-het</span></span>
+<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

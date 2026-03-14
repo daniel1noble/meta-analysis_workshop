@@ -1,6 +1,8 @@
 # Welcome {.unnumbered}
 
-This book contains materials for a 1.5-2 day meta-analysis workshop. The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
+![](figs/logo.png)
+
+This book contains materials for a 1.5-2 day meta-analysis workshop run by [Daniel Noble](https://sites.google.com/view/noblelab/home) from The [Australian National University](https://www.anu.edu.au/). The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
 
 ## Workshop Overview
 
@@ -33,4 +35,4 @@ This workshop assumes you have:
 
 ## Contact
 
-For questions or feedback, please contact the workshop instructor.
+For questions or feedback, please contact [Dan](mailto:daniel.noble@anu.edu.au).
