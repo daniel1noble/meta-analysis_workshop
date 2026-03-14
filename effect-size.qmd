@@ -236,11 +236,6 @@ with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])))
 
 # Interpretation: What this tells us is that the numerator is 1.15 times the denominator, or, that the marginal (front) mean is 15% larger compared to the core mean. We can see that this is true as follows:
 with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])) * mean_core[1])
-```
-
-:::
-
-<br>
 
 # This value should now match the marginal mean value, which it does
 with(ratio_data, mean_front[1])
@@ -251,6 +246,8 @@ with(ratio_data, mean_front[1])
 <br>
 
 Hopefully this is useful to interpret the meaning of the effect size data at the level of individual observations. The same principles will apply (for the most part) when converting back to the original scale from the mean estimates from meta-analytic models. 
+
+:::
 
 ## **Cohen's d and Hedges g -- Visualising Their Meaning**
 
