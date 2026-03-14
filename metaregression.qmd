@@ -15,7 +15,7 @@ options(digits=3)
 
 Meta-analysis often reveals substantial heterogeneity among effect estimates included in the analysis [@Senior2016]. While many meta-analysts are interested in 'overall mean effects' we need to couch these effects in context by reporting on their variability and work hard to understand what factors drive effect variability and why [@Noble2022; @Lag2010]. For meta-analyses in comparative physiology, explaining variation in effects should probably be the main goal of every analysis. Sampling variance often explains only a little amount of the total heterogeneity, so it's important that we think hard, *a priori*, about what factors are likely to explain effect size variation. 
 
-As already indicated, some variation in effects could be explained by [nuisance heterogeneity](https://daniel1noble.github.io/meta-workshop/nuis-het), which may or may not be of interest. Other sources of variability could be methodological [@Noble2022]. Do different chemicals that result in oxidative stress induce stronger or weaker responses? Understanding how methodological choices impact upon effect sizes can change how research is done in a field. 
+As already indicated, some variation in effects could be explained by [nuisance heterogeneity](nuis-het.qmd), which may or may not be of interest. Other sources of variability could be methodological [@Noble2022]. Do different chemicals that result in oxidative stress induce stronger or weaker responses? Understanding how methodological choices impact upon effect sizes can change how research is done in a field. 
 
 While methodological moderators are important biological variables are usually our main interest. We might be interested in understanding how much variation among species exist or how different life-histories, body sizes, ecological niches, feeding habits or thermal strategies (e.g., ectotherms vs endotherms) differ in their response to some treatment or the association between two variables. 
 
@@ -33,14 +33,14 @@ s_{k} \sim N(0, \sigma_{k}^2) \\
 e_{i} \sim N(0, \sigma_{e}^2)
 $$
 
-Here, $\beta_{m}$ is the slope (or contrast) for the *m th* moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for [nuisance hetereogenity](https://daniel1noble.github.io/meta-workshop/nuis-het), others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature -- they might compare ectotherms to endotherms, for example.  
+Here, $\beta_{m}$ is the slope (or contrast) for the *m th* moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for [nuisance hetereogenity](nuis-het.qmd), others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature -- they might compare ectotherms to endotherms, for example.  
 
 ## **Phylogenetic Multi-level Meta-regression**
 
 ### Introduction
 ![](./figs/WuSeebacher.png)
 
-We'll turn again to the study by @WuSeebacher2022.  We can run the same phylogenetic meta-analysis that we did in the [Phylogenetic meta-analytic models tutorial](https://daniel1noble.github.io/meta-workshop/phylo), but this time we can include moderators or predictors that we think will explain some variation in effects. From the original study aim, the first thing @WuSeebacher2022 were interested in is the relationship of physiology with activity, exploration and dispersal (Zr). In addition to the random effects  --  `es_ID` (effect size identity), `study_ID`(unique study identity), `species`(unique species identity), and `species_OTL`(phylogenetic relatedness), they were also interested in comparing whether the correlation (or Zr) differences depending on whether the behavioural trait of interest was activity, exploration or dispersal. As such, a phylogenetic meta-regression model was fit with a moderator `disp_trait` (activity, exploration, or dispersal) to explicitly test whether Zr varied across these effect types.
+We'll turn again to the study by @WuSeebacher2022.  We can run the same phylogenetic meta-analysis that we did in the [Phylogenetic meta-analytic models tutorial](phylo.qmd), but this time we can include moderators or predictors that we think will explain some variation in effects. From the original study aim, the first thing @WuSeebacher2022 were interested in is the relationship of physiology with activity, exploration and dispersal (Zr). In addition to the random effects  --  `es_ID` (effect size identity), `study_ID`(unique study identity), `species`(unique species identity), and `species_OTL`(phylogenetic relatedness), they were also interested in comparing whether the correlation (or Zr) differences depending on whether the behavioural trait of interest was activity, exploration or dispersal. As such, a phylogenetic meta-regression model was fit with a moderator `disp_trait` (activity, exploration, or dispersal) to explicitly test whether Zr varied across these effect types.
 
 ### Load data and phylogeny
 
@@ -102,17 +102,19 @@ overall_model <- metafor::rma.mv(yi = Zr, V = V_Zr,
 summary(overall_model)
 ```
 
-#### **What does the model output tell us?** {.tabset .tabset-fade .tabset-pills} 
+#### **What does the model output tell us?**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
 
 >**Is there a relationship between physiology with either activity, exploration, and dispersal?** 
 
-<br>
-
-##### Answer {.tabset .tabset-fade .tabset-pills} 
+## Answer
 
 >We can see from above that the model estimates **a positive relationship** between physiology and activity with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. Exploration and dispersal was also, on average, positively associated with physiology, but exploration had higher level of uncertainty (Exploration = `r overall_model$b[3,]` [95% CI `r overall_model$ci.lb[3]`, `r overall_model$ci.ub[3]`], Dispersal = `r overall_model$b[2,]`, [95% CI `r overall_model$ci.lb[2]`, `r overall_model$ci.ub[2]`]). Heterogeneity remained high in this analysis based on the Q-test. 
+
+:::
 
 <br>
 
@@ -134,23 +136,27 @@ overall_model <- metafor::rma.mv(yi = Zr, V = V_Zr,
 summary(overall_model)
 ```
 
-#### **What does the model output tell us?** {.tabset .tabset-fade .tabset-pills} 
+#### **What does the model output tell us?**
 
 We can see that the model coefficients have changed. The `intrcpt` now takes on the mean *Zr* for `Activity`. In other words, this is the mean *Zr* for the correlations between physiology and activity. As such, this is the same value as the previous model. For the `intrcpt`, the null hypothesis being tested is whether the mean differs significantly from zero, which it does. In contrast, `disp_traitDispersal` and `disp_traitExploration` are no longer meta-analytic means for `Dispersal` and `Exploration` as in the previous model. Rather, they are now contrasts, or differences, between the mean *Zr* for `Activity` and the mean *Zr* for `Dispersal` and `Exploration`. They are now testing the null hypothesis that the difference between *Activity and Dispersal* (i.e., `disp_traitDispersal`) and *Activity and Exploration* (i.e., `disp_traitExploration`) are different from zero.
 
-##### Task! {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task!
 
 >**Does the mean *Zr* for Exploration and Dispersal differ from Activity?** 
 
-<br>
-
-##### Answer! {.tabset .tabset-fade .tabset-pills} 
+## Answer!
 
 >We can see that the mean Z-transformed correlation (*Zr*) between physiology and activity **do not differ significantly** from *Zr* between *Activity and Dispersal* and *Activity and Exploration*. The model also explains only `r orchaRd::r2_ml(overall_model)[1]`% ($R_{marginal}^2$) of the variation, so we can be confident that there is little predictive power from this moderator. 
 
 <br>
 
 >We can also visually depict the differences in *r* between these groups using an orchard plot [@Nakagawa2021c] after back-transforming from *Zr*: 
+
+:::
+
+<br>
 
 ```{r}
 #| label: orchard

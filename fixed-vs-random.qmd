@@ -105,15 +105,21 @@ Now that we understand the fixed effect model, both from formal statistical nota
 ```
 
 
-#### **How to interpret the model output?** {.tabset .tabset-fade .tabset-pills} 
+#### **How to interpret the model output?**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
+
 >**What do the model results and Q values (under Test for Heterogeneity) mean?** 
 
 <br>
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
+## Answer
+
 > The output suggests that the average estimate is **2.07** and it has a standard error of **0.1**. It also provides us with a Q statistic, which measures the amount of heterogeneity among effect sizes. **If Q is large and the p-value is small then it suggests substantial heterogeneity among effect sizes** beyond what we would expect if these effects were generated from a common underlying distribution. This is a major assumption of fixed effect meta-analyses and in this case is supported. This is a good thing because we specifically generated these data under the assumption that they are from the same distribution. We can see this if we look at how we generated the data: `rnorm(length(Ves), 2, sqrt(Ves))`. This draws random effect sizes from a normal distribution with a variance (`sqrt(Ves)`) for each effect size that is only defined by its sampling variability.
+
+:::
 
 <br>
 
@@ -211,15 +217,21 @@ metafor::rma(yi = esRE, vi = Ves, method="REML", data = dataRE)
 ```
 
 
-#### **Interpreting what happened!** {.tabset .tabset-fade .tabset-pills} 
+#### **Interpreting what happened!**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
+
 >**What does it mean when the Q increased in our random effect model vs our fixed effect model?** 
 
 <br>
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
->That’s because we added in extra variability to the mix because **each effect size is to come from a distribution of true effect sizes**. Because they can all have their own mean they can differ substantially from the other effect sizes and this results in more variance (i.e. heterogeneity) being added to our data over all.
+## Answer
+
+>That's because we added in extra variability to the mix because **each effect size is to come from a distribution of true effect sizes**. Because they can all have their own mean they can differ substantially from the other effect sizes and this results in more variance (i.e. heterogeneity) being added to our data over all.
+
+:::
 
 <br>
 

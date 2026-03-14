@@ -12,7 +12,7 @@ options(digits=3)
 
 ## **Introduction to Multi-level Meta-analysis**
 
-Ecological and evolutionary meta-analysis more often than not need much more sophisticated multilevel meta-analytic models [@NakagawaSantos2012; @Hadfield2010; @Noble2017] compared with [random effect models](https://daniel1noble.github.io/meta-workshop/fixed-vs-random) to analyse data. Biological data from field and lab-based experiments are highly structured -- many studies could be done on the same species or they could be done by the same lab group or student sharing similar methodology [@Noble2017; @NakagawaSantos2012]. In addition, we might have many effect size estimates from a single study because many traits are measured, or many treatments are applied [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
+Ecological and evolutionary meta-analysis more often than not need much more sophisticated multilevel meta-analytic models [@NakagawaSantos2012; @Hadfield2010; @Noble2017] compared with [random effect models](fixed-vs-random.qmd) to analyse data. Biological data from field and lab-based experiments are highly structured -- many studies could be done on the same species or they could be done by the same lab group or student sharing similar methodology [@Noble2017; @NakagawaSantos2012]. In addition, we might have many effect size estimates from a single study because many traits are measured, or many treatments are applied [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
 
 In the past, complex non-independence was often dealt with by: **1)** conducting separate meta-analyses on subsets of non-independent data sets, usually using random effect models; **2)** taking one or only a subset of effect size estimates from a single study to reduce non-independence; and/or **3)** averaging effect size estimates from a single study and modelling the average [@NakagawaSantos2012]. **These approaches can be problematic because disposing of useful effect size data will result in a loss of statistical power or even inflated Type I error rates if average effect size estimates were not calculated accounting for non-independence [@Nakagawa2021]**. Furthermore, removing effect size estimates from an analysis prevents estimation of biological and methodologically relevant information that can help shape the field [@NakagawaSantos2012; @Nakagawa2021]. While the above approaches could still be useful at times, where possible, we recommend you model all available data [@Nakagawa2021; @Noble2017; @NakagawaSantos2012].
 
@@ -20,7 +20,7 @@ In the next series of tutorials we'll overview multilevel meta-analytic models a
 
 ## **Simple Multilevel Meta-analytic Model**
 
-[Recall](https://daniel1noble.github.io/meta-workshop/fixed-vs-random) that a random effects model is defined as follows: 
+[Recall](fixed-vs-random.qmd) that a random effects model is defined as follows: 
 
 $$
 y_{i} = \mu + s_{i} + m_{i} \\
@@ -68,7 +68,7 @@ $$
 
 ![](./figs/pottier.png)
 
-To demonstrate how to fit a multilevel meta-analytic model similar to the one discussed above we'll turn to a [familiar example](https://daniel1noble.github.io/meta-workshop/nuis-het) by @Pottier2021, who used the acclimation response ratio (ARR) to analyse thermal acclimation responses on $CT_{max}$ and how this differs between the sexes. We'll keep it simple for the moment and focus exclusively on a single sex. 
+To demonstrate how to fit a multilevel meta-analytic model similar to the one discussed above we'll turn to a [familiar example](nuis-het.qmd) by @Pottier2021, who used the acclimation response ratio (ARR) to analyse thermal acclimation responses on $CT_{max}$ and how this differs between the sexes. We'll keep it simple for the moment and focus exclusively on a single sex. 
 
 ### Download Data and Functions for $ARR$
 
@@ -107,7 +107,6 @@ return(data.frame(ARR, V_ARR))
 Using the `arr` function above we can now calculate the acclimation response ratio (ARR). Given @Pottier2021 were interested in comparing the sexes, they calculated the ARR difference between males and females. To simplify here, we'll just focus on estimating the ARR for a single sex, females. As such, we'll calculate our ARR effect size and sampling variance and then sub-set out the data on females.
 
 ```{r}
-#| tidy: true
 
 # Calculate the effect sizes
 asr_dat<-asr_dat %>% 
@@ -143,19 +142,25 @@ print(MLMA)
 
 ```
 
-#### **What does the model output tell us?** {.tabset .tabset-fade .tabset-pills} 
+#### **What does the model output tell us?**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
+
 >**What is the overall mean estimate and variance of the model, and how much heterogeneity exist?** 
 
 <br>
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
+## Answer
+
 >We can see from above that the model estimates an **overall meta-analytic mean as `r MLMA$b` with a 95% confidence interval of `r MLMA$ci.lb` to `r MLMA$ci.ub`**. **In other words, for each degree variation in acclimation temperature female heat tolerance changes by an average of `r MLMA$b`$^{\circ}$C**. 
 
 <br>
 
 >We can also see that there's a significant amount of heterogeneity among our effect size estimates with our *Q*-test being significant. Some of this heterogeneity seems to be driven by variation among studies, within studies and among species as judged by the variance components of the model. We'll probe how to dissect and discuss this heterogeneity in later tutorials. 
+
+:::
 
 <br>
 

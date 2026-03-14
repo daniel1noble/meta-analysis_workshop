@@ -15,9 +15,9 @@ options(digits=3)
 
 Meta-analysis quantitatively aggregates effect size data collected from existing research. The effect size one uses for a study question needs to be chosen carefully. Each make certain assumptions about the underlying data. It's important to be weary of these assumptions and identify when something might have gone wrong. 
 
-The effect size chosen must satisfy two important features. First, the effect size must be comparable across studies. This means that they must be placed on the same scale so that they can be aggregated. Some effect size estimates can be inter-converted to each other (e.g., Zr, Hedges' g), but this isn't the case for all of them. Second, we must be able to derive or approximate the sampling variance for a given effect size. As [already indicated](https://daniel1noble.github.io/meta-workshop/introduction-to-meta), the sampling variance is very important if one wishes to use meta-analytic models that account for sampling variance and is needed to report certain measures of [heterogeneity](https://daniel1noble.github.io/meta-workshop/het). 
+The effect size chosen must satisfy two important features. First, the effect size must be comparable across studies. This means that they must be placed on the same scale so that they can be aggregated. Some effect size estimates can be inter-converted to each other (e.g., Zr, Hedges' g), but this isn't the case for all of them. Second, we must be able to derive or approximate the sampling variance for a given effect size. As [already indicated](introduction-to-meta.qmd), the sampling variance is very important if one wishes to use meta-analytic models that account for sampling variance and is needed to report certain measures of [heterogeneity](het.qmd). 
 
-Meta-analyses in comparative physiology, and indeed, ecology and evolution more generally, often use highly heterogeneous data [@Noble2022; @Senior2016]. This poses other challenges in aggregating effect size data that make their comparability questionable. We'll discuss some of these issues in later [tutorials](https://daniel1noble.github.io/meta-workshop/nuis-het) and identify some ways in which some of this heterogeneity can be dealt with when deriving the effect size itself. 
+Meta-analyses in comparative physiology, and indeed, ecology and evolution more generally, often use highly heterogeneous data [@Noble2022; @Senior2016]. This poses other challenges in aggregating effect size data that make their comparability questionable. We'll discuss some of these issues in later [tutorials](nuis-het.qmd) and identify some ways in which some of this heterogeneity can be dealt with when deriving the effect size itself. 
 
 By the end of this tutorial, we hope that you will feel comfortable:
 
@@ -194,14 +194,15 @@ ratio_data
 
 Now that we have calculated the log response ratio lets just make sure we understand what is being done. We'll take this subset of data and do some back calculations to make sure we understand how to inter convert. To demonstrate, we'll just convert (and back convert) the first row of data. 
 
-#### **Testing your Understanding of $lnRR$** {.tabset .tabset-fade .tabset-pills}
+#### **Testing your Understanding of $lnRR$**
 
-##### Task! {.tabset .tabset-fade .tabset-pills}
+::: {.panel-tabset}
+
+## Task!
+
 >**Using the first row of the data, calculate the log response ratio for this observation by hand. What does the direction of the effect size tell you about the mean at the marginal compared to core?**
 
-<br>
-
-##### Answer! {.tabset .tabset-fade .tabset-pills}
+## Answer!
 
 >The effect size is positive indicating that the mean of the marginal (`mean_front`) is larger than the mean of the core poulaton (`mean_core`). We can see that by calculating the effect size in two ways, the second of which is easier to see why.
  
@@ -218,14 +219,11 @@ with(ratio_data, log(mean_front[1] / mean_core[1]))
 with(ratio_data, log(mean_front[1]) - log(mean_core[1]))
 ```
 
-<br>
+## Task 2!
 
-##### Task! {.tabset .tabset-fade .tabset-pills}
 >**What does the value of the effect size tell you about how much the mean differences between marginal and core populations?**
 
-<br>
-
-##### Answer! {.tabset .tabset-fade .tabset-pills}
+## Answer 2!
 
 >What this tells us is that the numerator is 1.15 times the denominator, or, that the marginal (front) mean is 15% larger compared to the core mean. We can see that this is true as follows:
 
@@ -238,6 +236,11 @@ with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])))
 
 # Interpretation: What this tells us is that the numerator is 1.15 times the denominator, or, that the marginal (front) mean is 15% larger compared to the core mean. We can see that this is true as follows:
 with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])) * mean_core[1])
+```
+
+:::
+
+<br>
 
 # This value should now match the marginal mean value, which it does
 with(ratio_data, mean_front[1])
@@ -275,7 +278,6 @@ Visualising and interpreting Hedge's g can be slightly less intuitive compared t
 ```{r}
 #| label: sessioninfo
 #| echo: false
-#| tidy: true
 
 # Here, we'll create some R code
 pander(sessionInfo(), locale = FALSE)

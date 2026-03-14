@@ -329,7 +329,7 @@ window.Quarto = {
 
 <section id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis"><strong>Analytical Approaches for Assessment of Publication Bias in Meta-analysis</strong></h2>
-<p>In the <a href="https://daniel1noble.github.io/meta-workshop/pub-bias1">last tutorial</a> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="citation" data-cites="Jennions2013 Nakagawa2021b Rothstein2005">(<a href="#ref-Jennions2013" role="doc-biblioref">Jennions et al., 2013</a>; <a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>; <a href="#ref-Rothstein2005" role="doc-biblioref">Rothstein et al., 2005</a>)</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="citation" data-cites="Noble2017 Koricheva2013">(<a href="#ref-Koricheva2013" role="doc-biblioref">Koricheva et al., 2013</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> because we will never truly know how many missing effect sizes actually exist.</p>
+<p>In the <a href="./pub-bias1.html">last tutorial</a> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="citation" data-cites="Jennions2013 Nakagawa2021b Rothstein2005">(<a href="#ref-Jennions2013" role="doc-biblioref">Jennions et al., 2013</a>; <a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>; <a href="#ref-Rothstein2005" role="doc-biblioref">Rothstein et al., 2005</a>)</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="citation" data-cites="Noble2017 Koricheva2013">(<a href="#ref-Koricheva2013" role="doc-biblioref">Koricheva et al., 2013</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> because we will never truly know how many missing effect sizes actually exist.</p>
 <p>In this tutorial, we’ll overview some ways we can attempt to understand whether publication bias is present using multilevel meta regression to quantitatively assess in a more objective way whether it’s present. We can also use these statistical tools to attempt to ‘correct’ for it.</p>
 </section>
 <section id="statistically-testing-and-correcting-for-publication-bias" class="level2">
@@ -376,22 +376,23 @@ s_{j} \sim N(0, \tau^2) \\
 spp_{k} \sim N(0, \sigma_{k}^2) \\
 e_{i} \sim N(0, \sigma_{e}^2)
 \]</span></p>
-<p>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <a href="https://daniel1noble.github.io/meta-workshop/metaregression">past tutorials</a>:</p>
+<p>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <a href="./metaregression.html">past tutorials</a>:</p>
 <p><span class="math display">\[
 y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
 \]</span> Here, <span class="math inline">\(\beta_{m}\)</span> is the slope (or contrast) for the <span class="math inline">\(m^{th}\)</span> moderator (where m = 1, …, <span class="math inline">\(N_{moderator}\)</span> or <span class="math inline">\(N_{m}\)</span>). Of course, <span class="math inline">\(\beta_{se}se\)</span> can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. <span class="citation" data-cites="Stanley2012">Stanley and Doucouliagos (<a href="#ref-Stanley2012" role="doc-biblioref">2012</a>)</span> and <span class="citation" data-cites="Stanley2014">Stanley and Doucouliagos (<a href="#ref-Stanley2014" role="doc-biblioref">2014</a>)</span> have shown that when <span class="math inline">\(\mu\)</span> in a model that estimates <span class="math inline">\(\beta_{se}\)</span> is significant than the intercept (in this case, <span class="math inline">\(\mu\)</span>) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias <span class="citation" data-cites="Nakagawa2021b">(<a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>)</span> <span class="citation" data-cites="Nakagawa2022cor">(see correction for original paper <a href="#ref-Nakagawa2022cor" role="doc-biblioref">Nakagawa et al., 2022b</a>)</span>. However, <span class="citation" data-cites="Stanley2012">Stanley and Doucouliagos (<a href="#ref-Stanley2012" role="doc-biblioref">2012</a>)</span> and <span class="citation" data-cites="Stanley2014">Stanley and Doucouliagos (<a href="#ref-Stanley2014" role="doc-biblioref">2014</a>)</span> have shown that when <span class="math inline">\(\mu\)</span> is significant than including SE is best replaced with the sampling variance (i.e., <span class="math inline">\(SE^2\)</span>) instead because the intercept using SE is downwardly biased.</p>
 <p>As such, <span class="citation" data-cites="Nakagawa2021b">Nakagawa et al. (<a href="#ref-Nakagawa2021b" role="doc-biblioref">2022a</a>)</span> recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or <span class="math inline">\(SE^2\)</span>) as this will give us a better estimate of the adjusted mean effect size.</p>
-<section id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean" class="level4 tabset tabset-fade tabset-pills">
-<h4 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean"><strong>Why does including sampling variance in the model adjust the overall meta-analytic mean?</strong></h4>
-<section id="task" class="level5 tabset tabset-fade tabset-pills">
-<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="task">Task!</h5>
+<section id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean" class="level4">
+<h4 class="anchored" data-anchor-id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean"><strong>Why does including sampling variance in the model adjust the overall meta-analytic mean?</strong></h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Task!</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Answer!</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <blockquote class="blockquote">
 <p><strong>Think about how the intercept, <span class="math inline">\(\mu\)</span>, changes its meaning when a continuous moderator, such as <span class="math inline">\(se\)</span>, is included in the model. When estimating <span class="math inline">\(\beta_{se}\)</span> explicitly how do we now interpret the intercept or meta-analytic mean?</strong></p>
 </blockquote>
 <p><br></p>
-</section>
-<section id="answer" class="level5 tabset tabset-fade tabset-pills">
-<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="answer">Answer!</h5>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <blockquote class="blockquote">
 <p>The reason why the intercept (<span class="math inline">\(\mu\)</span>) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is <strong>no</strong> sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</p>
 </blockquote>
@@ -399,8 +400,10 @@ y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j[i]} + sp
 y_{i} = \mu + \beta_{se}*0  =
 \mu  \\
 \]</span></p>
+</div>
+</div>
+</div>
 <p><br></p>
-</section>
 </section>
 </section>
 <section id="fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias" class="level3">
@@ -479,22 +482,25 @@ Zr_v       3.0051  0.6931  4.3357  207  &lt;.0001   1.6387  4.3716  ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
-<section id="interpreting-the-results" class="level4 tabset tabset-fade tabset-pills">
-<h4 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="interpreting-the-results"><strong>Interpreting the results</strong></h4>
-<section id="task-1" class="level5 tabset tabset-fade tabset-pills">
-<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="task-1">Task!</h5>
+<section id="interpreting-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-results"><strong>Interpreting the results</strong></h4>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Task!</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Answer!</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <blockquote class="blockquote">
 <p><strong>Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?</strong></p>
 </blockquote>
 <p><br></p>
-</section>
-<section id="answer-1" class="level5 tabset tabset-fade tabset-pills">
-<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="answer-1">Answer!</h5>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <blockquote class="blockquote">
 <p>Yes, there is evidence for publication bias because the slope estimate for <code>sqrt(Zr)</code> or the sampling standard error is significant. Given that the <code>intrcpt</code> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted <code>Zr</code> when there is <em>no</em> uncertainty is -0.067with a 95% confidence interval that overlaps zero (i.e., 95% CI = -0.212 to 0.079). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, -0.067.</p>
 </blockquote>
+</div>
+</div>
+</div>
 <p><br></p>
-</section>
 </section>
 </section>
 </section>
@@ -1029,7 +1035,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Analytical Approaches for Assessment of Publication Bias in Meta-analysis**</span></span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>In the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](https://daniel1noble.github.io/meta-workshop/pub-bias1)</span> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span> because we will never truly know how many missing effect sizes actually exist.</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>In the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](pub-bias1.qmd)</span> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span> because we will never truly know how many missing effect sizes actually exist.</span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>In this tutorial, we'll overview some ways we can attempt to understand whether publication bias is present using multilevel meta regression to quantitatively assess in a more objective way whether it's present. We can also use these statistical tools to attempt to  'correct' for it. </span>
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
@@ -1080,7 +1086,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2)</span>
 <span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <span class="co">[</span><span class="ot">past tutorials</span><span class="co">](https://daniel1noble.github.io/meta-workshop/metaregression)</span>:</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <span class="co">[</span><span class="ot">past tutorials</span><span class="co">](metaregression.qmd)</span>:</span>
 <span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
@@ -1089,77 +1095,88 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.</span>
 <span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**  {.tabset .tabset-fade .tabset-pills} </span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**</span></span>
 <span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task! {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Think about how the intercept, $\mu$, changes its meaning when a continuous moderator, such as $se$, is included in the model. When estimating $\beta_{se}$ explicitly how do we now interpret the intercept or meta-analytic mean?**</span></span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Answer! {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The reason why the intercept ($\mu$) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is **no** sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Think about how the intercept, $\mu$, changes its meaning when a continuous moderator, such as $se$, is included in the model. When estimating $\beta_{se}$ explicitly how do we now interpret the intercept or meta-analytic mean?**</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}*0  =</span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>\mu  <span class="sc">\\</span></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The reason why the intercept ($\mu$) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is **no** sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}*0  =</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>\mu  <span class="sc">\\</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. </span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>We'll also fit the model with sampling variance for good measure, but given that the <span class="in">`intrcpt`</span> is not significant we can interpret the first model.</span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: V</span></span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. </span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>We'll also fit the model with sampling variance for good measure, but given that the <span class="in">`intrcpt`</span> is not significant we can interpret the first model.</span>
 <span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the results**  {.tabset .tabset-fade .tabset-pills} </span></span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task! {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?**</span></span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Answer! {.tabset .tabset-fade .tabset-pills}</span></span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Yes, there is evidence for publication bias because the slope estimate for </span><span class="in">`sqrt(Zr)`</span><span class="at"> or the sampling standard error is significant. Given that the </span><span class="in">`intrcpt`</span><span class="at"> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted </span><span class="in">`Zr`</span><span class="at"> when there is *no* uncertainty is </span><span class="in">`r metareg_se$b[1]`</span><span class="at">with a 95% confidence interval that overlaps zero (i.e., 95% CI = </span><span class="in">`r metareg_se$ci.lb[1]`</span><span class="at"> to </span><span class="in">`r metareg_se$ci.ub[1]`</span><span class="at">). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, </span><span class="in">`r tanh(metareg_se$b[1])`</span><span class="at">. </span></span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: V</span></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the results**</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?**</span></span>
 <span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>Hopefully it is clear now how we can more objectively test, and correct, for the possibility of publication bias. Again, these should be viewed cautiously and used only as a sensitivity analysis. An important point that we did not mention is that, we need to use different moderators depending on the type of effect size being used in the meta-analysis. Zr is rather straight forward, but @Nakagawa2021 discuss the challenges in using standardised mean differences and log response ratio when fitting models with SE and V. They recommend instead using the <span class="in">`effective sample size`</span> in meta-regression models. </span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
 <span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Yes, there is evidence for publication bias because the slope estimate for </span><span class="in">`sqrt(Zr)`</span><span class="at"> or the sampling standard error is significant. Given that the </span><span class="in">`intrcpt`</span><span class="at"> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted </span><span class="in">`Zr`</span><span class="at"> when there is *no* uncertainty is </span><span class="in">`r metareg_se$b[1]`</span><span class="at">with a 95% confidence interval that overlaps zero (i.e., 95% CI = </span><span class="in">`r metareg_se$ci.lb[1]`</span><span class="at"> to </span><span class="in">`r metareg_se$ci.ub[1]`</span><span class="at">). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, </span><span class="in">`r tanh(metareg_se$b[1])`</span><span class="at">. </span></span>
 <span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
-<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>Hopefully it is clear now how we can more objectively test, and correct, for the possibility of publication bias. Again, these should be viewed cautiously and used only as a sensitivity analysis. An important point that we did not mention is that, we need to use different moderators depending on the type of effect size being used in the meta-analysis. Zr is rather straight forward, but @Nakagawa2021 discuss the challenges in using standardised mean differences and log response ratio when fitting models with SE and V. They recommend instead using the <span class="in">`effective sample size`</span> in meta-regression models. </span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
 <span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -13,7 +13,7 @@ options(digits=3)
 
 ## **Introduction**
 
-We have already introduced the power of [multilevel meta-analytic models](https://daniel1noble.github.io/meta-workshop/multi-level) for dealing with non-independence, such as shared species, [phylogeny](https://daniel1noble.github.io/meta-workshop/phylo) and study [@Noble2017; @NakagawaSantos2012; @HadfieldNaka2010], but meta-analyses often contain even more complex forms on non-independence. 
+We have already introduced the power of [multilevel meta-analytic models](multi-level.qmd) for dealing with non-independence, such as shared species, [phylogeny](phylo.qmd) and study [@Noble2017; @NakagawaSantos2012; @HadfieldNaka2010], but meta-analyses often contain even more complex forms on non-independence. 
 
 We might have many effect size estimates from a single study because many traits are measured on the **same sample of organisms**, or many treatments are applied and we can create an **effect size with some common control** [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
 
@@ -21,7 +21,7 @@ In this tutorial, we'll overview some of these unique forms of non-independence 
 
 ## **The Many Forms of Dependence in Meta-analysis**
 
-Let's briefly overview why non-independence can be an issue and why simple multilevel meta-analytic models do not always deal with the problem sufficiently well. Recall our multi-level meta-analytic (MLMA) model from the [last tutorial](https://daniel1noble.github.io/meta-workshop/multi-level). 
+Let's briefly overview why non-independence can be an issue and why simple multilevel meta-analytic models do not always deal with the problem sufficiently well. Recall our multi-level meta-analytic (MLMA) model from the [last tutorial](multi-level.qmd). 
 
 $$
 y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
@@ -50,15 +50,17 @@ $$
 \end{bmatrix}
 $$
 
-#### **Thinking about matrices and variances!** {.tabset .tabset-fade .tabset-pills}
+#### **Thinking about matrices and variances!**
 
-##### Task! {.tabset .tabset-fade .tabset-pills}
+::: {.panel-tabset}
+
+## Task!
 
 >**What is the significance of multiplying the $\bf{I}$ matrix by the variance for each random effect above?** 
 
 <br>
 
-##### Answer! {.tabset .tabset-fade .tabset-pills}
+## Answer!
 
 >The short story is that we are making the assumption that each random effect added to a given effect size is drawn from an independent and identical distribution. To see why this is the case think about what happens when we multiply $\sigma_{i}^2$ by this matrix. Along the diagonal, we get the exact same variance estimate for every single effect size (or for effect sizes that share a cluster). This tells us that they are sampled from a distribution that has the same mean (0) and variance ($\sigma_{i}^2$) (i.e., are sampled from the same distribution). 
 
@@ -66,12 +68,14 @@ $$
 
 >If, however, we multiply the off-diagonals by the variance we get zero. The fact that these off-diagonals are 0 tells us straight away that all the random effects being sampled are independent from one another as otherwise the off-diagonals would be non-zero (i.e., would have a co-variance) (and the correlation matrix would have a correlation above 0). This seems sensible. All effect size estimates from the same study will have the same 'effect' added to the estimate. This indicates that these effects should be more similar to each other by virtue of them being from the same study (@fig-fig1 b from @Noble2017). This does, in some sense, deal with non-independence, but not completely!
 
+:::
+
 <br>
 
 
 ## **Complex Forms of Non-Independence**
 
-Our assumption about effects from the same study being independent would likely be wrong if, for example, we have effect sizes that are measured on different traits of the same animals that vary in their relationship with each other (i.e., some traits are more strongly correlated than others). Alternatively, if our effect size statistics were collected at different times or spatial locations that vary in the extent to which they are correlated with each other. In fact, species themselves vary to different degrees based on how long ago they shared a common ancestor. This is why we include evolutionary relationships among species in our meta-analytic models! (we'll discuss this in the [phylogeny tutorial](https://daniel1noble.github.io/meta-workshop/phylo) [@HadfieldNaka2010; @Chamberlain2012; @NakagawaSantos2012] (@fig-fig1 a from @Noble2017). In these cases, we need to properly model the correlation among effect size values induced by these processes.
+Our assumption about effects from the same study being independent would likely be wrong if, for example, we have effect sizes that are measured on different traits of the same animals that vary in their relationship with each other (i.e., some traits are more strongly correlated than others). Alternatively, if our effect size statistics were collected at different times or spatial locations that vary in the extent to which they are correlated with each other. In fact, species themselves vary to different degrees based on how long ago they shared a common ancestor. This is why we include evolutionary relationships among species in our meta-analytic models! (we'll discuss this in the [phylogeny tutorial](phylo.qmd) [@HadfieldNaka2010; @Chamberlain2012; @NakagawaSantos2012] (@fig-fig1 a from @Noble2017). In these cases, we need to properly model the correlation among effect size values induced by these processes.
 
 
 ```{r}
@@ -86,7 +90,7 @@ img1 <- magick::image_read("./figs/nonIn.png")
 img1
 ```
 
-But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors [@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019]. That could be a serious problem because the inverse sampling errors are what we are using as [weights in our analysis](https://daniel1noble.github.io/meta-workshop/introduction-to-meta). If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this but also modifying out sampling error matrix
+But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors [@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019]. That could be a serious problem because the inverse sampling errors are what we are using as [weights in our analysis](introduction-to-meta.qmd). If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this but also modifying out sampling error matrix
 
 $$
 m_{i} \sim N(0, \textbf{M})
@@ -192,17 +196,21 @@ summary(mlma)
 
 As you can see in the model, the `V` argument in `metafor` takes the $\textbf{M}$ matrix directly. This will account for the shared-control usage in the data. This model is a little different than the one actually fit in @Raynal2022 because it does not include phylogeny, but it gives us essentially the same result. 
 
-#### What does the model output tell us? {.tabset .tabset-fade .tabset-pills} 
+#### What does the model output tell us?
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
 
 >**What is the overall mean estimate and variance, and what does it mean in the context of fluctuating temperature on body mass?** 
 
 <br>
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
+## Answer
 
 >In essence, what this model is telling us is that there is, on average, a  **`r (1 - predict(mlma, transf = exp)$pred)*100`% decrease** in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the **95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from a zero** (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.
+
+:::
 
 <br>
 

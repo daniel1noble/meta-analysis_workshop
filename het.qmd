@@ -23,7 +23,7 @@ There are a number of important metrics of heterogeneity that are commonly used 
 
 The most commonly encountered measures of heterogeneity in comparative physiology, and indeed ecology and evolution more generally, are results of *Q* tests,  $I^2$ metrics (or  raw $\tau^2$ or variance estimates), and less commonly, prediction intervals. These measures of heterogeneity (even if just a few) should always be presented along side meta-analytic mean effect size estimates because they tell the reader a great deal about the 'consistency' of results (e.g., prediction intervals, total heterogeneity) or the relative contribution of different factors to effect size variation (i.e., different measures of $I^2$). We'll overview these different metrics and show how to calculate an interpret them in meta-analyses. 
 
-For the purpose of this tutorial we'll assume the following multilevel meta-analytic model is fit as described in the [multilevel model tutorial](https://daniel1noble.github.io/meta-workshop/multi-level). If you can't quite remember all the notation we recommend going back to review that page.  
+For the purpose of this tutorial we'll assume the following multilevel meta-analytic model is fit as described in the [multilevel model tutorial](multi-level.qmd). If you can't quite remember all the notation we recommend going back to review that page.  
 
 $$
 y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
@@ -32,7 +32,7 @@ s_{j} \sim N(0, \tau^2) \\
 spp_{k} \sim N(0, \sigma_{k}^2) \\
 e_{i} \sim N(0, \sigma_{e}^2)
 $$
-We will return to the meta-analysis by @Pottier2021 that we already detailed in the [multilevel meta-analysis tutorial](https://daniel1noble.github.io/meta-workshop/multi-level). We'll walk through the different types of heterogeneity statistics that we can calculate for the model. 
+We will return to the meta-analysis by @Pottier2021 that we already detailed in the [multilevel meta-analysis tutorial](multi-level.qmd). We'll walk through the different types of heterogeneity statistics that we can calculate for the model. 
 
 ![](./figs/pottier.png)
 
@@ -123,29 +123,27 @@ orchaRd::i2_ml(MLMA)
 
 ```
 
-#### **Interpreting $I^2$ Estimates** {.tabset .tabset-fade .tabset-pills} 
+#### **Interpreting $I^2$ Estimates**
 
-##### First Task! {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## First Task!
 
 >**Interpret the meaning of $I_{Total}^2$ from the multilevel meta-analytic model**
 
-<br>
-
-##### First Answer! {.tabset .tabset-fade .tabset-pills} 
+## First Answer!
 
 >Overall, we have highly heterogeneous effect size data because sampling variation only contributes to `r 100-orchaRd::i2_ml(MLMA)[1]`% of the total variation in effects.  
 
-<br>
-
-##### Second Task! {.tabset .tabset-fade .tabset-pills} 
+## Second Task!
 
 >**Interpret the meaning of $I_{study}^2$ from the multilevel meta-analytic model**
 
-<br>
-
-##### Second Answer! {.tabset .tabset-fade .tabset-pills} 
+## Second Answer!
 
 >From the multilevel meta-analytic model we find that `r orchaRd::i2_ml(MLMA)[3]`%  of the total variation in effect size estimates is the result of differences between studies.
+
+:::
 
 <br>
 
@@ -194,17 +192,19 @@ We can get these quite easily using the `predict` function in `metafor`:
 predict(MLMA)
 ```
 
-#### **Interpreting Predcition Intervals** {.tabset .tabset-fade .tabset-pills}
+#### **Interpreting Prediction Intervals**
 
-##### Task! {.tabset .tabset-fade .tabset-pills}
+::: {.panel-tabset}
+
+## Task!
 
 >**If the meta-analytic mean ARR is `r predict(MLMA)[[1]]` what would be the expected range of effect size we would expect in a future study? Are the studies consistent or inconsistent?**
 
-<br> 
-
-##### Answer! {.tabset .tabset-fade .tabset-pills}
+## Answer!
 
 >Our 95% prediction intervals are wide. Effect sizes (ARR) we are expected to get range from `r predict(MLMA)[[5]]` to `r predict(MLMA)[[6]]`, suggesting a lot of inconsistency between studies. 
+
+:::
 
 <br>
 
@@ -212,7 +212,7 @@ predict(MLMA)
 
 So far we've talked about important heterogeneity statistics that describe, and quantify, the proportion of variability ($I^2$) or the expected range of plausible effect size values which incorporate all the variance estimates (PI). But, how do we know that the heterogeneity in the data is greater than what we would expect by chance? It seems obvious that, if the $I_{total}^2$ is really high (i.e., >85%) there's a lot of variability in effects within and across studies. While these statistics are probably sufficient, *Q* tests can also be useful to more formally be able to make an inferential statement about whether heterogeneity is significantly greater than chance. 
 
-We have already encountered how to calculate the *Q*-statistic when discussing [fixed and random effects](https://daniel1noble.github.io/meta-workshop/fixed-vs-random) models. We can use the *Q* statistic now to compare this against a $\chi^2$-distribution to calculate a p-value. [Wolfgang's documentation](https://wviechtb.github.io/metafor/reference/rma.mv.html) (`?rma.mv`) describes what the *Q*-test means:
+We have already encountered how to calculate the *Q*-statistic when discussing [fixed and random effects](fixed-vs-random.qmd) models. We can use the *Q* statistic now to compare this against a $\chi^2$-distribution to calculate a p-value. [Wolfgang's documentation](https://wviechtb.github.io/metafor/reference/rma.mv.html) (`?rma.mv`) describes what the *Q*-test means:
 
 > Cochran's 𝑄-test, which tests whether the variability in the observed effect sizes or outcomes is larger than one would expect based on sampling variability (and the given covariances among the sampling errors) alone. A significant test suggests that the true effects/outcomes are heterogeneous. 
 
@@ -226,21 +226,23 @@ We don't need to do anything special to get this test. In fact, this is automati
 print(MLMA)
 ```
 
-#### **Describing the *Q*-test**  {.tabset .tabset-fade .tabset-pills} 
+#### **Describing the *Q*-test**
 
-##### Task! {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task!
 
 >**How would you describe in a paper the *Q*-test from the `metafor` model above?**
 
-<br>
-
-##### Answer! {.tabset .tabset-fade .tabset-pills} 
+## Answer!
 
 >Of course, there are a multitude of ways that we could describe this test in words, but one way to describe it in your results section might be as follows:
 
 <br>
 
 >The overall mean ARR across ectotherms was `r MLMA$b` and differed significantly from zero (95% CI: `r MLMA$ci.lb` to `r MLMA$ci.ub`, df = `r MLMA$ddf`, t = `r MLMA$b / MLMA$se`, p < 0.001). However, there was significant residual heterogeneity (*Q* = `r MLMA$QE`, df = `r dim(MLMA$data)[1]-1`, p < 0.001) with estimates expected to range from `r predict(MLMA)[[5]]` to `r predict(MLMA)[[6]]` (95% Prediction Interval) ($I_{total}^2$ = `r orchaRd::i2_ml(MLMA)[1]`).
+
+:::
 
 <br>
 
@@ -255,7 +257,7 @@ R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \
 \end{equation} 
 $$
 
-Note that this formula does not include $\sigma^2_{m}$ as sampling error variance is assumed to be known in meta-analysis. We won't go into the details on how to calculate and interpret these because we'll cover this in a later tutorial on [publication bias](https://daniel1noble.github.io/meta-workshop/pub-bias1). Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.
+Note that this formula does not include $\sigma^2_{m}$ as sampling error variance is assumed to be known in meta-analysis. We won't go into the details on how to calculate and interpret these because we'll cover this in a later tutorial on [publication bias](pub-bias1.qmd). Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.
 
 ## **Conclusion**
 

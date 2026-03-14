@@ -21,7 +21,7 @@ Applying the statistical tools of meta-analysis is therefore fundamental to esta
 
 ## **How does meta-analysis work?**
 
-Meta-analysis is a way to synthesise [effect sizes](https://daniel1noble.github.io/meta-workshop/effect-size) using a special (or maybe not so special) set of models that account for each effect sizes sampling variance. In other words, meta-analyses are:
+Meta-analysis is a way to synthesise [effect sizes](effect-size.qmd) using a special (or maybe not so special) set of models that account for each effect sizes sampling variance. In other words, meta-analyses are:
 
 > Statistical methods and techniques for aggregating, summarizing, and drawing inferences from collections of studies
 

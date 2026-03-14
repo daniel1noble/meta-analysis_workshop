@@ -10,7 +10,7 @@ options(digits=2)
 
 ## **Introduction**
 
-In the [previous tutorial](https://daniel1noble.github.io/meta-workshop/effect-size) we over-viewed a few of the common effect size statistics likely to be used in comparative physiology. However, studies can vary in ways that can make the interpretation of these statistics challenging.  
+In the [previous tutorial](effect-size.qmd) we over-viewed a few of the common effect size statistics likely to be used in comparative physiology. However, studies can vary in ways that can make the interpretation of these statistics challenging.  
 
 **Nuisance heterogeneity** -- factors causing variation in effects that are blatantly obvious, like temperature and dosage differences applied across studies -- are common in studies used in comparative physiology meta-analyses [@Noble2022; @Borenstein2019]. **Nuisance heterogeneity can be a big driver of effect size magnitude**. For example, a contrast-based effect size, such as log response ratio, calculated from a study that has manipulated treatments to have a 10$^{\circ}$C temperature difference between treatments is likely going to give you a much larger effect size than a study that manipulated a treatment temperature difference of 2$^{\circ}$C. Amalgamating such effects within a meta-analysis will make the interpretation of effect magnitude complicated because it's difficult to know what magnitude of, say temperature, our effect size should be interpreted over. 
 
@@ -19,7 +19,7 @@ There are a few different ways to deal with nuisance heterogeneity. The most com
 ## **Effect Sizes Corrected for Nuisance Heterogeneity**
 
 ### **Temperature Coefficient, $Q_{10}$**
-One common and well known effect size that is used in comparative physiology is the [temperature coefficient, $Q_{10}$](https://en.wikipedia.org/wiki/Q10_(temperature_coefficient)). As [discussed](https://daniel1noble.github.io/meta-workshop/effect-size), effect sizes need to be: 1) comparable across studies and 2) we need to know, or be able to approximate, the sampling variance in order to make use of meta-analytic models. While $Q_{10}$ satisfies 1) we do now know what the sampling variance should be for this effect size. @Noble2022 fixes that issue by deriving it's sampling variance. 
+One common and well known effect size that is used in comparative physiology is the [temperature coefficient, $Q_{10}$](https://en.wikipedia.org/wiki/Q10_(temperature_coefficient)). As [discussed](effect-size.qmd), effect sizes need to be: 1) comparable across studies and 2) we need to know, or be able to approximate, the sampling variance in order to make use of meta-analytic models. While $Q_{10}$ satisfies 1) we do now know what the sampling variance should be for this effect size. @Noble2022 fixes that issue by deriving it's sampling variance. 
 
 To begin, recall that $Q_{10}$, is defined as: 
 
@@ -127,15 +127,19 @@ head(q10_dat %>% mutate(exp_lnRR_Q10 = exp(lnRR_Q10)) %>% select(exp_lnRR_Q10, Q
 
 ```
 
-#### **Now that we have our $lnRR_{Q_{10}}$ effect size estimates which we back-transformed how do we interpret them?** {.tabset .tabset-fade .tabset-pills} 
+#### **Now that we have our $lnRR_{Q_{10}}$ effect size estimates which we back-transformed how do we interpret them?**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
+
 >**How do we interpret $lnRR_{Q_{10}}$?** 
 
-<br>
+## Answer
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
->Given these are simply $Q_{10}$'s we can interpret these normally. **For the first row of our data we can see that dive duration when temperatures increase by 10$^{\circ}$C is expected to decrease by ~67% (1-0.33)**. In other words, the dive duration 10$^{\circ}$C above the first temperature is 33% of the rate 10$^{\circ}$C lower. 
+>Given these are simply $Q_{10}$'s we can interpret these normally. **For the first row of our data we can see that dive duration when temperatures increase by 10$^{\circ}$C is expected to decrease by ~67% (1-0.33). In other words, the dive duration 10$^{\circ}$C above the first temperature is 33% of the rate 10$^{\circ}$C lower. 
+
+:::
 
 <br>
 
@@ -191,7 +195,6 @@ return(data.frame(ARR, V_ARR))
 Using the `arr` function above we can now calculate the acclimation response ratio (ARR)
 
 ```{r}
-#| tidy: true
 
 # Calculate the effect sizes
 asr_dat<-asr_dat %>% 
@@ -202,15 +205,19 @@ asr_dat<-asr_dat %>%
 head(asr_dat %>% select(ARR, V_ARR))
 ```
 
-#### **Now try to interpret $ARR$ effect size estimates** {.tabset .tabset-fade .tabset-pills} 
+#### **Now try to interpret $ARR$ effect size estimates**
 
-##### Task {.tabset .tabset-fade .tabset-pills} 
+::: {.panel-tabset}
+
+## Task
+
 >**How do we interpret $ARR$? for the first row of the data** 
 
-<br>
+## Answer
 
-##### Answer {.tabset .tabset-fade .tabset-pills} 
 >If we look at the first row of data, **we can see that for each degree increase in acclimation temperature, the heat tolerance of the animals included in this data set increases by `r asr_dat[1,"ARR"]`$^{\circ}$C**. 
+
+:::
 
 <br>
 
@@ -225,7 +232,6 @@ head(asr_dat %>% select(ARR, V_ARR))
 ```{r}
 #| label: sessioninfo
 #| echo: false
-#| tidy: true
 
 # Here, we'll create some R code
 pander::pander(sessionInfo(), locale = FALSE)
