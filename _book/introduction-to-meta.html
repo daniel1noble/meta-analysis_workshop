@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Meta-analysis – Meta-Analysis Workshop</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./effect-size.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9b98f18118eee809be1c051eb5cc78e4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./introduction-to-meta.html"><span class="chapter-title">Introduction to Meta-analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Meta-Analysis Workshop</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/noble-lab/meta-analysis_workshop" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction-to-meta.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Introduction to Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effect-size.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Calculating and interpreting effect sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effect-assume.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Effect size assumptions and checking their suitability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fixed-vs-random.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Fixed versus Random Effects Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./het.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Heterogeneity in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nuis-het.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nuisance heterogeneity</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metaregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Multi-level Meta-regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-level.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Multi-level Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./complex-nonind.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Complex Non-independence in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phylo.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Phylogenetic Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias1.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Publication Bias in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias2.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Publication Bias: Analytical Approaches</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-do-we-do-meta-analysis" id="toc-why-do-we-do-meta-analysis" class="nav-link active" data-scroll-target="#why-do-we-do-meta-analysis"><strong>Why do we do meta-analysis?</strong></a></li>
+  <li><a href="#how-does-meta-analysis-work" id="toc-how-does-meta-analysis-work" class="nav-link" data-scroll-target="#how-does-meta-analysis-work"><strong>How does meta-analysis work?</strong></a></li>
+  <li><a href="#meta-analysis-with-metafor" id="toc-meta-analysis-with-metafor" class="nav-link" data-scroll-target="#meta-analysis-with-metafor"><strong>Meta-analysis with <code>metafor</code>!</strong></a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><strong>References</strong></a></li>
+  <li><a href="#session-information" id="toc-session-information" class="nav-link" data-scroll-target="#session-information"><strong>Session Information</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-title">Introduction to Meta-analysis</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="why-do-we-do-meta-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="why-do-we-do-meta-analysis"><strong>Why do we do meta-analysis?</strong></h2>
+<p>Meta-analysis is the gold-standard for research synthesis across all disciplines. We synthesise studies to gain broader insights into the efficacy of treatment effects and / or relationships between variables. In physiology, ecology and evolution, we are also dealing with many different populations and species. As such, we’re not just interested in understanding ‘what the overall effect’ actually is (in fact, we may not even care in many cases), but we are mainly focused on attempting to understand what factors (e.g., biological, methodological) explain variation in effects <span class="citation" data-cites="Noble2022 Lag2010 Gurevitch2018">(<a href="#ref-Gurevitch2018" role="doc-biblioref">Gurevitch et al., 2018</a>; <a href="#ref-Lag2010" role="doc-biblioref">Lajeunesse, 2010</a>; <a href="#ref-Noble2022" role="doc-biblioref">Noble et al., 2022</a>)</span>. In fact, reporting upon measures of variability, or what is referred to as ‘heterogeneity’ in meta-analysis, is essential to meta-analysis reporting and placing effects within context <span class="citation" data-cites="ODea2021 NakagawaSantos2012 Borenstein2019 Nakagawa2017 Gurevitch2018">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-Gurevitch2018" role="doc-biblioref">Gurevitch et al., 2018</a>; <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>; <a href="#ref-Nakagawa2017" role="doc-biblioref">Nakagawa et al., 2017</a>; <a href="#ref-ODea2021" role="doc-biblioref">O’Dea et al., 2021</a>)</span>. There are a number of important metrics of heterogeneity that are commonly used and reported upon in the meta-analytic literature <span class="citation" data-cites="NakagawaSantos2012 Borenstein2019 Nakagawa2017">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>; <a href="#ref-Nakagawa2017" role="doc-biblioref">Nakagawa et al., 2017</a>)</span>. We’ll discuss some of the key ones.</p>
+<p>Meta-analyst’s have also worked hard to develop tools that can be used to try and understand different forms of publication practices and biases within the scientific literature. Such biases can occur if studies reporting non-significant or opposite results to what is predicted are not found in systematic searches [‘i.e., the ’file-drawer’ problem; <span class="citation" data-cites="Jennions2013">Jennions et al. (<a href="#ref-Jennions2013" role="doc-biblioref">2013</a>)</span>]. Alternatively, biases could result from selective reporting or ‘p-hacking’. Visual and quantitative tools that have been developed try and identify and ‘correct’ for such biases on meta-analytic results <span class="citation" data-cites="Jennions2013 Nakagawa2021b Rothstein2005">(<a href="#ref-Jennions2013" role="doc-biblioref">Jennions et al., 2013</a>; <a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022</a>; <a href="#ref-Rothstein2005" role="doc-biblioref">Rothstein et al., 2005</a>)</span>. Having said that, aside from working hard to try and incorporate ‘gray literature’ (unpublished theses, government reports, etc.) and working hard to include work done in non-English speaking languages, there is little one can truly due to counteract publication biases beyond a few simple tools. We cannot know for certain what isn’t published in many cases or how a sample of existing work on a topic might be biased. Nonetheless, exploring the possibility of publication bias and its possible effects on conclusions is a core component of meta-analysis <span class="citation" data-cites="ODea2021">(<a href="#ref-ODea2021" role="doc-biblioref">O’Dea et al., 2021</a>)</span>.</p>
+<p>Applying the statistical tools of meta-analysis is therefore fundamental to establishing the generality of findings, testing hypotheses about what might drive variation among effects and identifying publication biases that may result in a skewed picture of existing work. Such insights have the potential to shape future research in important ways <span class="citation" data-cites="KortichevaGure2013">(<a href="#ref-KortichevaGure2013" role="doc-biblioref">Koricheva and Gurevitch, 2013</a>)</span>.</p>
+</section>
+<section id="how-does-meta-analysis-work" class="level2">
+<h2 class="anchored" data-anchor-id="how-does-meta-analysis-work"><strong>How does meta-analysis work?</strong></h2>
+<p>Meta-analysis is a way to synthesise <a href="https://daniel1noble.github.io/meta-workshop/effect-size">effect sizes</a> using a special (or maybe not so special) set of models that account for each effect sizes sampling variance. In other words, meta-analyses are:</p>
+<blockquote class="blockquote">
+<p>Statistical methods and techniques for aggregating, summarizing, and drawing inferences from collections of studies</p>
+</blockquote>
+<p><br> Why would we want to account for a given study’s sampling variance? We want to do this because studies vary greatly in their sample size, and thus their power, to detect effects. As meta-analysts we want to weight effect sizes from studies with higher power more in an analysis. These studies are more likely to be ‘correct’ and their estimates less biased as a result of sampling variance.</p>
+<p><a href="http://lajeunesse.myweb.usf.edu">Marc Lajeunesse</a> does a brilliant job explaining the goals and types of models that meta-analysts use. In the following video he describes why weighting in meta-analysis is so important.</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/3XkC_jetn-U" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>We can effectively think of a meta-analysis as a weighted regression model with the weights being the inverse sampling variance for each effect size. Weights are calculated differently depending on the meta-analytic model in question (more on that in later tutorials).</p>
+<p>Throughout this workshop we will highlight the various features of meta-analysis that we discuss above. We’ll try to focus on dissecting how meta-analytic models are working and focus on important aspects of effect sizes and modelling that users should be aware of when meta-analysing a body of work for their specific question of interest. An important aspect to doing meta-analysis well (which can be hard) is being critical of the data and assumptions inherent to both effect sizes and statistical models. Meta-analysis also has some unique sources of non-independence <span class="citation" data-cites="Noble2017 Gurevitch1999 NakagawaSantos2012 GleserOlkin2009">(<a href="#ref-GleserOlkin2009" role="doc-biblioref">Gleser and Olkin, 2009</a>; <a href="#ref-Gurevitch1999" role="doc-biblioref">Gurevitch and Hedges, 1999</a>; <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> that isn’t always apparent. We’ll try and cover these and discuss some ways in which you can protect yourself from their impacts on inferences.</p>
+</section>
+<section id="meta-analysis-with-metafor" class="level2">
+<h2 class="anchored" data-anchor-id="meta-analysis-with-metafor"><strong>Meta-analysis with <code>metafor</code>!</strong></h2>
+<p>Throughout our workshop we will make use of the <code>metafor</code> package <span class="citation" data-cites="Viechtbauer2010">(<a href="#ref-Viechtbauer2010" role="doc-biblioref">Viechtbauer, 2010</a>)</span>. It has substantial capabilities. If you’re not familiar with <code>metafor</code> we would suggest having a look at Wolfgang’s fantastic <code>UseR</code> talk below. Having said that, we will go over the variaous functions as we move through tutorials.</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/IkduL5iRdqo" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references"><strong>References</strong></h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Borenstein2019" class="csl-entry" role="listitem">
+<strong>Borenstein, M.</strong> (2019). Heterogenity in meta-analysis. In (ed. Cooper, H.), Hedges, L. V.), and Valentine, J. C.), pp. 454–466. New York: Russell Sage Foundation.
+</div>
+<div id="ref-GleserOlkin2009" class="csl-entry" role="listitem">
+<strong>Gleser, L. J. and Olkin, I.</strong> (2009). Stochastically dependent effect sizes. <em>In: The Handbook of Research Synthesis and Meta-analysis (eds Cooper H, Hedges LV, Valentine JC). Russell Sage Foundation, New York.</em> pp 357–376.
+</div>
+<div id="ref-Gurevitch1999" class="csl-entry" role="listitem">
+<strong>Gurevitch, J. and Hedges, L. V.</strong> (1999). Statistical issues in ecological meta-analyses. <em>Ecology</em> <strong>80</strong>, 1142–1149.
+</div>
+<div id="ref-Gurevitch2018" class="csl-entry" role="listitem">
+<strong>Gurevitch, J., Koricheva, J., Nakagawa, S. and Stewart, G.</strong> (2018). Meta-analysis and the science of research synthesis. <em>Nature</em> <strong>555</strong>, 176–182.
+</div>
+<div id="ref-Jennions2013" class="csl-entry" role="listitem">
+<strong>Jennions, M. D., Lortie, C. J., Rosenberg, M. S. and Rothstein, H. R.</strong> (2013). Publication and related biases. <em>In: Handbook of Meta-Analysis in Ecology and Evolution (eds J. Koricheva, J. Gurevitch &amp; K. Mengersen). Princeton University Press, Princeton and Oxford.</em> pp 207–236.
+</div>
+<div id="ref-KortichevaGure2013" class="csl-entry" role="listitem">
+<strong>Koricheva, J. and Gurevitch, J.</strong> (2013). Place of meta-analysis among other methods of research synthesis. <em>In: Handbook of Meta-Analysis in Ecology and Evolution (eds J. Koricheva, J. Gurevitch &amp; K. Mengersen), Princeton University Press, Princeton, New Jersey.</em> pp 3–13.
+</div>
+<div id="ref-Lag2010" class="csl-entry" role="listitem">
+<strong>Lajeunesse, M. J.</strong> (2010). Achieving synthesis with meta-analysis by combining and comparing all available studies. <em>Ecology</em> <strong>91</strong>, 2561–2564.
+</div>
+<div id="ref-NakagawaSantos2012" class="csl-entry" role="listitem">
+<strong>Nakagawa, S. and Santos, E. S.</strong> (2012). Methodological issues and advances in biological meta-analysis. <em>Evolutionary Ecology</em> <strong>26</strong>, 1253–1274.
+</div>
+<div id="ref-Nakagawa2017" class="csl-entry" role="listitem">
+<strong>Nakagawa, S., Noble, D. W. A., Senior, A. M. and Lagisz, M.</strong> (2017). Meta-evaluation of meta-analysis: Ten appraisal questions for biologists. <em>BMC Biology</em> 15–18, DOI 10.1186/s12915-017-0357-7.
+</div>
+<div id="ref-Nakagawa2021b" class="csl-entry" role="listitem">
+<strong>Nakagawa, S., Lagisz, M., Jennions, M. D., Koricheva, J., Daniel W. A. Noble, T. H. P., Sánchez-Tójar, A., Yang, Y. and O’Dea, R. E.</strong> (2022). Methods for testing publication bias in ecological and evolutionary meta-analyses. <em>Methods in Ecology and Evolution</em> <strong>13</strong>, 4–21.
+</div>
+<div id="ref-Noble2017" class="csl-entry" role="listitem">
+<strong>Noble, D. W. A., Lagisz, M., O’Dea, R. E. and Nakagawa, S.</strong> (2017). Non‐independence and sensitivity analyses in ecological and evolutionary meta‐analyses. <em>Molecular Ecology</em> <strong>26</strong>, 2410–2425.
+</div>
+<div id="ref-Noble2022" class="csl-entry" role="listitem">
+<strong>Noble, D. W. A., Pottier, P., Lagisz, M., Burke, S., Drobniak, S. M., O’Dea, R. E. and Nakagawa, S.</strong> (2022). Meta-analytic approaches and effect sizes to account for <span>“nuisance heterogeneity”</span> in comparative physiology. <em>Journal of Experimental Biology</em> <strong>225</strong>, jeb243225.
+</div>
+<div id="ref-ODea2021" class="csl-entry" role="listitem">
+<strong>O’Dea, R. E., Lagisz, M., Jennions, M. D., Koricheva, J., Noble, D. W. A., Parker, T. H., Gurevitch, J., Page, M. J., Stewart, G., Moher, D., et al.</strong> (2021). Preferred reporting items for systematic reviews and meta-analyses in ecology and evolutionary biology: A PRISMA extension. <em>Biological Reviews</em> <strong>doi: 10.1111/brv.12721</strong>,.
+</div>
+<div id="ref-Rothstein2005" class="csl-entry" role="listitem">
+<strong>Rothstein, H. R., Sutton, A. J. and Borenstein, M.</strong> (2005). Publication bias in meta-analysis: Prevention, assessment and adjustments. <em>Wiley, Chichester</em>.
+</div>
+<div id="ref-Viechtbauer2010" class="csl-entry" role="listitem">
+<strong>Viechtbauer, W.</strong> (2010). Conducting meta-analyses in r with the metafor package. <em>Journal of Statistical Software</em> <strong>36</strong>, 1–48. URL: https://www.jstatsoft.org/v36/i03/.
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="session-information" class="level2">
+<h2 class="anchored" data-anchor-id="session-information"><strong>Session Information</strong></h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><strong>R version 4.5.1 (2025-06-13)</strong></p>
+<p><strong>Platform:</strong> aarch64-apple-darwin20</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> <em>equatags(v.0.2.1)</em>, <em>mathjaxr(v.2.0-0)</em>, <em>pander(v.0.6.6)</em>, <em>orchaRd(v.2.1.3)</em>, <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.0)</em>, <em>purrr(v.1.2.1)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.2)</em>, <em>tidyverse(v.2.0.0)</em>, <em>flextable(v.0.9.9)</em>, <em>metafor(v.4.8-0)</em>, <em>numDeriv(v.2016.8-1.1)</em>, <em>metadat(v.1.4-0)</em> and <em>Matrix(v.1.7-3)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>xslt(v.1.5.1)</em>, <em>gtable(v.0.3.6)</em>, <em>xfun(v.0.56)</em>, <em>htmlwidgets(v.1.6.4)</em>, <em>lattice(v.0.22-7)</em>, <em>tzdb(v.0.5.0)</em>, <em>vctrs(v.0.7.1)</em>, <em>tools(v.4.5.1)</em>, <em>generics(v.0.1.4)</em>, <em>curl(v.7.0.0)</em>, <em>pacman(v.0.5.1)</em>, <em>pkgconfig(v.2.0.3)</em>, <em>katex(v.1.5.0)</em>, <em>data.table(v.1.18.2.1)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>S7(v.0.2.1)</em>, <em>uuid(v.1.2-2)</em>, <em>lifecycle(v.1.0.5)</em>, <em>compiler(v.4.5.1)</em>, <em>farver(v.2.1.2)</em>, <em>textshaping(v.1.0.5)</em>, <em>fontquiver(v.0.2.1)</em>, <em>fontLiberation(v.0.1.0)</em>, <em>htmltools(v.0.5.9)</em>, <em>yaml(v.2.3.12)</em>, <em>pillar(v.1.11.1)</em>, <em>openssl(v.2.3.5)</em>, <em>nlme(v.3.1-168)</em>, <em>fontBitstreamVera(v.0.1.1)</em>, <em>tidyselect(v.1.2.1)</em>, <em>zip(v.2.3.3)</em>, <em>digest(v.0.6.39)</em>, <em>stringi(v.1.8.7)</em>, <em>fastmap(v.1.2.0)</em>, <em>grid(v.4.5.1)</em>, <em>cli(v.3.6.5)</em>, <em>magrittr(v.2.0.4)</em>, <em>withr(v.3.0.2)</em>, <em>gdtools(v.0.4.2)</em>, <em>scales(v.1.4.0)</em>, <em>timechange(v.0.4.0)</em>, <em>rmarkdown(v.2.30)</em>, <em>officer(v.0.6.10)</em>, <em>otel(v.0.2.0)</em>, <em>askpass(v.1.2.1)</em>, <em>ragg(v.1.5.1)</em>, <em>hms(v.1.1.4)</em>, <em>evaluate(v.1.0.5)</em>, <em>knitr(v.1.51)</em>, <em>V8(v.6.0.4)</em>, <em>rlang(v.1.1.7)</em>, <em>Rcpp(v.1.1.1)</em>, <em>glue(v.1.8.0)</em>, <em>xml2(v.1.5.2)</em>, <em>jsonlite(v.2.0.0)</em>, <em>R6(v.2.6.1)</em> and <em>systemfonts(v.1.3.2)</em></p>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Welcome">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./effect-size.html" class="pagination-link" aria-label="Calculating and interpreting effect sizes">
+        <span class="nav-page-text"><span class="chapter-title">Calculating and interpreting effect sizes</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Introduction to Meta-analysis</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-packages-intro</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">2</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Why do we do meta-analysis?**</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Meta-analysis is the gold-standard for research synthesis across all disciplines. We synthesise studies to gain broader insights into the efficacy of treatment effects and / or relationships between variables. In physiology, ecology and evolution, we are also dealing with many different populations and species. As such, we're not just interested in understanding 'what the overall effect' actually is (in fact, we may not even care in many cases), but we are mainly focused on attempting to understand what factors (e.g., biological, methodological) explain variation in effects <span class="co">[</span><span class="ot">@Noble2022; @Lag2010; @Gurevitch2018</span><span class="co">]</span>. In fact, reporting upon measures of variability, or what is referred to as 'heterogeneity' in meta-analysis, is essential to meta-analysis reporting and placing effects within context <span class="co">[</span><span class="ot">@ODea2021; @NakagawaSantos2012; @Borenstein2019; @Nakagawa2017; @Gurevitch2018</span><span class="co">]</span>. There are a number of important metrics of heterogeneity that are commonly used and reported upon in the meta-analytic literature <span class="co">[</span><span class="ot">@NakagawaSantos2012; @Borenstein2019; @Nakagawa2017</span><span class="co">]</span>. We'll discuss some of the key ones.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Meta-analyst's have also worked hard to develop tools that can be used to try and understand different forms of publication practices and biases within the scientific literature. Such biases can occur if studies reporting non-significant or opposite results to what is predicted are not found in systematic searches <span class="co">[</span><span class="ot">'i.e., the 'file-drawer' problem; @Jennions2013</span><span class="co">]</span>. Alternatively, biases could result from selective reporting or 'p-hacking'. Visual and quantitative tools that have been developed try and identify and 'correct' for such biases on meta-analytic results <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. Having said that, aside from working hard to try and incorporate 'gray literature' (unpublished theses, government reports, etc.) and working hard to include work done in non-English speaking languages, there is little one can truly due to counteract publication biases beyond a few simple tools. We cannot know for certain what isn't published in many cases or how a sample of existing work on a topic might be biased. Nonetheless, exploring the possibility of publication bias and its possible effects on conclusions is a core component of meta-analysis <span class="co">[</span><span class="ot">@ODea2021</span><span class="co">]</span>. </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>Applying the statistical tools of meta-analysis is therefore fundamental to establishing the generality of findings, testing hypotheses about what might drive variation among effects and identifying publication biases that may result in a skewed picture of existing work. Such insights have the potential to shape future research in important ways <span class="co">[</span><span class="ot">@KortichevaGure2013</span><span class="co">]</span>.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## **How does meta-analysis work?**</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Meta-analysis is a way to synthesise <span class="co">[</span><span class="ot">effect sizes</span><span class="co">](https://daniel1noble.github.io/meta-workshop/effect-size)</span> using a special (or maybe not so special) set of models that account for each effect sizes sampling variance. In other words, meta-analyses are:</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Statistical methods and techniques for aggregating, summarizing, and drawing inferences from collections of studies</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>Why would we want to account for a given study's sampling variance? We want to do this because studies vary greatly in their sample size, and thus their power, to detect effects. As meta-analysts we want to weight effect sizes from studies with higher power more in an analysis. These studies are more likely to be 'correct' and their estimates less biased as a result of sampling variance.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Marc Lajeunesse</span><span class="co">](http://lajeunesse.myweb.usf.edu)</span> does a brilliant job explaining the goals and types of models that meta-analysts use. In the following video he describes why weighting in meta-analysis is so important. </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>{{&lt; video https://www.youtube.com/watch?v=3XkC_jetn-U &gt;}}</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>We can effectively think of a meta-analysis as a weighted regression model with the weights being the inverse sampling variance for each effect size. Weights are calculated differently depending on the meta-analytic model in question (more on that in later tutorials). </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>Throughout this workshop we will highlight the various features of meta-analysis that we discuss above. We'll try to focus on dissecting how meta-analytic models are working and focus on important aspects of effect sizes and modelling that users should be aware of when meta-analysing a body of work for their specific question of interest. An important aspect to doing meta-analysis well (which can be hard) is being critical of the data and assumptions inherent to both effect sizes and statistical models. Meta-analysis also has some unique sources of non-independence <span class="co">[</span><span class="ot">@Noble2017; @Gurevitch1999; @NakagawaSantos2012; @GleserOlkin2009</span><span class="co">]</span> that isn't always apparent. We'll try and cover these and discuss some ways in which you can protect yourself from their impacts on inferences. </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Meta-analysis with `metafor`!**</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Throughout our workshop we will make use of the <span class="in">`metafor`</span> package <span class="co">[</span><span class="ot">@Viechtbauer2010</span><span class="co">]</span>. It has substantial capabilities. If you're not familiar with <span class="in">`metafor`</span> we would suggest having a look at Wolfgang's fantastic <span class="in">`UseR`</span> talk below. Having said that, we will go over the variaous functions as we move through tutorials.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>{{&lt; video https://www.youtube.com/watch?v=IkduL5iRdqo &gt;}}</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-intro</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

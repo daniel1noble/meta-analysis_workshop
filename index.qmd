@@ -1,0 +1,36 @@
+# Welcome {.unnumbered}
+
+This book contains materials for a 1.5-2 day meta-analysis workshop. The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
+
+## Workshop Overview
+
+Over the course of this workshop, you will learn:
+
+- **Fundamentals of meta-analysis**: Understanding what meta-analysis is and when to use it
+- **Effect sizes**: How to calculate and interpret different effect size metrics
+- **Statistical models**: Fixed-effect vs. random-effects models and when to use each
+- **Heterogeneity**: Understanding and quantifying variation in effect sizes
+- **Meta-regression**: Exploring moderators of effect sizes
+- **Advanced topics**: Multi-level models, complex non-independence, phylogenetic meta-analysis, and publication bias
+
+## Getting Started
+
+Each chapter contains:
+
+- Theoretical background and explanations
+- Worked examples with R code
+- Practical exercises
+
+You can navigate through the chapters using the sidebar menu. Code snippets can be copied using the copy button in the top-right corner of each code block.
+
+## Prerequisites
+
+This workshop assumes you have:
+
+- Basic familiarity with R and RStudio
+- Understanding of fundamental statistical concepts
+- Interest in synthesizing research findings
+
+## Contact
+
+For questions or feedback, please contact the workshop instructor.

@@ -1,0 +1,34 @@
+# Effect size assumptions and checking their suitability
+
+```{r}
+#| label: setup-packages-assume
+#| echo: false
+#| message: false
+#| warning: false
+
+# Load packages
+pacman::p_load(metafor, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags)
+options(digits=2)
+```
+
+# Introduction
+
+All effect size estimates make assumptions about the underlying data. As such, it is worth thinking carefully about the data extracted from a study to determine if it is suitable. Applying an effect size, such as log response ratios or Hedges *g* to data that violate their assumptions will lead to wild estimates that can have dramatic downstream consequences for the analysis and ultimately the interpretation of the results. 
+
+In this tutorial, we'll show you some situations where the raw data violate the assumptions of common effect size estimates. This can be in many forms, they could be variables that are clearly not normally distributed (e.g., counts, proportions, latency) or it could be unequal variance in two groups. We can see what ignoring these assumptions can do to the effect size estimate. 
+
+At the end of this tutorial I am hoping you will gain:
+
+1. A better understanding of common assumptions inherent to many effect size types
+2. An ability to identify if assumptions are violated
+3. Some potential solutions to make data more suitable and/or conduct some sensitivity analyses
+
+# Assumptions
+
+
+
+
+
+4. Identifying when the data in question might not be suitable for an effect size, and what you might do about it. 
+5. How to control for nuisance heterogeneity in your effect size.
+6. Converting between effect sizes and different scales

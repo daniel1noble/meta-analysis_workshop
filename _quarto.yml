@@ -1,0 +1,44 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Meta-Analysis Workshop"
+  author: "Daniel W.A. Noble"
+  date: today
+  chapters:
+    - index.qmd
+    - introduction-to-meta.qmd
+    - effect-size.qmd
+    - effect-assume.qmd
+    - fixed-vs-random.qmd
+    - het.qmd
+    - nuis-het.qmd
+    - metaregression.qmd
+    - multi-level.qmd
+    - complex-nonind.qmd
+    - phylo.qmd
+    - pub-bias1.qmd
+    - pub-bias2.qmd
+  repo-url: https://github.com/noble-lab/meta-analysis_workshop
+  sharing: [twitter, facebook, linkedin]
+  
+bibliography: bib/refs.bib
+csl: bib/the-journal-of-experimental-biology.csl
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    code-fold: show
+    code-tools: true
+    code-copy: true
+    
+knitr:
+  opts_chunk:
+    echo: true
+    cache: false
+    message: false
+    warning: false

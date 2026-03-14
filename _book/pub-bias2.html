@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Publication Bias: Analytical Approaches – Meta-Analysis Workshop</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./pub-bias1.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9b98f18118eee809be1c051eb5cc78e4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pub-bias2.html"><span class="chapter-title">Publication Bias: Analytical Approaches</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Meta-Analysis Workshop</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/noble-lab/meta-analysis_workshop" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction-to-meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effect-size.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Calculating and interpreting effect sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./effect-assume.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Effect size assumptions and checking their suitability</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./fixed-vs-random.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Fixed versus Random Effects Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./het.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Heterogeneity in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nuis-het.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Nuisance heterogeneity</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./metaregression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Multi-level Meta-regression</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multi-level.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Multi-level Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./complex-nonind.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Complex Non-independence in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phylo.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Phylogenetic Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias1.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Publication Bias in Meta-analysis</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias2.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Publication Bias: Analytical Approaches</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis" id="toc-analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis" class="nav-link active" data-scroll-target="#analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis"><strong>Analytical Approaches for Assessment of Publication Bias in Meta-analysis</strong></a></li>
+  <li><a href="#statistically-testing-and-correcting-for-publication-bias" id="toc-statistically-testing-and-correcting-for-publication-bias" class="nav-link" data-scroll-target="#statistically-testing-and-correcting-for-publication-bias"><strong>Statistically Testing and Correcting for Publication Bias</strong></a>
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#download-the-data" id="toc-download-the-data" class="nav-link" data-scroll-target="#download-the-data">Download the Data</a></li>
+  <li><a href="#meta-regression-approaches-to-publication-bias" id="toc-meta-regression-approaches-to-publication-bias" class="nav-link" data-scroll-target="#meta-regression-approaches-to-publication-bias">Meta-regression Approaches to Publication Bias</a></li>
+  <li><a href="#fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias" id="toc-fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias" class="nav-link" data-scroll-target="#fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias">Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><strong>Conclusions</strong></a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><strong>References</strong></a></li>
+  <li><a href="#session-information" id="toc-session-information" class="nav-link" data-scroll-target="#session-information"><strong>Session Information</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-title">Publication Bias: Analytical Approaches</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis"><strong>Analytical Approaches for Assessment of Publication Bias in Meta-analysis</strong></h2>
+<p>In the <a href="https://daniel1noble.github.io/meta-workshop/pub-bias1">last tutorial</a> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="citation" data-cites="Jennions2013 Nakagawa2021b Rothstein2005">(<a href="#ref-Jennions2013" role="doc-biblioref">Jennions et al., 2013</a>; <a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>; <a href="#ref-Rothstein2005" role="doc-biblioref">Rothstein et al., 2005</a>)</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="citation" data-cites="Noble2017 Koricheva2013">(<a href="#ref-Koricheva2013" role="doc-biblioref">Koricheva et al., 2013</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> because we will never truly know how many missing effect sizes actually exist.</p>
+<p>In this tutorial, we’ll overview some ways we can attempt to understand whether publication bias is present using multilevel meta regression to quantitatively assess in a more objective way whether it’s present. We can also use these statistical tools to attempt to ‘correct’ for it.</p>
+</section>
+<section id="statistically-testing-and-correcting-for-publication-bias" class="level2">
+<h2 class="anchored" data-anchor-id="statistically-testing-and-correcting-for-publication-bias"><strong>Statistically Testing and Correcting for Publication Bias</strong></h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
+<p><img src="./figs/arnold.png" class="img-fluid"></p>
+<p>We’re now going to expand upon the meta-analysis by <span class="citation" data-cites="Arnold2021">Arnold et al. (<a href="#ref-Arnold2021" role="doc-biblioref">2021</a>)</span> to explore more rigorously whether publication bias is present, and if so, try and re-interpret effects as if such bias did not actually exist.</p>
+</section>
+<section id="download-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="download-the-data">Download the Data</h3>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="meta-regression-approaches-to-publication-bias" class="level3">
+<h3 class="anchored" data-anchor-id="meta-regression-approaches-to-publication-bias">Meta-regression Approaches to Publication Bias</h3>
+<p><span class="citation" data-cites="Nakagawa2021b Stanley2012 Stanley2014">Nakagawa et al. (<a href="#ref-Nakagawa2021b" role="doc-biblioref">2022a</a>; building off of work by <a href="#ref-Stanley2012" role="doc-biblioref">Stanley and Doucouliagos, 2012</a>; <a href="#ref-Stanley2014" role="doc-biblioref">Stanley and Doucouliagos, 2014</a>)</span> outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance – V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:</p>
+<p><span class="math display">\[
+y_{i} = \mu + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} \sim N(0, v_{i}) \\
+s_{j} \sim N(0, \tau^2) \\
+spp_{k} \sim N(0, \sigma_{k}^2) \\
+e_{i} \sim N(0, \sigma_{e}^2)
+\]</span></p>
+<p>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <a href="https://daniel1noble.github.io/meta-workshop/metaregression">past tutorials</a>:</p>
+<p><span class="math display">\[
+y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+\]</span> Here, <span class="math inline">\(\beta_{m}\)</span> is the slope (or contrast) for the <span class="math inline">\(m^{th}\)</span> moderator (where m = 1, …, <span class="math inline">\(N_{moderator}\)</span> or <span class="math inline">\(N_{m}\)</span>). Of course, <span class="math inline">\(\beta_{se}se\)</span> can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. <span class="citation" data-cites="Stanley2012">Stanley and Doucouliagos (<a href="#ref-Stanley2012" role="doc-biblioref">2012</a>)</span> and <span class="citation" data-cites="Stanley2014">Stanley and Doucouliagos (<a href="#ref-Stanley2014" role="doc-biblioref">2014</a>)</span> have shown that when <span class="math inline">\(\mu\)</span> in a model that estimates <span class="math inline">\(\beta_{se}\)</span> is significant than the intercept (in this case, <span class="math inline">\(\mu\)</span>) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias <span class="citation" data-cites="Nakagawa2021b">(<a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>)</span> <span class="citation" data-cites="Nakagawa2022cor">(see correction for original paper <a href="#ref-Nakagawa2022cor" role="doc-biblioref">Nakagawa et al., 2022b</a>)</span>. However, <span class="citation" data-cites="Stanley2012">Stanley and Doucouliagos (<a href="#ref-Stanley2012" role="doc-biblioref">2012</a>)</span> and <span class="citation" data-cites="Stanley2014">Stanley and Doucouliagos (<a href="#ref-Stanley2014" role="doc-biblioref">2014</a>)</span> have shown that when <span class="math inline">\(\mu\)</span> is significant than including SE is best replaced with the sampling variance (i.e., <span class="math inline">\(SE^2\)</span>) instead because the intercept using SE is downwardly biased.</p>
+<p>As such, <span class="citation" data-cites="Nakagawa2021b">Nakagawa et al. (<a href="#ref-Nakagawa2021b" role="doc-biblioref">2022a</a>)</span> recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or <span class="math inline">\(SE^2\)</span>) as this will give us a better estimate of the adjusted mean effect size.</p>
+<section id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean" class="level4 tabset tabset-fade tabset-pills">
+<h4 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="why-does-including-sampling-variance-in-the-model-adjust-the-overall-meta-analytic-mean"><strong>Why does including sampling variance in the model adjust the overall meta-analytic mean?</strong></h4>
+<section id="task" class="level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="task">Task!</h5>
+<blockquote class="blockquote">
+<p><strong>Think about how the intercept, <span class="math inline">\(\mu\)</span>, changes its meaning when a continuous moderator, such as <span class="math inline">\(se\)</span>, is included in the model. When estimating <span class="math inline">\(\beta_{se}\)</span> explicitly how do we now interpret the intercept or meta-analytic mean?</strong></p>
+</blockquote>
+<p><br></p>
+</section>
+<section id="answer" class="level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="answer">Answer!</h5>
+<blockquote class="blockquote">
+<p>The reason why the intercept (<span class="math inline">\(\mu\)</span>) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is <strong>no</strong> sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</p>
+</blockquote>
+<p><span class="math display">\[
+y_{i} = \mu + \beta_{se}*0  =
+\mu  \\
+\]</span></p>
+<p><br></p>
+</section>
+</section>
+</section>
+<section id="fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias" class="level3">
+<h3 class="anchored" data-anchor-id="fitting-a-multi-level-meta-regression-model-to-test-and-correct-for-publication-bias">Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</h3>
+<p>Let’s now apply the methods proposed above to <span class="citation" data-cites="Arnold2021">Arnold et al. (<a href="#ref-Arnold2021" role="doc-biblioref">2021</a>)</span>’s data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Multivariate Meta-Analysis Model (k = 209; method: REML)
+
+  logLik  Deviance       AIC       BIC      AICc   
+-77.9464  155.8928  163.8928  177.2237  164.0908   
+
+Variance Components:
+
+            estim    sqrt  nlvls  fixed  factor 
+sigma^2.1  0.0626  0.2503     62     no     Ref 
+sigma^2.2  0.0380  0.1951    209     no     obs 
+
+Test for Residual Heterogeneity:
+QE(df = 207) = 844.4496, p-val &lt; .0001
+
+Test of Moderators (coefficient 2):
+F(df1 = 1, df2 = 207) = 14.3314, p-val = 0.0002
+
+Model Results:
+
+            estimate      se     tval   df    pval    ci.lb   ci.ub      
+intrcpt      -0.0668  0.0727  -0.9184   60  0.3621  -0.2122  0.0787      
+sqrt(Zr_v)    1.3908  0.3674   3.7857  207  0.0002   0.6665  2.1151  *** 
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>We’ll also fit the model with sampling variance for good measure, but given that the <code>intrcpt</code> is not significant we can interpret the first model.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Multivariate Meta-Analysis Model (k = 209; method: REML)
+
+  logLik  Deviance       AIC       BIC      AICc   
+-76.1349  152.2698  160.2698  173.6006  160.4678   
+
+Variance Components:
+
+            estim    sqrt  nlvls  fixed  factor 
+sigma^2.1  0.0559  0.2364     62     no     Ref 
+sigma^2.2  0.0381  0.1953    209     no     obs 
+
+Test for Residual Heterogeneity:
+QE(df = 207) = 840.6907, p-val &lt; .0001
+
+Test of Moderators (coefficient 2):
+F(df1 = 1, df2 = 207) = 18.7982, p-val &lt; .0001
+
+Model Results:
+
+         estimate      se    tval   df    pval    ci.lb   ci.ub      
+intrcpt    0.0469  0.0467  1.0028   60  0.3200  -0.0466  0.1403      
+Zr_v       3.0051  0.6931  4.3357  207  &lt;.0001   1.6387  4.3716  *** 
+
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<section id="interpreting-the-results" class="level4 tabset tabset-fade tabset-pills">
+<h4 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="interpreting-the-results"><strong>Interpreting the results</strong></h4>
+<section id="task-1" class="level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="task-1">Task!</h5>
+<blockquote class="blockquote">
+<p><strong>Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?</strong></p>
+</blockquote>
+<p><br></p>
+</section>
+<section id="answer-1" class="level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="answer-1">Answer!</h5>
+<blockquote class="blockquote">
+<p>Yes, there is evidence for publication bias because the slope estimate for <code>sqrt(Zr)</code> or the sampling standard error is significant. Given that the <code>intrcpt</code> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted <code>Zr</code> when there is <em>no</em> uncertainty is -0.067with a 95% confidence interval that overlaps zero (i.e., 95% CI = -0.212 to 0.079). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, -0.067.</p>
+</blockquote>
+<p><br></p>
+</section>
+</section>
+</section>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions"><strong>Conclusions</strong></h2>
+<p>Hopefully it is clear now how we can more objectively test, and correct, for the possibility of publication bias. Again, these should be viewed cautiously and used only as a sensitivity analysis. An important point that we did not mention is that, we need to use different moderators depending on the type of effect size being used in the meta-analysis. Zr is rather straight forward, but <span class="citation" data-cites="Nakagawa2021">Nakagawa et al. (<a href="#ref-Nakagawa2021" role="doc-biblioref">2022c</a>)</span> discuss the challenges in using standardised mean differences and log response ratio when fitting models with SE and V. They recommend instead using the <code>effective sample size</code> in meta-regression models.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references"><strong>References</strong></h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Arnold2021" class="csl-entry" role="listitem">
+<strong>Arnold, P. A., Delean, S., Cassey, P. and White, C. R.</strong> (2021). Meta‐analysis reveals that resting metabolic rate is not consistently related to fitness and performance in animals. <em>Journal of Comparative Physiology B</em> <strong>191</strong>, 1097–1110.
+</div>
+<div id="ref-Jennions2013" class="csl-entry" role="listitem">
+<strong>Jennions, M. D., Lortie, C. J., Rosenberg, M. S. and Rothstein, H. R.</strong> (2013). Publication and related biases. <em>In: Handbook of Meta-Analysis in Ecology and Evolution (eds J. Koricheva, J. Gurevitch &amp; K. Mengersen). Princeton University Press, Princeton and Oxford.</em> pp 207–236.
+</div>
+<div id="ref-Koricheva2013" class="csl-entry" role="listitem">
+<strong>Koricheva, J., Gurevitch, J. and Mengersen, K.</strong> (2013). Handbook of meta-analysis in ecology and evolution. <em>Princeton University Press, Princeton, New Jersey.</em>
+</div>
+<div id="ref-Nakagawa2022cor" class="csl-entry" role="listitem">
+<strong>Nakagawa, S., Lagisz, M., Jennions, M. D., Koricheva, J., Daniel W. A. Noble, T. H. P., Sánchez-Tójar, A., Yang, Y. and O’Dea, R. E.</strong> (2022b). CORRIGENDUM: Methods for testing publication bias in ecological and evolutionary meta-analyses. <em>Methods in Ecology and Evolution</em> <strong>13</strong>, 4–21, DOI: 10.1111/2041–210X.13908.
+</div>
+<div id="ref-Nakagawa2021" class="csl-entry" role="listitem">
+<strong>Nakagawa, S., Senior, A. M., Viechtbauer, W. and Noble, D. W. A.</strong> (2022c). An assessment of statistical methods for non-independent data in ecological meta-analyses: comment. <em>Ecology</em> <strong>103</strong>, e03490, https://doi.org/10.1002/ecy.3490.
+</div>
+<div id="ref-Nakagawa2021b" class="csl-entry" role="listitem">
+<strong>Nakagawa, S., Lagisz, M., Jennions, M. D., Koricheva, J., Daniel W. A. Noble, T. H. P., Sánchez-Tójar, A., Yang, Y. and O’Dea, R. E.</strong> (2022a). Methods for testing publication bias in ecological and evolutionary meta-analyses. <em>Methods in Ecology and Evolution</em> <strong>13</strong>, 4–21.
+</div>
+<div id="ref-Noble2017" class="csl-entry" role="listitem">
+<strong>Noble, D. W. A., Lagisz, M., O’Dea, R. E. and Nakagawa, S.</strong> (2017). Non‐independence and sensitivity analyses in ecological and evolutionary meta‐analyses. <em>Molecular Ecology</em> <strong>26</strong>, 2410–2425.
+</div>
+<div id="ref-Rothstein2005" class="csl-entry" role="listitem">
+<strong>Rothstein, H. R., Sutton, A. J. and Borenstein, M.</strong> (2005). Publication bias in meta-analysis: Prevention, assessment and adjustments. <em>Wiley, Chichester</em>.
+</div>
+<div id="ref-Stanley2012" class="csl-entry" role="listitem">
+<strong>Stanley, T. D. and Doucouliagos, H.</strong> (2012). Meta-regression analysis in eco- nomics and business. routledge.
+</div>
+<div id="ref-Stanley2014" class="csl-entry" role="listitem">
+<strong>Stanley, T. D. and Doucouliagos, H.</strong> (2014). Meta-regression approxi- mations to reduce publication selection bias. <em>Research Synthesis Methods</em> <strong>5</strong>, 60–78.
+</div>
+</div>
+<p><br></p>
+</section>
+<section id="session-information" class="level2">
+<h2 class="anchored" data-anchor-id="session-information"><strong>Session Information</strong></h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><strong>R version 4.5.1 (2025-06-13)</strong></p>
+<p><strong>Platform:</strong> aarch64-apple-darwin20</p>
+<p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
+<p><strong>other attached packages:</strong> <em>magick(v.2.8.7)</em>, <em>equatags(v.0.2.1)</em>, <em>mathjaxr(v.2.0-0)</em>, <em>pander(v.0.6.6)</em>, <em>orchaRd(v.2.1.3)</em>, <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.0)</em>, <em>purrr(v.1.2.1)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.2)</em>, <em>tidyverse(v.2.0.0)</em>, <em>flextable(v.0.9.9)</em>, <em>metafor(v.4.8-0)</em>, <em>numDeriv(v.2016.8-1.1)</em>, <em>metadat(v.1.4-0)</em> and <em>Matrix(v.1.7-3)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>xslt(v.1.5.1)</em>, <em>gtable(v.0.3.6)</em>, <em>xfun(v.0.56)</em>, <em>htmlwidgets(v.1.6.4)</em>, <em>lattice(v.0.22-7)</em>, <em>tzdb(v.0.5.0)</em>, <em>vctrs(v.0.7.1)</em>, <em>tools(v.4.5.1)</em>, <em>generics(v.0.1.4)</em>, <em>curl(v.7.0.0)</em>, <em>pacman(v.0.5.1)</em>, <em>pkgconfig(v.2.0.3)</em>, <em>katex(v.1.5.0)</em>, <em>data.table(v.1.18.2.1)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>S7(v.0.2.1)</em>, <em>uuid(v.1.2-2)</em>, <em>lifecycle(v.1.0.5)</em>, <em>compiler(v.4.5.1)</em>, <em>farver(v.2.1.2)</em>, <em>textshaping(v.1.0.5)</em>, <em>fontquiver(v.0.2.1)</em>, <em>fontLiberation(v.0.1.0)</em>, <em>htmltools(v.0.5.9)</em>, <em>yaml(v.2.3.12)</em>, <em>pillar(v.1.11.1)</em>, <em>openssl(v.2.3.5)</em>, <em>nlme(v.3.1-168)</em>, <em>fontBitstreamVera(v.0.1.1)</em>, <em>tidyselect(v.1.2.1)</em>, <em>zip(v.2.3.3)</em>, <em>digest(v.0.6.39)</em>, <em>stringi(v.1.8.7)</em>, <em>fastmap(v.1.2.0)</em>, <em>grid(v.4.5.1)</em>, <em>cli(v.3.6.5)</em>, <em>magrittr(v.2.0.4)</em>, <em>withr(v.3.0.2)</em>, <em>gdtools(v.0.4.2)</em>, <em>scales(v.1.4.0)</em>, <em>timechange(v.0.4.0)</em>, <em>rmarkdown(v.2.30)</em>, <em>officer(v.0.6.10)</em>, <em>otel(v.0.2.0)</em>, <em>askpass(v.1.2.1)</em>, <em>ragg(v.1.5.1)</em>, <em>hms(v.1.1.4)</em>, <em>evaluate(v.1.0.5)</em>, <em>knitr(v.1.51)</em>, <em>V8(v.6.0.4)</em>, <em>rlang(v.1.1.7)</em>, <em>Rcpp(v.1.1.1)</em>, <em>glue(v.1.8.0)</em>, <em>xml2(v.1.5.2)</em>, <em>jsonlite(v.2.0.0)</em>, <em>R6(v.2.6.1)</em> and <em>systemfonts(v.1.3.2)</em></p>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./pub-bias1.html" class="pagination-link" aria-label="Publication Bias in Meta-analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Publication Bias in Meta-analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Publication Bias: Analytical Approaches</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Analytical Approaches for Assessment of Publication Bias in Meta-analysis**</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>In the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](https://daniel1noble.github.io/meta-workshop/pub-bias1)</span> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as a sensitivity analysis <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span> because we will never truly know how many missing effect sizes actually exist.</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>In this tutorial, we'll overview some ways we can attempt to understand whether publication bias is present using multilevel meta regression to quantitatively assess in a more objective way whether it's present. We can also use these statistical tools to attempt to  'correct' for it. </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Statistically Testing and Correcting for Publication Bias**</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/arnold.png)</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>We're now going to expand upon the meta-analysis by @Arnold2021 to explore more rigorously whether publication bias is present, and if so, try and re-interpret effects as if such bias did not actually exist. </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Download the Data</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rawdata</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="fu">### Meta-regression Approaches to Publication Bias </span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>@Nakagawa2021b <span class="co">[</span><span class="ot">building off of work by @Stanley2012; @Stanley2014</span><span class="co">]</span> outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2)</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <span class="co">[</span><span class="ot">past tutorials</span><span class="co">](https://daniel1noble.github.io/meta-workshop/metaregression)</span>:</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>Here, $\beta_{m}$ is the slope (or contrast) for the $m^{th}$ moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). Of course, $\beta_{se}se$ can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. @Stanley2012 and @Stanley2014 have shown that when $\mu$ in a model that estimates $\beta_{se}$ is significant than the intercept (in this case, $\mu$) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">] [see correction for original paper @Nakagawa2022cor]</span>. However, @Stanley2012 and @Stanley2014 have shown that when $\mu$ is significant than including SE is best replaced with the sampling variance (i.e., $SE^2$) instead because the intercept using SE is downwardly biased. </span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**  {.tabset .tabset-fade .tabset-pills} </span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task! {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Think about how the intercept, $\mu$, changes its meaning when a continuous moderator, such as $se$, is included in the model. When estimating $\beta_{se}$ explicitly how do we now interpret the intercept or meta-analytic mean?**</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Answer! {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The reason why the intercept ($\mu$) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is **no** sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}*0  =</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>\mu  <span class="sc">\\</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. </span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>We'll also fit the model with sampling variance for good measure, but given that the <span class="in">`intrcpt`</span> is not significant we can interpret the first model.</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: V</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the results**  {.tabset .tabset-fade .tabset-pills} </span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task! {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?**</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Answer! {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Yes, there is evidence for publication bias because the slope estimate for </span><span class="in">`sqrt(Zr)`</span><span class="at"> or the sampling standard error is significant. Given that the </span><span class="in">`intrcpt`</span><span class="at"> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted </span><span class="in">`Zr`</span><span class="at"> when there is *no* uncertainty is </span><span class="in">`r metareg_se$b[1]`</span><span class="at">with a 95% confidence interval that overlaps zero (i.e., 95% CI = </span><span class="in">`r metareg_se$ci.lb[1]`</span><span class="at"> to </span><span class="in">`r metareg_se$ci.ub[1]`</span><span class="at">). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, </span><span class="in">`r tanh(metareg_se$b[1])`</span><span class="at">. </span></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>Hopefully it is clear now how we can more objectively test, and correct, for the possibility of publication bias. Again, these should be viewed cautiously and used only as a sensitivity analysis. An important point that we did not mention is that, we need to use different moderators depending on the type of effect size being used in the meta-analysis. Zr is rather straight forward, but @Nakagawa2021 discuss the challenges in using standardised mean differences and log response ratio when fitting models with SE and V. They recommend instead using the <span class="in">`effective sample size`</span> in meta-regression models. </span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

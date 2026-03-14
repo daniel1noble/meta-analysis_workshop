@@ -1,0 +1,352 @@
+# Fixed versus Random Effects Meta-analysis
+
+```{r}
+#| label: setup-packages-fixed
+#| echo: false
+#| message: false
+#| warning: false
+
+# Load packages
+pacman::p_load(metafor, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)
+options(digits=4)
+```
+
+## **What's the difference between fixed and random effects meta-analysis?**
+
+If you're familiar with the meta-analysis literature you will have heard of 'fixed' and 'random' effect meta-analysis [@Borenstein2009; @NakagawaSantos2012; @Koricheva2013; @Gurevitch2018; @Nakagawa2017; @Gurevitch1999]. Understanding the differences between these two models is fundamentally important to understanding meta-analysis more generally. Also, once you understand the difference you'll realise why fixed-effect meta-analyses are not something we should normally apply in ecology and evolution. The assumptions are not too sensible when we are talking about highly variable meta-analytic data taken from many, many species. In fact, even a random effects meta-analysis is not going to cut it in most cases (more on that later). 
+
+Despite the limitations, these models have an important place in the meta-analytic literature. They are also excellent stepping stones to understanding the assumptions inherent to meta-analytic models and how we can build these models more appropriately for our kind of data. 
+
+This tutorial will walk you through the differences between fixed and random effect models with a focus on understanding how we are synthesising different effect sizes across studies. At the end of this tutorial I hope you understand:
+
+1. The distinct difference between fixed and random effect meta-analytic models
+2. How to fit these models using `metafor` (the most popular package for meta-analysis in *R*)
+3. How to interpret the output from each model
+4. How you can reproduce the results of the `metafor` models yourself
+
+### Simulating some meta-analytic data
+
+To demonstrate, we can simulate some data. This is also quite useful for getting a handle on what the difference between fixed and random effects meta-analytic models looks like. Either way, we'll explore the data in depth as we move through the tutorial. 
+
+```{r}
+#| label: simdat
+#| eval: true
+#| echo: true
+
+# Generate some simulated effect size data with known sampling variance
+# assumed to come from a common underlying distribution
+set.seed(86) # Set see so that we all get the same simulated results
+ # We will have 5 studies
+    stdy  <- 1:5                                      
+# We know the variance for each effect
+    Ves     <- c(0.05, 0.10, 0.02, 0.10, 0.09)    
+# We'll need this later but these are weights
+    W     <- 1 / Ves                                          
+# We assume they are sampled from a normal distribution  with a mean effect size of 2
+    es     <- rnorm(length(Ves), 2, sqrt(Ves))          
+# Data for our fixed effect meta-analysis
+    dataFE <- data.frame(stdy = stdy, es, Ves)
+
+# Generate a second set of effect sizes, but now assume that each study effect does not come from the same distribution, but from a population of effect sizes. 
+
+# Here adding 0.8 says we want to add 0.8 as the between study variability. In other words, each effect size is sampled from a larger distribution of effect sizes that itself comes from a distribution with a variance of 0.8. 
+    esRE        <- rnorm(length(Ves), 2, sqrt(Ves + 0.8)) 
+# Data for our random effect meta-analysis 
+    dataRE <-  data.frame(stdy = stdy, esRE, Ves)
+```
+
+We can get a look at what these two datasets we simulated above look like (@fig-fvsr). The red circles are effect sizes and their standard errors (square root of the sampling error variance) from our fixed effect meta-analysis (FE) data set. In contrast, the black circles are our effect size and standard errors from the data generated in the random effect meta-analysis (RE) dataset. The black line is the average, true effect size (which we have set to the value 2).
+
+```{r}
+#| label: fig-fvsr
+#| eval: true
+#| echo: false
+#| fig-cap: "Mean (arrows are sampling standard deviation) effect size for each study. Data simulated under a **fixed effect model in black** and data simulated under a **random effect model in red**."
+    
+  plot(stdy - 0.25 ~ es, col = "black", pch = 16, ylim = c(0, 6), xlim = c(1, 3.2), 
+       data = dataFE, ylab = "Study", xlab = "Effect size")
+  abline(v = 2, lty =3)
+  arrows(x0 = dataFE$es, y0 = dataFE$stdy- 0.25, y1 = dataFE$stdy- 0.25, x1 = dataFE$es + sqrt(dataFE$Ves), 
+         angle = 90, length = 0.05, col = "black")
+  arrows(x0 = dataFE$es, y0 = dataFE$stdy- 0.25, y1 = dataFE$stdy- 0.25, x1 = dataFE$es - sqrt(dataFE$Ves), 
+         angle = 90, length = 0.05, col = "black")
+  
+  points(stdy + 0.25 ~ esRE, col = "red", pch = 16, data = dataRE)
+  arrows(x0 = dataRE$es, y0 = dataRE$stdy+ 0.25, y1 = dataRE$stdy+ 0.25, x1 = dataRE$es + sqrt(dataRE$Ves), 
+         angle = 90, length = 0.05, col = "red")
+  arrows(x0 = dataRE$es, y0 = dataRE$stdy+ 0.25, y1 = dataRE$stdy+ 0.25, x1 = dataRE$es - sqrt(dataRE$Ves), 
+         angle = 90, length = 0.05, col = "red")
+  
+```
+
+We notice a few important differences here. In the RE data set the variance across the studies is a lot larger compared to the FE data set. This is what we would expect because we have added in a between study variance. Now, let’s use a common meta-analysis package, *metafor*, to analyse these data sets.
+
+## **Fixed Effect Meta-Analysis**
+
+What is a fixed effect meta-analysis anyway? If it wasn't clear from the above simulated data lets be more formal. We simulated data according to the following model, a fixed effects meta-analytic model:
+
+$$
+y_{i} = \mu + m_{i} \\
+m_{i} \sim N(0, v_{i})
+$$
+where $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. You may notice from this model, and the simulated data, that we are assuming that there is a single overall mean from the pooled effect sizes we have, that effects are assumed to be independently, and identically distributed, and that the only deviation from $\mu$ is the result of sampling error, which is related to the sample size or power of the study. There are no additional sources of variance added to effect size estimates (@fig-fixedrandomeffectmeta a). 
+
+### Fixed effect meta-analysis with `metafor`
+
+Now that we understand the fixed effect model, both from formal statistical notation and by looking at how the data were generated, lets fit a fixed effect model in `metafor`. 
+
+```{r}
+#| label: fixedma
+#| eval: true
+#| echo: true
+
+# Run a fixed effect meta-analysis using the FE dataset. 
+    metafor::rma(yi = es, vi = Ves, method = "FE", data = dataFE)
+```
+
+
+#### **How to interpret the model output?** {.tabset .tabset-fade .tabset-pills} 
+
+##### Task {.tabset .tabset-fade .tabset-pills} 
+>**What do the model results and Q values (under Test for Heterogeneity) mean?** 
+
+<br>
+
+##### Answer {.tabset .tabset-fade .tabset-pills} 
+> The output suggests that the average estimate is **2.07** and it has a standard error of **0.1**. It also provides us with a Q statistic, which measures the amount of heterogeneity among effect sizes. **If Q is large and the p-value is small then it suggests substantial heterogeneity among effect sizes** beyond what we would expect if these effects were generated from a common underlying distribution. This is a major assumption of fixed effect meta-analyses and in this case is supported. This is a good thing because we specifically generated these data under the assumption that they are from the same distribution. We can see this if we look at how we generated the data: `rnorm(length(Ves), 2, sqrt(Ves))`. This draws random effect sizes from a normal distribution with a variance (`sqrt(Ves)`) for each effect size that is only defined by its sampling variability.
+
+<br>
+
+### Fixed effect meta-analysis by hand!
+What is the model above doing though? and what is the logic behind the calculations? The best way to understand this is to hand calculate these values. Basically the effect sizes are being weighted by their sampling error variance when deriving the pooled estimate and it’s variance. Let’s calculate this by hand and see what’s happening:
+
+```{r}
+#| label: fixedmahand
+#| eval: true
+#| echo: true
+
+# Calculate pooled effect size
+       EsP.FE <- sum(W*dataFE$es) / sum(W)
+       EsP.FE
+# Calculate the pooled variance around estimate
+    VarEsP.FE <- 1 / sum(W)
+    VarEsP.FE
+# Calculate the standard error around estimate
+    SE.EsP.FE <- sqrt(VarEsP.FE)
+    SE.EsP.FE
+```
+
+Wow! This is so cool. We just did a fixed effect meta-analysis by hand…and, look, it matches the model output perfectly. The math is not so scary after all! But what about this extra statistic, Q? How do we derive this?
+
+```{r}
+#| label: q_fe
+#| eval: true
+#| echo: true
+
+#Now lets calculate our Q. Q is the total amount of heterogeneity in our data.
+    Q.fe <- sum(W*(dataFE$es^2) ) - (sum(W*dataFE$es)^2 / sum(W))
+    Q.fe
+```
+
+Cool. So this value also matches up nicely. If you didn't catch all that, we can summarise it in @tbl-table3 below.
+
+```{r}
+#| label: tbl-table3
+#| echo: false
+#| tbl-cap: "Comparison of hand calculations with our fixed effect meta-analytic model"
+
+ m <- metafor::rma(yi = es, vi = Ves, method = "FE", data = dataFE)
+   mean_meta <- coef(m)
+se_mean_meta <- m$se
+      q_meta <- m$QE
+    tau_meta <- m$tau2
+    
+# Build Table
+    tab <- data.frame(type = c("Mean", "SE", "Q"), 
+                      metafor = c(mean_meta, se_mean_meta, q_meta),
+                      Ours = c(EsP.FE, SE.EsP.FE, Q.fe))
+
+    table1.1 <- flextable(tab)    %>% 
+          flextable::compose(j = 1:3, part = "header", 
+                             value = as_paragraph(as_b(c("", "metafor", "ours")))) %>% 
+          flextable::compose(j = 1, value = as_paragraph(as_equation(type)))
+    table1.1
+```
+
+
+
+## **Random Effect Meta-Analysis**
+Now lets turn to the formal definition of a random effects meta-analysis. It looks at the outset as being very similar to our fixed effect model, but with a critically important addition:
+$$
+y_{i} = \mu + s_{i} + m_{i} \\
+m_{i} \sim N(0, v_{i}) \\
+s_{i} \sim N(0, \tau^2)
+$$
+Again, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. However, you will notice now that we have an additional source of variation, $s_{i}$, which is the study specific deviation. **Here, we are assuming now that every study has it's own mean effect size which is again sampled from a normal distribution with a between study variance, $\tau^2$ (read, tau-squared)**.  
+
+You'll notice from this model, and the simulated data, that we are again assuming that there is a single overall mean and that effects are independently, and identically, distributed. However, now any deviation from the true mean is the result of not only $\mu$ (sampling error) but also because studies vary in their true mean effect sizes as well. Again, beyond these two sources, there are no additional sources of variance added to effect size estimates. 
+
+```{r}
+#| label: fig-fixedrandomeffectmeta
+#| eval: false
+#| echo: false
+#| fig-align: center
+#| fig-cap: "Visualisation of a fixed (a) and random effects (b) meta-analysis. From Nakagawa et al. 2017."
+
+  # Image file missing - add fix_random.png to render
+  comp <- image_read("./fix_random.png")
+  comp
+```
+
+
+### Random effect meta-analysis using `metafor`
+Now lets move on to a more complicated situation, a random effect meta-analysis using the RE dataset. Remember, we know from this data set that each effect size comes from a different overall distribution. How might Q change? (Hint: We expect it to get larger!)
+
+```{r}
+#| label: re
+#| eval: true
+#| echo: true
+
+metafor::rma(yi = esRE, vi = Ves, method="REML", data = dataRE)
+```
+
+
+#### **Interpreting what happened!** {.tabset .tabset-fade .tabset-pills} 
+
+##### Task {.tabset .tabset-fade .tabset-pills} 
+>**What does it mean when the Q increased in our random effect model vs our fixed effect model?** 
+
+<br>
+
+##### Answer {.tabset .tabset-fade .tabset-pills} 
+>That’s because we added in extra variability to the mix because **each effect size is to come from a distribution of true effect sizes**. Because they can all have their own mean they can differ substantially from the other effect sizes and this results in more variance (i.e. heterogeneity) being added to our data over all.
+
+<br>
+
+### Random effect meta-analysis by hand!
+Now lets see if we can reproduce these results. We need to remember that we need to add in the between study variance to our weighting of effect sizes for this model. To do this, we need to estimate how much heterogeneity we have between studies above what we would expect from sampling variability. This can be estimated by calculating the $\tau^2$ statistic, which is the variance in the ‘true’ effect sizes. To calculate this we need to calculate Q using our weights, which are the same because we know these to be true.
+
+```{r}
+#| label: re_hand
+#| eval: true
+#| echo: true
+
+# Calculate our Q statistic again
+    Q <- sum(W*(dataRE$es^2) ) - (sum(W*dataRE$es)^2 / sum(W))
+    Q
+
+# Calculate tau2
+    C <- sum(W) - ((sum(W^2))/sum(W))
+    C
+
+# Calculate df
+    df <- nrow(dataRE) - 1   
+    T2 <- (Q - df) / C
+    T2
+```
+
+Now we can re-calculate our weights by adding in the between study heterogenetity.
+
+```{r}
+#| label: re_w
+#| eval: true
+#| echo: true
+
+    # RE weights
+      W.re <- 1 / (T2 + dataRE$Ves)
+    
+    #Pooled effect size for random effect meta-analysis
+      esPoolRE  <- sum(W.re*dataRE$es) / sum(W.re) 
+      esPoolRE
+    
+    # Calculate the pooled variance around estimate
+       VarES <- 1 / sum(W.re)
+    
+    # Calculate the standard error around estimate
+       SE.ES.RE <- sqrt(VarES)
+       SE.ES.RE
+```
+
+Now we can compare the `metafor` model output with our hand calculations
+```{r}
+#| label: tbl-table1
+#| echo: false
+#| tbl-cap: "Comparison of hand calculations with our random effect meta-analytic model"
+
+ m <- metafor::rma(yi = esRE, vi = Ves, method="REML", data = dataRE)
+   mean_meta <- coef(m)
+se_mean_meta <- m$se
+      q_meta <- m$QE
+    tau_meta <- m$tau2
+    
+# Build Table
+    tab <- data.frame(type = c("Mean", "SE", "Q", "\\tau^2"), 
+                      metafor = c(mean_meta, se_mean_meta, q_meta, tau_meta),
+                      Ours = c(esPoolRE, SE.ES.RE, Q, T2))
+
+    table1 <- flextable(tab)    %>% 
+          flextable::compose(j = 1:3, part = "header", 
+                             value = as_paragraph(as_b(c("", "metafor", "ours")))) %>% 
+          flextable::compose(j = 1, value = as_paragraph(as_equation(type)))
+    table1
+```
+
+## **Different optimizers give different answers**
+
+For those of you who were paying close attention you would have noticed that the numbers from our `metafor` models don't actually match up (@tbl-table1). Well spotted! 
+
+What happened above then?  Why are our numbers not matching the `metafor` output? I thought we knew what we were doing? Our Q statistic is correct but $\tau^2$, our mean estimate and its standard error are different. Why? 
+
+This is because the `metafor` model we ran is using a different estimation method (REML -- Restricted Maximum Likelihood) to estimate these statistics compared to our hand calculations. But, we are awfully close on all our estimates in any case (see @tbl-table1)! However, we can re-run this all using the method we used for our hand calculations above and get a nice match between our calculations and the models.
+
+```{r}
+#| label: dl
+#| eval: true
+#| echo: true
+
+ metafor::rma(yi = esRE, vi = Ves, method="DL", data = dataRE)
+```
+
+
+Now if we compare the `metafor` model with our hand calculations we see they match exactly! (@tbl-table2).
+
+```{r}
+#| label: tbl-table2
+#| eval: true
+#| echo: false
+#| tbl-cap: "Comparison of our hand calculations with a `metafor` model with with a Dersimion-Laird estimator"
+
+ m <- metafor::rma(yi = esRE, vi = Ves, method="DL", data = dataRE)
+   mean_meta <- coef(m)
+se_mean_meta <- m$se
+      q_meta <- m$QE
+    tau_meta <- m$tau2
+    
+# Build Table
+    tab <- data.frame(type = c("Mean", "SE", "Q", "\\tau^2"), 
+                      metafor = c(mean_meta, se_mean_meta, q_meta, tau_meta),
+                      Ours = c(esPoolRE, SE.ES.RE, Q, T2))
+
+    table2 <- flextable(tab)    %>% 
+          flextable::compose(j = 1:3, part = "header", 
+                             value = as_paragraph(as_b(c("", "metafor", "ours")))) %>% 
+          flextable::compose(j = 1, value = as_paragraph(as_equation(type)))
+    table2
+```
+
+## **Conclusions**
+Hopefully now you have a better understanding of the differences between fixed and random-effect meta-analysis. It should also be clear that meta-analytic models can be easily understood in detail but that results can vary depending on what assumptions and optimizers we are using to obtained pooled results. It's also comforting to know that we can do our own analysis by hand! 
+
+## **References**
+
+<div id="refs"></div>
+<br>
+
+## **Session Information**
+
+```{r}
+#| label: sessioninfo-fixed
+#| echo: false
+
+pander(sessionInfo(), locale = FALSE)
+```

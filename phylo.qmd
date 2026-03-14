@@ -1,0 +1,190 @@
+# Phylogenetic Meta-analysis
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# Load packages
+pacman::p_load(metafor, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)
+options(digits=3)
+```
+
+## **Introduction to Phylogenetic Meta-analysis**
+
+Meta-analyses in comparative physiology almost always synthesise effects across a multitude of species [@Hadfield2010; @NakagawaSantos2012; @Chamberlain2012]. Species share an evolutionary history which is described by a phylogeny [@Chamberlain2012; @Lajeunesse2009; @Gurevitch1999]. As a result, the samples (and the effect sizes obtained from these samples) **are not independent which violates the independence assumption underlying conventional meta-analytic models**. For example, the standard [fixed- and random-effects models](https://daniel1noble.github.io/meta-workshop/fixed-vs-random) often used for ecological meta-analyses [@NakagawaSantos2012; @Lajeunesse2009], assume independence among the effect sizes and therefore do not account for phylogeny [@Chamberlain2012; @Noble2017]. Including a 'species-level' random effect will not deal with this type of non-independence because the 'effects' are themselves correlated based on the amount of shared evolutionary history between two species (See the [Complex Non-independence Tutorial](https://daniel1noble.github.io/meta-workshop/complex-nonind)). 
+
+Recent simulations by @Cinar2021 emphasise the importance of modelling phylogeny in meta-analytic models. Even when there is little phylogenetic signal in the data it will not compromise the analysis to have a phylogeny included, but it will **protect you against Type I errors**. In this tutorial, we expand on our [multilevel meta-analytic models](https://daniel1noble.github.io/meta-workshop/multi-level) to account for phylogenetic relatedness. Part of the challenge in controlling for phylogeny in a meta-analysis is that the taxa included are often highly diverse and there is little resolution on the exact phylogenetic relationship among the taxa in question. Having said that, there are tools that will probably do a fairly good job delineating the, showing how we can build a rough phylogeny that can be included.
+
+## **Formal Definition of Phylogenetic Meta-analytic Model**
+
+[Recall](https://daniel1noble.github.io/meta-workshop/multi-level) our multilevel meta-analytic model we previously discussed: 
+
+$$
+y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} \sim N(0, v_{i}\textbf{I}) \\
+s_{j} \sim N(0, \tau^2\textbf{I}) \\
+s_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
+e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+$$
+
+Again, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. $e_{i}$ is the effect-size-specific effect (within study effect) (that's a mouthful!) applied to each effect *i*. $s_{j[i]}$ is the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, $spp_{k[i]}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. As we discussed in the previous tutorial on [non-independence](https://daniel1noble.github.io/meta-workshop/complex-nonind), $\textbf{I}$ denotes the fact that effect size estimates are independently and identically distributed. 
+
+This model accounts for the fact that effect size values from the same study and species are clustered (i.e. non-independent) because they all share the same 'effect' sampled from the same distribution. However, in reality, this doesn't account for the fact that some species effects are more similar to each other than others because of the shared evolutionary history between species [@Hadfield2010; @Lajeunesse2009; @NakagawaSantos2012]. 
+
+To account for shared evolutionary history between species we need to modify the $\textbf{I}$ matrix to model the correlation between 'species effects'. This can be done by estimating a new random phylogenetic effect ($a_{k}$), and replacing the $\textbf{I}$ matrix with an $\textbf{A}$ matrix as follows:
+
+$$
+y_{i} = \mu + s_{j[i]} + spp_{k[i]} + a_{sp[i]}+ e_{i} + m_{i} \\
+m_{i} \sim N(0, v_{i}\textbf{I}) \\
+s_{j} \sim N(0, \tau^2\textbf{I}) \\
+spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
+a_{k} \sim N(0, \sigma_{a}^2\textbf{A}) \\
+e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+$$
+
+Here, $a_{k[i]}$ is a phylogenetic effect for the *k* species applied to effect size *i*. These effects are now sampled from a normal distribution (denoted by *N*) with a mean of 0 and $\sigma_{a}^2$ which is the phylogenetic variance. However, now $\textbf{A}$ is a $N_{species}$ by $N_{species}$ correlation matrix of distances between species extracted from a phylogenetic tree, which means that species effects will be correlated (off-diagonals will be non-zero) based on the distance from the root of the tree to the most recent common ancestor [@NakagawaSantos2012; @Hadfield2010; @Noble2017]. 
+
+You will notice that we have *two* species-level random effects in our model. We are 'trying' (and we may not succeed) to distinguish between species-specific effects driven by shared evolutionary history (i.e., $a_{k}$) and non-phylogenetic species-specific effects (i.e., $spp_{k}$), driven by, say, shared ecology. **It may not always be possible to estimate both effects in a single model**. It is worth keeping this in mind as these are data-hungry models and estimating these parameters will require a large sample size. Often, it is necessary to resort to some form of model selection or to use your *a priori* judgement about what species-specific effect is most important. 
+
+## **Example of Phylogenetic Multi-level Meta-analysis**
+
+![](./figs/WuSeebacher.png)
+
+### Format raw data for analysis
+We will use the dispersal data set (Z-transformed correlation coefficient or Zr) from [@WuSeebacher2022](https://www.nature.com/articles/s42003-022-03055-y) (see [Effect Size tutorial](https://daniel1noble.github.io/meta-workshop/effect-size) on background and effect size calculation) to demonstrate the following analysis. First, load the the raw data and add the following additional column effect size ID (`es_ID`). Then, calculate effect size as `Zr` and sampling variance as `V_Zr`.
+
+```{r raw data}
+## Load packages
+# install.packages("pacman")
+pacman::p_load(tidyverse, metafor, ape, phytools)
+
+zr_data <- read.csv("https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv") %>%
+  dplyr::select(-dispersal_def) %>% # remove irrelevant columns
+  tibble::rowid_to_column("es_ID") %>% # add effect size ID
+  dplyr::mutate(species_OTL = stringr::str_replace_all(species_OTL, "_", " ")) # remove underscore for some species with missing underscore. Some inconsistency when curating the database.
+
+# Calculate Fisher's r-to-z transformed correlation coefficient (ZCOR) as yi = effect size and vi = sampling variances, where ri = raw correlation coefficients, and ni = sample size.
+zr_data <- metafor::escalc(measure = "ZCOR", ri = corr_coeff, ni = sample_size, data = zr_data, var.names = c("Zr", "V_Zr"))
+```
+
+### Phylogenetic reconstruction
+
+We will now reconstruct the phylogeny for species extracted in the raw data set. There are different ways to obtain phylogenetic trees. You can extract trees as a `.nex` or `.tre` file from existing phylogeny database or studies with such data available (see https://vertlife.org/data/ for example taxa specific trees), load it to *R* using the `ape` package, and prune (keep only the species you have) the tree to match the data set. See the `drop_tip` function by [Liam Revell](http://blog.phytools.org/2011/03/prune-tree-to-list-of-taxa.html) to prune tree tips to match the data set species name. 
+
+If you are comparing effect sizes from a broad phylogenetic range (e.g. including Prokaryotes or Plantae), you can extract species names from the [Open Tree of Life](https://tree.opentreeoflife.org/opentree/argus/opentree13.4@ott93302) (OTL) data set using the `rotl` *R* package. Tutorials for the `rotl` *R* package can be found here: https://cran.r-project.org/web/packages/rotl/vignettes/rotl.html
+
+For the purpose of this tutorial, we will follow the second method. Notice that we have a separate column in the raw data set called `species_OTL`. This is because to reconstruct the phylogeny, we need the names in the data set to match the OTL data set. The species names described in the paper (especially older papers) may not match the OTL names. Check that the names match before running the following codes or else it will not run successfully. This also applies to any phylogenetic trees extracted.
+
+#### IMPORTANT NOTE {.tabset .tabset-fade .tabset-pills} 
+
+##### Errors in matching names {.tabset .tabset-fade .tabset-pills} 
+
+> **What can we do if errors occur when matching taxa names in the phylogeny with those in the data set?**
+
+<br>
+
+##### Suggestions {.tabset .tabset-fade .tabset-pills} 
+
+> Name matching errors come in different forms and flavours with the OTL. The easiest way to avoid most errors is to check that the **names in the raw data match the OTL database** each time you add a new species. OTL will also check for taxa synoymn's -- changes to taxa names. You can check for these and update your dataset so the taxa match. This will address many errors matching names down the track. We have included code to check which names are inconsistent in case you missed some. The remaining errors come down to formatting which you can see below. As an example with this dataset, we have to re-add the underscore between the Genus and species name because some names (I noticed 3 species in this dataset) such as "Gambusia affinis" (without the underscore) matches up with "Bambusia affinis" in the OTL database. Clearly this is a different taxa. We can get around it by first removing the underscore before matching the names (see code for raw before), then adding it back when matching the names to the tree (which has underscores).
+
+<br>
+
+### Build the tree and create correlation matrix
+```{r}
+#| label: phylo
+#| warning: false
+#| message: false
+
+# Load additional packages for phylogenetic reconstruction
+pacman::p_load(rotl, ape)
+
+# Create species list based on OTL names and match with OTL database
+species <- sort(unique(as.character(zr_data$species_OTL))) # generate list of species (as character format)
+taxa    <- rotl::tnrs_match_names(names = species) # match taxonomic names to the OTL
+
+# Check if species list do not match OTL identifier
+taxa[taxa$approximate_match == TRUE,] # none so far
+
+length(unique(zr_data$species_OTL)) # 74 species
+nrow(taxa) # 74 species
+
+# Retrieving phylogenetic relationships among taxa in the form of a trimmed sub-tree
+tree <- rotl::tol_induced_subtree(ott_ids = ott_id(taxa), label_format = "name")
+
+tree_tip_label <- tree$tip.label # extract tree tip names
+species_list   <- unique(stringr::str_replace_all(zr_data$species_OTL, " ", "_")) # extract species name and add underscore to match tree_trip_label
+
+setdiff(tree_tip_label, species_list) # check what names from the raw data is not found in tree. 
+# If names do not match the tree, then replace name in raw data to match tree
+
+# You can also visually inspect the tree via plot function to check if the species extracted are correct.
+#plot(tree, cex = 0.6, label.offset = 0.1, no.margin = TRUE) # plot tree
+
+set.seed(1) 
+tree <- ape::compute.brlen(tree, method = "Grafen", power = 1) # compute branch lengths
+tree <- ape::multi2di(tree, random = TRUE) # use a randomization approach to deal with polytomies
+
+# Note, an internal node of a phylogenetic tree is described as a polytomy if (i) it is in a rooted tree and is linked to three or more subtrees or (ii) it is in an unrooted tree and is attached to four or more branches which is commonly observed with data extracted from OTL. This is the result of insufficient phylogenetic information such such as divergence time. To resolve polytomies, we use the multi2di function from the ape package. 
+
+# Check tree is ultrametric
+#ape::is.ultrametric(tree) # TRUE
+
+# Create correlation matrix for analysis
+phylo_cor <- vcv(tree, cor = T)
+```
+
+We can also have a look at the final tree:
+
+```{r}
+#| label: tree
+#| echo: true
+#| fig-align: center
+#| fig-cap: "Phylogenetic tree generated for species in the Wu & Seebacher (2022) dataset."
+
+plot(tree, type = "phylogram", cex = 0.3)
+```
+### Run phylogenetically corrected, multi-level meta-analysis on overall effect
+
+Lets say we are interested in the **overall relationship** of physiology and movement (Zr). The following code runs a phylogeneticlly corrected, multi-level meta-analysis via the `rma.mv` function. Building upon the multi-level meta-analytic model from the [Multi-level Meta-analysis tutorial](https://daniel1noble.github.io/meta-workshop/multi-level#Building_more_Complex_Multilevel_Meta-analytic_Models), we also included random effects (`random` argument) to account for non-independence such as  `es_ID` (effect size identity), `study_ID` (unique study identity), `species` (unique species identity), `species_OTL` (species relatedness). The `R` argument allows the correlation matrix (here, `phylo_cor`) to be incorporated to the model which corresponds to the components specified in the `random` argument `~1 | species_OTL`.
+
+Note: remember to add underscore to the species OTL because the tree tip names have underscores.
+
+```{r analysis}
+overall_model <- metafor::rma.mv(yi = Zr, V = V_Zr, 
+                                        mod    = ~ 1, 
+                                        random = list(~1 | study_ID, ~1 | es_ID, ~1 | species, ~1 | species_OTL),
+                                        R      = list(species_OTL = phylo_cor),
+                                        method = "REML", test = "t", dfs = "contain",
+                                        data   = zr_data %>%
+                                   dplyr::mutate(species_OTL = stringr::str_replace_all(species_OTL, " ", "_")))
+summary(overall_model)
+```
+
+#### What does the model output tell us? {.tabset .tabset-fade .tabset-pills} 
+
+##### Task {.tabset .tabset-fade .tabset-pills} 
+
+>**Is there an overall positive or negative relationship between physiology and movement?** 
+
+<br>
+
+##### Answer {.tabset .tabset-fade .tabset-pills} 
+
+>We can see from above that the model estimates **a positive relationship** between physiology and movement with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. In this analysis, we also observe high heterogeneity among our effect size estimates with our Q-test being significant, a very common observation in ecological and evolutionary meta-analysis studies. Some of this heterogeneity may be driven by variation among studies, within studies, among species, and phylogeny as seen by the variance components of the model.
+
+<br>
+
+## **References**
+
+<div id="refs"></div>
+<br> 
+
+## **Session Information**
+
+```{r}
+#| label: sessioninfo
+#| echo: false
+
+pander(sessionInfo(), locale = FALSE)
+```

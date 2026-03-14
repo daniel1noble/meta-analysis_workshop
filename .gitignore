@@ -47,3 +47,15 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Quarto
+/.quarto/
+/_site/
+
+# Allow _book/ directory for GitHub Pages deployment
+# Only ignore intermediate markdown files
+*.utf8.md
+*.knit.md
+# Cache directories still ignored
+*_cache/
+*_files/
