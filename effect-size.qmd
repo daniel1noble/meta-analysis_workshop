@@ -264,6 +264,10 @@ hedge_data
 
 Visualising and interpreting Hedge's g can be slightly less intuitive compared to log response ratios. There's a great [online resource](https://rpsychologist.com/cohend/) by Kristoffer Magnusson with some visuals that can help you decipher the meaning of Cohen's d effects, which is the same as Hedge's g. 
 
+```{=html}
+<iframe width="800px" height="500px" src="https://rpsychologist.com/cohend/?embed=1&CER=20&M0=100&M0lab=Control&M1=112&M1lab=Treatment&SD=15&c0=r-48_g-57_b-79_a-1&c1=r-0_g-0_b-0_a-1&c2=r-106_g-206_b-235_a-1&d=0.8&slider=1&xlab=Outcome" frameborder="0"></iframe>
+```
+
 ## **References**
 
 <div id="refs"></div>
