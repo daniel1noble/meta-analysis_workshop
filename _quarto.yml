@@ -10,18 +10,30 @@ book:
     logo: figs/logo.png
   chapters:
     - index.qmd
-    - introduction-to-meta.qmd
-    - effect-size.qmd
-    - effect-assume.qmd
-    - fixed-vs-random.qmd
-    - het.qmd
-    - nuis-het.qmd
-    - metaregression.qmd
-    - multi-level.qmd
-    - complex-nonind.qmd
-    - phylo.qmd
-    - pub-bias1.qmd
-    - pub-bias2.qmd
+    - part: "Fundamentals of Meta-Analysis"
+      chapters:
+        - introduction-to-meta.qmd
+    - part: "Effect Sizes"
+      chapters:
+        - effect-size.qmd
+        - effect-assume.qmd
+        - nuis-het.qmd
+    - part: "Statistical Models"
+      chapters:
+        - fixed-vs-random.qmd
+    - part: "Heterogeneity"
+      chapters:
+        - het.qmd
+    - part: "Meta-Regression"
+      chapters:
+        - metaregression.qmd
+    - part: "Advanced Topics"
+      chapters:
+        - multi-level.qmd
+        - complex-nonind.qmd
+        - phylo.qmd
+        - pub-bias1.qmd
+        - pub-bias2.qmd
   repo-url: https://github.com/noble-lab/meta-analysis_workshop
   sharing: [twitter, facebook, linkedin]
   
