@@ -1,6 +1,6 @@
 # Welcome {.unnumbered}
 
-This book contains materials for a 1.5-2 day meta-analysis workshop run by [Daniel Noble](https://sites.google.com/view/noblelab/home) from The [Australian National University](https://www.anu.edu.au/). The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
+This book contains materials for a 1.5-2 day meta-analysis workshop run by [Daniel Noble](https://sites.google.com/view/noblelab/home) from The [Australian National University](https://www.anu.edu.au/) and [Patrice Pottier](https://patricepottier.academicwebsite.com/) from [Gothenburg University](https://www.gu.se/en). The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
 
 ## Workshop Overview
 
@@ -11,7 +11,8 @@ Over the course of this workshop, you will learn:
 - **Statistical models**: Fixed-effect vs. random-effects models and when to use each
 - **Heterogeneity**: Understanding and quantifying variation in effect sizes
 - **Meta-regression**: Exploring moderators of effect sizes
-- **Advanced topics**: Multi-level models, complex non-independence, phylogenetic meta-analysis, and publication bias
+- **Publication bias**: Detecting and accounting for biases in the literature
+- **Advanced topics**: Multi-level models, complex non-independence, phylogenetic meta-analysis
 
 ## Getting Started
 

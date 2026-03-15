@@ -4,8 +4,9 @@
     "href": "index.html",
     "title": "Meta-Analysis Workshop",
     "section": "",
-    "text": "Welcome\nThis book contains materials for a 1.5-2 day meta-analysis workshop run by Daniel Noble from The Australian National University. The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.",
+    "text": "Welcome\nThis book contains materials for a 1.5-2 day meta-analysis workshop run by Daniel Noble from The Australian National University and Patrice Pottier from Gothenburg University. The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.",
     "crumbs": [
+      "**Welcome**",
       "Welcome"
     ]
   },
@@ -14,8 +15,9 @@
     "href": "index.html#workshop-overview",
     "title": "Meta-Analysis Workshop",
     "section": "Workshop Overview",
-    "text": "Workshop Overview\nOver the course of this workshop, you will learn:\n\nFundamentals of meta-analysis: Understanding what meta-analysis is and when to use it\nEffect sizes: How to calculate and interpret different effect size metrics\nStatistical models: Fixed-effect vs. random-effects models and when to use each\nHeterogeneity: Understanding and quantifying variation in effect sizes\nMeta-regression: Exploring moderators of effect sizes\nAdvanced topics: Multi-level models, complex non-independence, phylogenetic meta-analysis, and publication bias",
+    "text": "Workshop Overview\nOver the course of this workshop, you will learn:\n\nFundamentals of meta-analysis: Understanding what meta-analysis is and when to use it\nEffect sizes: How to calculate and interpret different effect size metrics\nStatistical models: Fixed-effect vs. random-effects models and when to use each\nHeterogeneity: Understanding and quantifying variation in effect sizes\nMeta-regression: Exploring moderators of effect sizes\nPublication bias: Detecting and accounting for biases in the literature\nAdvanced topics: Multi-level models, complex non-independence, phylogenetic meta-analysis",
     "crumbs": [
+      "**Welcome**",
       "Welcome"
     ]
   },
@@ -26,6 +28,7 @@
     "section": "Getting Started",
     "text": "Getting Started\nEach chapter contains:\n\nTheoretical background and explanations\nWorked examples with R code\nPractical exercises\n\nYou can navigate through the chapters using the sidebar menu. Code snippets can be copied using the copy button in the top-right corner of each code block.",
     "crumbs": [
+      "**Welcome**",
       "Welcome"
     ]
   },
@@ -36,6 +39,7 @@
     "section": "Prerequisites",
     "text": "Prerequisites\nThis workshop assumes you have:\n\nBasic familiarity with R and RStudio\nUnderstanding of fundamental statistical concepts\nInterest in synthesizing research findings",
     "crumbs": [
+      "**Welcome**",
       "Welcome"
     ]
   },
@@ -46,6 +50,7 @@
     "section": "Contact",
     "text": "Contact\nFor questions or feedback, please contact Dan.",
     "crumbs": [
+      "**Welcome**",
       "Welcome"
     ]
   },

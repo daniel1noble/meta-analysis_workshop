@@ -9,7 +9,9 @@ book:
   sidebar:
     logo: figs/logo.png
   chapters:
-    - index.qmd
+    - part: "**Welcome**"
+      chapters:
+        - index.qmd
     - part: "**Fundamentals of Meta-Analysis**"
       chapters:
         - introduction-to-meta.qmd
