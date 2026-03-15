@@ -429,16 +429,20 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="simple-multilevel-meta-analytic-model"><strong>Simple Multilevel Meta-analytic Model</strong></h2>
 <p><a href="./fixed-vs-random.html">Recall</a> that a random effects model is defined as follows:</p>
 <p><span class="math display">\[
-y_{i} = \mu + s_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{i} \sim N(0, \tau^2)
+\begin{aligned}
+y_{i} &amp;= \mu + s_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}) \\
+s_{i} &amp;\sim N(0, \tau^2)
+\end{aligned}
 \]</span> In this model, <span class="math inline">\(y_{i}\)</span> is the <em>i</em>th effect size estimate and <span class="math inline">\(m_{i}\)</span> is the sampling error (deviation from <span class="math inline">\(\mu\)</span>) for effect size <em>i</em>. Given that we have a single effect size estimate from each study we can include <span class="math inline">\(s_{i}\)</span>, which is the study specific deviation, and this gives us an ability to estimate a “residual” variance from this model. That’s because after we remove the known sampling variance there is likely to be “extra” variability among effect sizes at the effect/study level (in this case these are confounded because we have one effect / study). We can estimate that explicitly which is what we are doing here. <strong>The challenge with having a single effect estimate per study is that the within and between study variances are confounded</strong>. In other words, we cannot estimate both.</p>
 <p>More commonly, we can extract many (sometimes a lot) effect size estimates from a single study. In such case, we no longer have a single effect size estimate from a given study but a whole bunch of effects from a single study. These could be effects from different experimental treatments, at different time points or on different traits. These effects are not independent of each other and there is likely a substantial amount of within study variation in addition to the across study variation <span class="citation" data-cites="NakagawaSantos2012">(<a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>)</span>. We can now estimate these two sources of variability explicitly turning our model into what is the simplest form of a multilevel meta-analytic model:</p>
 <p><span class="math display">\[
-y_{i,j} = \mu + s_{j} + e_{i,j} + m_{i,j} \\
-m_{i,j} \sim N(0, v_{i,j}) \\
-s_{j} \sim N(0, \tau^2) \\
-e_{i,j} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i,j} &amp;= \mu + s_{j} + e_{i,j} + m_{i,j} \\
+m_{i,j} &amp;\sim N(0, v_{i,j}) \\
+s_{j} &amp;\sim N(0, \tau^2) \\
+e_{i,j} &amp;\sim N(0, \sigma_{e}^2)
+\end{aligned}
 \]</span></p>
 <p>You’ll notice that the notation changes slightly – <span class="math inline">\(y_{i,j}\)</span> is now the <em>i</em> effect size from study <em>j</em> and <span class="math inline">\(m_{i,j}\)</span> is effect size <em>i</em>’s known sampling variance from study <em>j</em>. <span class="math inline">\(s_{j}\)</span> is now the study specific effect, <em>j</em>, applied to the <em>i</em>th effect size, where <em>j</em> = 1,…,<span class="math inline">\(N_{studies}\)</span>. We have also now added a random effect (<span class="math inline">\(e_{i,j}\)</span>) to the model. <strong><span class="math inline">\(e_{i,j}\)</span> is the effect-size-specific (within study) effect. This is often referred to as a ‘residual’ effect <span class="citation" data-cites="NakagawaSantos2012">(<a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>)</span> and is used to estimate a residual variance</strong>.</p>
 </section>
@@ -446,20 +450,24 @@ e_{i,j} \sim N(0, \sigma_{e}^2)
 <h2 class="anchored" data-anchor-id="building-more-complex-multilevel-meta-analytic-models"><strong>Building more Complex Multilevel Meta-analytic Models</strong></h2>
 <p>In reality, we may also have lots of studies on a specific set of species. For example, common or economically important species, like Salmon, Trout or lab model organisms like Zebrafish might be over-represented in the data set. This adds an additional level of structure to our data. We can account for species in this model by adding another random effect that captures the similarities between effect size estimates from the same species. As such, we can expand our multilevel model as follows:</p>
 <p><span class="math display">\[
-y_{i,j,k} = \mu + s_{j} + spp_{k} + e_{i,j,k} + m_{i,j,k} \\
-m_{i,j,k} \sim N(0, v_{i,j}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i,j,k} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i,j,k} &amp;= \mu + s_{j} + spp_{k} + e_{i,j,k} + m_{i,j,k} \\
+m_{i,j,k} &amp;\sim N(0, v_{i,j}) \\
+s_{j} &amp;\sim N(0, \tau^2) \\
+spp_{k} &amp;\sim N(0, \sigma_{k}^2) \\
+e_{i,j,k} &amp;\sim N(0, \sigma_{e}^2)
+\end{aligned}
 \]</span></p>
 <p>Here, <span class="math inline">\(y_{i,j, k}\)</span> is now the <em>i</em>th effect size from study <em>j</em> and species <em>k</em>. <span class="math inline">\(m_{i,j, k}\)</span> is effect size <em>i</em>’s known sampling variance from study <em>j</em> and species <em>k</em>. <span class="math inline">\(e_{i,j, k}\)</span> is the effect-size-specific (within study) applied to each effect <em>i</em> from study <em>j</em> and species <em>k</em>. <span class="math inline">\(s_{j}\)</span> is still the study specific effect, <em>j</em>, applied to the <em>i</em>th effect size, where <em>j</em> = 1,…,<span class="math inline">\(N_{studies}\)</span>, but now <span class="math inline">\(spp_{k}\)</span> is the species specific effect, <em>k</em>, applied to the <em>i</em>th effect size, where <em>k</em> = 1,…,<span class="math inline">\(N_{species}\)</span>.</p>
 <p>As you can imagine, the notation can get quite complicated the more levels you add. As such, a simplification of the above model notation that you might read <span class="citation" data-cites="NakagawaSantos2012 Noble2017">(e.g., <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> is as follows:</p>
 <p><span class="math display">\[
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &amp;= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}) \\
+s_{j} &amp;\sim N(0, \tau^2) \\
+spp_{k} &amp;\sim N(0, \sigma_{k}^2) \\
+e_{i} &amp;\sim N(0, \sigma_{e}^2)
+\end{aligned}
 \]</span></p>
 </section>
 <section id="fitting-a-multi-level-meta-analytic-model" class="level2">
@@ -1120,159 +1128,167 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Recall</span><span class="co">](fixed-vs-random.qmd)</span> that a random effects model is defined as follows: </span>
 <span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + s_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}) <span class="sc">\\</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>s_{i} \sim N(0, \tau^2)</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>In this model, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Given that we have a single effect size estimate from each study we can include $s_{i}$, which is the study specific deviation, and this gives us an ability to estimate a "residual" variance from this model. That's because after we remove the known sampling variance there is likely to be "extra" variability among effect sizes at the effect/study level (in this case these are confounded because we have one effect / study). We can estimate that explicitly which is what we are doing here. **The challenge with having a single effect estimate per study is that the within and between study variances are confounded**. In other words, we cannot estimate both. </span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>More commonly, we can extract many (sometimes a lot) effect size estimates from a single study. In such case, we no longer have a single effect size estimate from a given study but a whole bunch of effects from a single study. These could be effects from different experimental treatments, at different time points or on different traits. These effects are not independent of each other and there is likely a substantial amount of within study variation in addition to the across study variation <span class="co">[</span><span class="ot">@NakagawaSantos2012</span><span class="co">]</span>. We can now estimate these two sources of variability explicitly turning our model into what is the simplest form of a multilevel meta-analytic model: </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>s_{i} &amp;\sim N(0, \tau^2)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>In this model, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Given that we have a single effect size estimate from each study we can include $s_{i}$, which is the study specific deviation, and this gives us an ability to estimate a "residual" variance from this model. That's because after we remove the known sampling variance there is likely to be "extra" variability among effect sizes at the effect/study level (in this case these are confounded because we have one effect / study). We can estimate that explicitly which is what we are doing here. **The challenge with having a single effect estimate per study is that the within and between study variances are confounded**. In other words, we cannot estimate both. </span>
 <span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>y_{i,j} = \mu + s_{j} + e_{i,j} + m_{i,j} <span class="sc">\\</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>m_{i,j} \sim N(0, v_{i,j}) <span class="sc">\\</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>e_{i,j} \sim N(0, \sigma_{e}^2)</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>You'll notice that the notation changes slightly -- $y_{i,j}$ is now the *i* effect size from study *j* and $m_{i,j}$ is effect size *i*'s known sampling variance from study *j*. $s_{j}$ is now the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$. We have also now added a random effect ($e_{i,j}$) to the model. **$e_{i,j}$ is the effect-size-specific (within study) effect. This is often referred to as a 'residual' effect [@NakagawaSantos2012] and is used to estimate a residual variance**. </span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Building more Complex Multilevel Meta-analytic Models**</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>More commonly, we can extract many (sometimes a lot) effect size estimates from a single study. In such case, we no longer have a single effect size estimate from a given study but a whole bunch of effects from a single study. These could be effects from different experimental treatments, at different time points or on different traits. These effects are not independent of each other and there is likely a substantial amount of within study variation in addition to the across study variation <span class="co">[</span><span class="ot">@NakagawaSantos2012</span><span class="co">]</span>. We can now estimate these two sources of variability explicitly turning our model into what is the simplest form of a multilevel meta-analytic model: </span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>y_{i,j} &amp;= \mu + s_{j} + e_{i,j} + m_{i,j} <span class="sc">\\</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>m_{i,j} &amp;\sim N(0, v_{i,j}) <span class="sc">\\</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>e_{i,j} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>In reality, we may also have lots of studies on a specific set of species. For example, common or economically important species, like Salmon, Trout or lab model organisms like Zebrafish might be over-represented in the data set. This adds an additional level of structure to our data. We can account for species in this model by adding another random effect that captures the similarities between effect size estimates from the same species. As such, we can expand our multilevel model as follows:</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>You'll notice that the notation changes slightly -- $y_{i,j}$ is now the *i* effect size from study *j* and $m_{i,j}$ is effect size *i*'s known sampling variance from study *j*. $s_{j}$ is now the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$. We have also now added a random effect ($e_{i,j}$) to the model. **$e_{i,j}$ is the effect-size-specific (within study) effect. This is often referred to as a 'residual' effect [@NakagawaSantos2012] and is used to estimate a residual variance**. </span>
 <span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>y_{i,j,k} = \mu + s_{j} + spp_{k} + e_{i,j,k} + m_{i,j,k} <span class="sc">\\</span></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>m_{i,j,k} \sim N(0, v_{i,j}) <span class="sc">\\</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>e_{i,j,k} \sim N(0, \sigma_{e}^2)</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>Here, $y_{i,j, k}$ is now the *i*th effect size from study *j* and species *k*. $m_{i,j, k}$ is effect size *i*'s known sampling variance from study *j* and species *k*. $e_{i,j, k}$ is the effect-size-specific (within study) applied to each effect *i* from study *j* and species *k*. $s_{j}$ is still the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, but now $spp_{k}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. </span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>As you can imagine, the notation can get quite complicated the more levels you add. As such, a simplification of the above model notation that you might read <span class="co">[</span><span class="ot">e.g., @NakagawaSantos2012; @Noble2017</span><span class="co">]</span> is as follows:</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Building more Complex Multilevel Meta-analytic Models**</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>In reality, we may also have lots of studies on a specific set of species. For example, common or economically important species, like Salmon, Trout or lab model organisms like Zebrafish might be over-represented in the data set. This adds an additional level of structure to our data. We can account for species in this model by adding another random effect that captures the similarities between effect size estimates from the same species. As such, we can expand our multilevel model as follows:</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>y_{i,j,k} &amp;= \mu + s_{j} + spp_{k} + e_{i,j,k} + m_{i,j,k} <span class="sc">\\</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>m_{i,j,k} &amp;\sim N(0, v_{i,j}) <span class="sc">\\</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>e_{i,j,k} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
 <span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}) <span class="sc">\\</span></span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2)</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>Here, $y_{i,j, k}$ is now the *i*th effect size from study *j* and species *k*. $m_{i,j, k}$ is effect size *i*'s known sampling variance from study *j* and species *k*. $e_{i,j, k}$ is the effect-size-specific (within study) applied to each effect *i* from study *j* and species *k*. $s_{j}$ is still the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, but now $spp_{k}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. </span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>As you can imagine, the notation can get quite complicated the more levels you add. As such, a simplification of the above model notation that you might read <span class="co">[</span><span class="ot">e.g., @NakagawaSantos2012; @Noble2017</span><span class="co">]</span> is as follows:</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Fitting a Multi-level Meta-analytic Model**</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/pottier.png)</span></span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>To demonstrate how to fit a multilevel meta-analytic model similar to the one discussed above we'll turn to a <span class="co">[</span><span class="ot">familiar example</span><span class="co">](nuis-het.qmd)</span> by @Pottier2021, who used the acclimation response ratio (ARR) to analyse thermal acclimation responses on $CT_{max}$ and how this differs between the sexes. We'll keep it simple for the moment and focus exclusively on a single sex. </span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="fu">### Download Data and Functions for $ARR$</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>We'll download the raw data from the paper again. We'll also need to load the <span class="in">`metafor`</span> package to fit our models and the tidyverse package for processing the data.</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Fitting a Multi-level Meta-analytic Model**</span></span>
 <span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pacman") ; uncomment this line if you haven't already installed 'pacman'</span></span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, tidyverse)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/pottier.png)</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>To demonstrate how to fit a multilevel meta-analytic model similar to the one discussed above we'll turn to a <span class="co">[</span><span class="ot">familiar example</span><span class="co">](nuis-het.qmd)</span> by @Pottier2021, who used the acclimation response ratio (ARR) to analyse thermal acclimation responses on $CT_{max}$ and how this differs between the sexes. We'll keep it simple for the moment and focus exclusively on a single sex. </span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="fu">### Download Data and Functions for $ARR$</span></span>
 <span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>asr_dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://osf.io/qn2af/download"</span>)</span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>We'll also need our function for calculating ARR and its sampling variance because these don't exist in any current packages. </span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r ARRfunc}</span></span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="co">#' @title arr</span></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="co">#' @description Calculates the acclimation response ratio (ARR).  </span></span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param t2_l  Lowest of the two treatment temperatures</span></span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param t1_h  Highest of the two treatment temperatures</span></span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x1_h  Mean trait value at high temperature</span></span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x2_l  Mean trait value at low temperature</span></span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd1_h Standard deviation of mean trait value at high temperature</span></span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd2_l Standard deviation of mean trait value at low temperature</span></span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param n1_h  Sample size at high temperature</span></span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param n2_l  Sample size at low temperature</span></span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>arr <span class="ot">&lt;-</span> <span class="cf">function</span>(x1_h, x2_l, sd1_h, sd2_l, n1_h, n2_l, t1_h, t2_l){</span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>        ARR <span class="ot">&lt;-</span> (x1_h <span class="sc">-</span> x2_l)<span class="sc">/</span>(t1_h <span class="sc">-</span> t2_l)</span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>      V_ARR <span class="ot">&lt;-</span> ((<span class="dv">1</span><span class="sc">/</span>(t1_h <span class="sc">-</span> t2_l))<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(sd2_l<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n2_l <span class="sc">+</span> sd1_h<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n1_h))</span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(<span class="fu">data.frame</span>(ARR, V_ARR))</span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>We'll download the raw data from the paper again. We'll also need to load the <span class="in">`metafor`</span> package to fit our models and the tidyverse package for processing the data.</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pacman") ; uncomment this line if you haven't already installed 'pacman'</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, tidyverse)</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>asr_dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://osf.io/qn2af/download"</span>)</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>We'll also need our function for calculating ARR and its sampling variance because these don't exist in any current packages. </span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r ARRfunc}</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="co">#' @title arr</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="co">#' @description Calculates the acclimation response ratio (ARR).  </span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param t2_l  Lowest of the two treatment temperatures</span></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param t1_h  Highest of the two treatment temperatures</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x1_h  Mean trait value at high temperature</span></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x2_l  Mean trait value at low temperature</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd1_h Standard deviation of mean trait value at high temperature</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd2_l Standard deviation of mean trait value at low temperature</span></span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param n1_h  Sample size at high temperature</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param n2_l  Sample size at low temperature</span></span>
 <span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calculating $ARR$ and It's Sampling Variance</span></span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>Using the <span class="in">`arr`</span> function above we can now calculate the acclimation response ratio (ARR). Given @Pottier2021 were interested in comparing the sexes, they calculated the ARR difference between males and females. To simplify here, we'll just focus on estimating the ARR for a single sex, females. As such, we'll calculate our ARR effect size and sampling variance and then sub-set out the data on females.</span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect sizes</span></span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>asr_dat<span class="ot">&lt;-</span>asr_dat <span class="sc">%&gt;%</span> </span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">ARR=</span> <span class="fu">arr</span>(<span class="at">x1_h =</span> mean_high, <span class="at">x2_l =</span> mean_low, <span class="at">t1_h =</span> acc_temp_high, <span class="at">t2_l =</span> acc_temp_low, </span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sd1_h =</span> sd_high, <span class="at">sd2_l =</span> sd_low, <span class="at">n1_h =</span> n_high_adj, <span class="at">n2_l =</span> n_low_adj)[,<span class="dv">1</span>], </span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>                     <span class="at">V_ARR =</span> <span class="fu">arr</span>(<span class="at">x1_h =</span>  mean_high, <span class="at">x2_l =</span> mean_low, <span class="at">t1_h =</span> acc_temp_high, <span class="at">t2_l =</span> acc_temp_low, </span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>                           <span class="at">sd1_h =</span> sd_high, <span class="at">sd2_l =</span> sd_low, <span class="at">n1_h =</span> n_high_adj, <span class="at">n2_l =</span> n_low_adj)[,<span class="dv">2</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>                <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"female"</span>)</span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multilevel Meta-analytic Model in `metafor`</span></span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>Our data is now ready for analysis! We will use the <span class="in">`rma.mv`</span> function in <span class="in">`metafor`</span> to fit our first multilevel meta-analysis model. The model takes the ARR as a response variable (<span class="in">`yi`</span>) and accounts for it's sampling variance (<span class="in">`V`</span> = V_ARR). We are also going to estimate a random effect variance for species, between study and within-study grouping variables to control for non-independence and understand sources driving effect size variability. These are all denoted in the <span class="in">`random`</span> argument of <span class="in">`metafor`</span> which takes a list of all the random effects. </span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>You will notice two additional arguments being specified: </span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The first, <span class="in">`dfs`</span>, which calculates the degrees of freedom for the inferential tests in the model. <span class="in">`dfs = "contain"`</span> will calculate the degrees of freedom based on the lowest clustering level minus 1 (in this case study). Simulations have shown that this is a more robust measure to protect against type I errors <span class="co">[</span><span class="ot">@Nakagawa2021</span><span class="co">]</span>. </span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>arr <span class="ot">&lt;-</span> <span class="cf">function</span>(x1_h, x2_l, sd1_h, sd2_l, n1_h, n2_l, t1_h, t2_l){</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>        ARR <span class="ot">&lt;-</span> (x1_h <span class="sc">-</span> x2_l)<span class="sc">/</span>(t1_h <span class="sc">-</span> t2_l)</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>      V_ARR <span class="ot">&lt;-</span> ((<span class="dv">1</span><span class="sc">/</span>(t1_h <span class="sc">-</span> t2_l))<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(sd2_l<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n2_l <span class="sc">+</span> sd1_h<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n1_h))</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(<span class="fu">data.frame</span>(ARR, V_ARR))</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="fu">### Calculating $ARR$ and It's Sampling Variance</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>Using the <span class="in">`arr`</span> function above we can now calculate the acclimation response ratio (ARR). Given @Pottier2021 were interested in comparing the sexes, they calculated the ARR difference between males and females. To simplify here, we'll just focus on estimating the ARR for a single sex, females. As such, we'll calculate our ARR effect size and sampling variance and then sub-set out the data on females.</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect sizes</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>asr_dat<span class="ot">&lt;-</span>asr_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">ARR=</span> <span class="fu">arr</span>(<span class="at">x1_h =</span> mean_high, <span class="at">x2_l =</span> mean_low, <span class="at">t1_h =</span> acc_temp_high, <span class="at">t2_l =</span> acc_temp_low, </span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>                              <span class="at">sd1_h =</span> sd_high, <span class="at">sd2_l =</span> sd_low, <span class="at">n1_h =</span> n_high_adj, <span class="at">n2_l =</span> n_low_adj)[,<span class="dv">1</span>], </span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>                     <span class="at">V_ARR =</span> <span class="fu">arr</span>(<span class="at">x1_h =</span>  mean_high, <span class="at">x2_l =</span> mean_low, <span class="at">t1_h =</span> acc_temp_high, <span class="at">t2_l =</span> acc_temp_low, </span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>                           <span class="at">sd1_h =</span> sd_high, <span class="at">sd2_l =</span> sd_low, <span class="at">n1_h =</span> n_high_adj, <span class="at">n2_l =</span> n_low_adj)[,<span class="dv">2</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>                <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"female"</span>)</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The second argument, <span class="in">`test`</span> specifies the test statistic used. <span class="in">`metafor`</span> defaults to z values based on the standard normal distribution, however, simulations have shown <span class="co">[</span><span class="ot">@Pappalardo2021</span><span class="co">]</span> and it has been recommended <span class="co">[</span><span class="ot">@Rosenberg2013b</span><span class="co">]</span>, that the t-distribution be used because samples sizes are often small and the true variance of the test is being estimated. </span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multilevel Meta-analytic Model in `metafor`</span></span>
 <span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-level meta-analytic model</span></span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>MLMA <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi=</span> ARR<span class="sc">~</span> <span class="dv">1</span>, <span class="at">V =</span> V_ARR, </span>
-<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method=</span><span class="st">"REML"</span>,</span>
-<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a>                   <span class="at">random=</span><span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>species_ID,</span>
-<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>                               <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>study_ID,</span>
-<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>                               <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>es_ID), </span>
-<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>                   <span class="at">test=</span><span class="st">"t"</span>,</span>
-<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data=</span>asr_dat)</span>
-<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(MLMA)</span>
-<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
-<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>Our data is now ready for analysis! We will use the <span class="in">`rma.mv`</span> function in <span class="in">`metafor`</span> to fit our first multilevel meta-analysis model. The model takes the ARR as a response variable (<span class="in">`yi`</span>) and accounts for it's sampling variance (<span class="in">`V`</span> = V_ARR). We are also going to estimate a random effect variance for species, between study and within-study grouping variables to control for non-independence and understand sources driving effect size variability. These are all denoted in the <span class="in">`random`</span> argument of <span class="in">`metafor`</span> which takes a list of all the random effects. </span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>You will notice two additional arguments being specified: </span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The first, <span class="in">`dfs`</span>, which calculates the degrees of freedom for the inferential tests in the model. <span class="in">`dfs = "contain"`</span> will calculate the degrees of freedom based on the lowest clustering level minus 1 (in this case study). Simulations have shown that this is a more robust measure to protect against type I errors <span class="co">[</span><span class="ot">@Nakagawa2021</span><span class="co">]</span>. </span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The second argument, <span class="in">`test`</span> specifies the test statistic used. <span class="in">`metafor`</span> defaults to z values based on the standard normal distribution, however, simulations have shown <span class="co">[</span><span class="ot">@Pappalardo2021</span><span class="co">]</span> and it has been recommended <span class="co">[</span><span class="ot">@Rosenberg2013b</span><span class="co">]</span>, that the t-distribution be used because samples sizes are often small and the true variance of the test is being estimated. </span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a><span class="co"># Multi-level meta-analytic model</span></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>MLMA <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi=</span> ARR<span class="sc">~</span> <span class="dv">1</span>, <span class="at">V =</span> V_ARR, </span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method=</span><span class="st">"REML"</span>,</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>                   <span class="at">random=</span><span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>species_ID,</span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a>                               <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>study_ID,</span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a>                               <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>es_ID), </span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a>                   <span class="at">test=</span><span class="st">"t"</span>,</span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data=</span>asr_dat)</span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(MLMA)</span>
 <span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the overall mean estimate and variance of the model, and how much heterogeneity exist?** </span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
 <span id="cb6-160"><a href="#cb6-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb6-161"><a href="#cb6-161" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb6-162"><a href="#cb6-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates an **overall meta-analytic mean as `r MLMA$b` with a 95% confidence interval of `r MLMA$ci.lb` to `r MLMA$ci.ub`**. **In other words, for each degree variation in acclimation temperature female heat tolerance changes by an average of `r MLMA$b`$^{\circ}$C**. </span></span>
+<span id="cb6-163"><a href="#cb6-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
 <span id="cb6-164"><a href="#cb6-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-165"><a href="#cb6-165" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the overall mean estimate and variance of the model, and how much heterogeneity exist?** </span></span>
 <span id="cb6-166"><a href="#cb6-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can also see that there's a significant amount of heterogeneity among our effect size estimates with our *Q*-test being significant. Some of this heterogeneity seems to be driven by variation among studies, within studies and among species as judged by the variance components of the model. We'll probe how to dissect and discuss this heterogeneity in later tutorials. </span></span>
+<span id="cb6-167"><a href="#cb6-167" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-168"><a href="#cb6-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
 <span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates an **overall meta-analytic mean as `r MLMA$b` with a 95% confidence interval of `r MLMA$ci.lb` to `r MLMA$ci.ub`**. **In other words, for each degree variation in acclimation temperature female heat tolerance changes by an average of `r MLMA$b`$^{\circ}$C**. </span></span>
 <span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb6-175"><a href="#cb6-175" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can also see that there's a significant amount of heterogeneity among our effect size estimates with our *Q*-test being significant. Some of this heterogeneity seems to be driven by variation among studies, within studies and among species as judged by the variance components of the model. We'll probe how to dissect and discuss this heterogeneity in later tutorials. </span></span>
 <span id="cb6-176"><a href="#cb6-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb6-177"><a href="#cb6-177" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb6-178"><a href="#cb6-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb6-179"><a href="#cb6-179" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-180"><a href="#cb6-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
-<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-181"><a href="#cb6-181" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb6-182"><a href="#cb6-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-183"><a href="#cb6-183" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb6-184"><a href="#cb6-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-185"><a href="#cb6-185" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb6-186"><a href="#cb6-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-187"><a href="#cb6-187" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb6-188"><a href="#cb6-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-191"><a href="#cb6-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-192"><a href="#cb6-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb6-193"><a href="#cb6-193" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb6-194"><a href="#cb6-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-195"><a href="#cb6-195" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-196"><a href="#cb6-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

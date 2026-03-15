@@ -26,11 +26,13 @@ Exploring population-level / average changes in effect size magnitude (and direc
 We can extend our multi-level meta-analytic model, which only has an intercept, to include moderators quite easily: 
 
 $$
-y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-s_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &= \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}) \\
+s_{j} &\sim N(0, \tau^2) \\
+s_{k} &\sim N(0, \sigma_{k}^2) \\
+e_{i} &\sim N(0, \sigma_{e}^2)
+\end{aligned}
 $$
 
 Here, $\beta_{m}$ is the slope (or contrast) for the *m th* moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for [nuisance hetereogenity](nuis-het.qmd), others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature -- they might compare ectotherms to endotherms, for example.  

@@ -433,11 +433,13 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-many-forms-of-dependence-in-meta-analysis"><strong>The Many Forms of Dependence in Meta-analysis</strong></h2>
 <p>Let’s briefly overview why non-independence can be an issue and why simple multilevel meta-analytic models do not always deal with the problem sufficiently well. Recall our multi-level meta-analytic (MLMA) model from the <a href="./multi-level.html">last tutorial</a>.</p>
 <p><span class="math display">\[
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &amp;= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}) \\
+s_{j} &amp;\sim N(0, \tau^2) \\
+spp_{k} &amp;\sim N(0, \sigma_{k}^2) \\
+e_{i} &amp;\sim N(0, \sigma_{e}^2)
+\end{aligned}
 \]</span></p>
 <p>We hid some important notation to avoid drawing attention to it initially. The notation we neglected to mention is now included below:</p>
 <p><span class="math display">\[
@@ -1246,237 +1248,239 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>Let's briefly overview why non-independence can be an issue and why simple multilevel meta-analytic models do not always deal with the problem sufficiently well. Recall our multi-level meta-analytic (MLMA) model from the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](multi-level.qmd)</span>. </span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}) <span class="sc">\\</span></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2)</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>We hid some important notation to avoid drawing attention to it initially. The notation we neglected to mention is now included below:</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="sc">\\</span></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2\textbf{I})</span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>You'll notice that we added in $\bf{I}$, but what is $\bf{I}$? $\bf{I}$ is called the identity matrix. It is a matrix that has rows and columns equal to the number of effect size values (if at the effect level) or the number of species or studies (if at the study or species-level) in the data set. The identity matrix contains 1's on the diagonal and 0's in the off-diagonals. For a data set with 3 effect size estimates the identity matrix looks like this:</span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>\bf{I} = \begin{bmatrix}</span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 <span class="sc">\\</span></span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 0 <span class="sc">\\</span></span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1</span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Thinking about matrices and variances!**</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>We hid some important notation to avoid drawing attention to it initially. The notation we neglected to mention is now included below:</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="sc">\\</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2\textbf{I})</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>You'll notice that we added in $\bf{I}$, but what is $\bf{I}$? $\bf{I}$ is called the identity matrix. It is a matrix that has rows and columns equal to the number of effect size values (if at the effect level) or the number of species or studies (if at the study or species-level) in the data set. The identity matrix contains 1's on the diagonal and 0's in the off-diagonals. For a data set with 3 effect size estimates the identity matrix looks like this:</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>\bf{I} = \begin{bmatrix}</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 0 <span class="sc">\\</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Thinking about matrices and variances!**</span></span>
 <span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the significance of multiplying the $\bf{I}$ matrix by the variance for each random effect above?** </span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
 <span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the significance of multiplying the $\bf{I}$ matrix by the variance for each random effect above?** </span></span>
 <span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The short story is that we are making the assumption that each random effect added to a given effect size is drawn from an independent and identical distribution. To see why this is the case think about what happens when we multiply $\sigma_{i}^2$ by this matrix. Along the diagonal, we get the exact same variance estimate for every single effect size (or for effect sizes that share a cluster). This tells us that they are sampled from a distribution that has the same mean (0) and variance ($\sigma_{i}^2$) (i.e., are sampled from the same distribution). </span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
 <span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The short story is that we are making the assumption that each random effect added to a given effect size is drawn from an independent and identical distribution. To see why this is the case think about what happens when we multiply $\sigma_{i}^2$ by this matrix. Along the diagonal, we get the exact same variance estimate for every single effect size (or for effect sizes that share a cluster). This tells us that they are sampled from a distribution that has the same mean (0) and variance ($\sigma_{i}^2$) (i.e., are sampled from the same distribution). </span></span>
 <span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;If, however, we multiply the off-diagonals by the variance we get zero. The fact that these off-diagonals are 0 tells us straight away that all the random effects being sampled are independent from one another as otherwise the off-diagonals would be non-zero (i.e., would have a co-variance) (and the correlation matrix would have a correlation above 0). This seems sensible. All effect size estimates from the same study will have the same 'effect' added to the estimate. This indicates that these effects should be more similar to each other by virtue of them being from the same study (@fig-fig1 b from @Noble2017). This does, in some sense, deal with non-independence, but not completely!</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;If, however, we multiply the off-diagonals by the variance we get zero. The fact that these off-diagonals are 0 tells us straight away that all the random effects being sampled are independent from one another as otherwise the off-diagonals would be non-zero (i.e., would have a co-variance) (and the correlation matrix would have a correlation above 0). This seems sensible. All effect size estimates from the same study will have the same 'effect' added to the estimate. This indicates that these effects should be more similar to each other by virtue of them being from the same study (@fig-fig1 b from @Noble2017). This does, in some sense, deal with non-independence, but not completely!</span></span>
 <span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Complex Forms of Non-Independence**</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>Our assumption about effects from the same study being independent would likely be wrong if, for example, we have effect sizes that are measured on different traits of the same animals that vary in their relationship with each other (i.e., some traits are more strongly correlated than others). Alternatively, if our effect size statistics were collected at different times or spatial locations that vary in the extent to which they are correlated with each other. In fact, species themselves vary to different degrees based on how long ago they shared a common ancestor. This is why we include evolutionary relationships among species in our meta-analytic models! (we'll discuss this in the <span class="co">[</span><span class="ot">phylogeny tutorial</span><span class="co">](phylo.qmd)</span> <span class="co">[</span><span class="ot">@HadfieldNaka2010; @Chamberlain2012; @NakagawaSantos2012</span><span class="co">]</span> (@fig-fig1 a from @Noble2017). In these cases, we need to properly model the correlation among effect size values induced by these processes.</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Complex Forms of Non-Independence**</span></span>
 <span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-fig1</span></span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 15</span></span>
-<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 15</span></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Different forms of non-independence described by Noble et al. 2017. A) Effect size estimates could be correlated as a result of shared evolutionary history; B) could be correlated because they come from the same study with the same types of methodology applied. Effect sizes could also be corrrelated because the effects themselves are correlated to differing degrees because of spatial or temporal correlations (E, F), their samling errors are correlated (D) or a combination of both (C)"</span></span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>img1 <span class="ot">&lt;-</span> magick<span class="sc">::</span><span class="fu">image_read</span>(<span class="st">"./figs/nonIn.png"</span>)</span>
-<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>img1</span>
-<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors <span class="co">[</span><span class="ot">@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019</span><span class="co">]</span>. That could be a serious problem because the inverse sampling errors are what we are using as <span class="co">[</span><span class="ot">weights in our analysis</span><span class="co">](introduction-to-meta.qmd)</span>. If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this but also modifying out sampling error matrix</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>Our assumption about effects from the same study being independent would likely be wrong if, for example, we have effect sizes that are measured on different traits of the same animals that vary in their relationship with each other (i.e., some traits are more strongly correlated than others). Alternatively, if our effect size statistics were collected at different times or spatial locations that vary in the extent to which they are correlated with each other. In fact, species themselves vary to different degrees based on how long ago they shared a common ancestor. This is why we include evolutionary relationships among species in our meta-analytic models! (we'll discuss this in the <span class="co">[</span><span class="ot">phylogeny tutorial</span><span class="co">](phylo.qmd)</span> <span class="co">[</span><span class="ot">@HadfieldNaka2010; @Chamberlain2012; @NakagawaSantos2012</span><span class="co">]</span> (@fig-fig1 a from @Noble2017). In these cases, we need to properly model the correlation among effect size values induced by these processes.</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-fig1</span></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 15</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 15</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Different forms of non-independence described by Noble et al. 2017. A) Effect size estimates could be correlated as a result of shared evolutionary history; B) could be correlated because they come from the same study with the same types of methodology applied. Effect sizes could also be corrrelated because the effects themselves are correlated to differing degrees because of spatial or temporal correlations (E, F), their samling errors are correlated (D) or a combination of both (C)"</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>img1 <span class="ot">&lt;-</span> magick<span class="sc">::</span><span class="fu">image_read</span>(<span class="st">"./figs/nonIn.png"</span>)</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>img1</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, \textbf{M})</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors <span class="co">[</span><span class="ot">@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019</span><span class="co">]</span>. That could be a serious problem because the inverse sampling errors are what we are using as <span class="co">[</span><span class="ot">weights in our analysis</span><span class="co">](introduction-to-meta.qmd)</span>. If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this but also modifying out sampling error matrix</span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>The new sampling variance matrix, $\textbf{M}$, now has the sampling variances along the diagonal, which we know because we can calculate these. But, how do we now know what the covariance between the sampling errors are to be put in the off-diagonals of this $\textbf{M}$ matrix? Luckily there are some approximations for us that we can use to construct the entire $\textbf{M}$ sampling (co)variance matrix <span class="co">[</span><span class="ot">@GleserOlkin2009; @Lajeunesse2011; @Hedges2019</span><span class="co">]</span>. </span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, \textbf{M})</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Why do we want to control for non-independence?**   </span></span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>The new sampling variance matrix, $\textbf{M}$, now has the sampling variances along the diagonal, which we know because we can calculate these. But, how do we now know what the covariance between the sampling errors are to be put in the off-diagonals of this $\textbf{M}$ matrix? Luckily there are some approximations for us that we can use to construct the entire $\textbf{M}$ sampling (co)variance matrix <span class="co">[</span><span class="ot">@GleserOlkin2009; @Lajeunesse2011; @Hedges2019</span><span class="co">]</span>. </span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>You might be thinking, so what? Yes, we have all these sources of non-independence, but who cares? Why is it important that we seriously consider the dependency? There are a few reasons:</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Why do we want to control for non-independence?**   </span></span>
 <span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>First, we want to make sure we get the 'weight' matrix correct so that we get a good estimate of the overall meta-analytic mean</span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Second, ignoring the dependency structure will result in much narrower confidence intervals giving us a false impression that we have much greater confidence in the mean estimate than what we actually have.</span>
-<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Third, and this relates to point 2 above, it will mess up with our inferential statistics. We are more likely to make Type I errors. Narrower standard errors are going to result in larger test statistics and this in combination with our over-inflated degrees of freedom will tell us our results are significant when in fact they are not.</span>
-<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example of Dealing with Shared Controls**</span></span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/raynal.png)</span></span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>As an example of how to deal with shared-control non-independence that affects the sampling (co)variance matrix ($\textbf{M}$), we'll turn to a study by <span class="co">[</span><span class="ot">@Raynal2022</span><span class="co">](https://doi.org/10.1242/jeb.243369)</span>. @Raynal2022 were interested in comparing how fluctuating versus constant developmental temperatures (i.e., egg incubation temperatures) impact upon suites of traits. For the purpose of this exercise we will focus on a single trait with the most data, offspring body mass. In other words, we are interested in comparing whether reptiles from fluctuating incubation conditions differ in mass at hatching from reptiles kept at constant incubation conditions. To do this, @Raynal2022 used the log response ratio (*lnRR*) to estimate the magnitude and direction of mass difference between constant and fluctuating temperature treatments. </span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>You might be thinking, so what? Yes, we have all these sources of non-independence, but who cares? Why is it important that we seriously consider the dependency? There are a few reasons:</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>First, we want to make sure we get the 'weight' matrix correct so that we get a good estimate of the overall meta-analytic mean</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Second, ignoring the dependency structure will result in much narrower confidence intervals giving us a false impression that we have much greater confidence in the mean estimate than what we actually have.</span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Third, and this relates to point 2 above, it will mess up with our inferential statistics. We are more likely to make Type I errors. Narrower standard errors are going to result in larger test statistics and this in combination with our over-inflated degrees of freedom will tell us our results are significant when in fact they are not.</span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example of Dealing with Shared Controls**</span></span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/raynal.png)</span></span>
 <span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>Importantly, many studies contained multiple fluctuating temperature treatments. Some studies fluctuated temperatures $\pm$ 2$^{\circ}$C whereas others treatments might have fluctuated temperatures  $\pm$ 8$^{\circ}$C. In this type of study, the **constant incubation temperature treatment can be compared with both fluctuating treatments to create two separate effect size values (Like in @fig-fig1 b)**. However, as noted above, this induces a correlation between their sampling errors because the constant treatment is used twice. We'll show you how we can deal with this very common type of situation. </span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>As an example of how to deal with shared-control non-independence that affects the sampling (co)variance matrix ($\textbf{M}$), we'll turn to a study by <span class="co">[</span><span class="ot">@Raynal2022</span><span class="co">](https://doi.org/10.1242/jeb.243369)</span>. @Raynal2022 were interested in comparing how fluctuating versus constant developmental temperatures (i.e., egg incubation temperatures) impact upon suites of traits. For the purpose of this exercise we will focus on a single trait with the most data, offspring body mass. In other words, we are interested in comparing whether reptiles from fluctuating incubation conditions differ in mass at hatching from reptiles kept at constant incubation conditions. To do this, @Raynal2022 used the log response ratio (*lnRR*) to estimate the magnitude and direction of mass difference between constant and fluctuating temperature treatments. </span>
 <span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### Loading the Data and Calculating lnRR</span></span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>Importantly, many studies contained multiple fluctuating temperature treatments. Some studies fluctuated temperatures $\pm$ 2$^{\circ}$C whereas others treatments might have fluctuated temperatures  $\pm$ 8$^{\circ}$C. In this type of study, the **constant incubation temperature treatment can be compared with both fluctuating treatments to create two separate effect size values (Like in @fig-fig1 b)**. However, as noted above, this induces a correlation between their sampling errors because the constant treatment is used twice. We'll show you how we can deal with this very common type of situation. </span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>We'll first load the packages and data that we need for the analysis.</span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a><span class="fu">### Loading the Data and Calculating lnRR</span></span>
 <span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: datapack</span></span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>We'll first load the packages and data that we need for the analysis.</span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: datapack</span></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
 <span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")  # We need this package to download from GitHub. Un-comment if you don't already have it installed.</span></span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"daniel1noble/metaAidR"</span>)  <span class="co"># We've created a useful function for creating matrices here</span></span>
-<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>    pacman<span class="sc">::</span><span class="fu">p_load</span>(metaAidR, metafor, corrplot)</span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data</span></span>
-<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>  mass_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/Mass.data.csv"</span>)</span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>We can now calculate the log response ratio (*lnRR*) from the two treatments within the data:</span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")  # We need this package to download from GitHub. Un-comment if you don't already have it installed.</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"daniel1noble/metaAidR"</span>)  <span class="co"># We've created a useful function for creating matrices here</span></span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>    pacman<span class="sc">::</span><span class="fu">p_load</span>(metaAidR, metafor, corrplot)</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data</span></span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>  mass_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/Mass.data.csv"</span>)</span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: calc-lnrr</span></span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the log response ratio</span></span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>mass_data<span class="ot">&lt;-</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ROM"</span>, <span class="at">n1i =</span> treat_N ,      <span class="at">n2i =</span> control_N , </span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">m1i =</span> treat_mean ,   <span class="at">m2i =</span> control_mean , </span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">sd1i =</span> treat_error , <span class="at">sd2i =</span> control_error , <span class="at">data =</span> mass_data)</span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>mass_data<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(mass_data)[<span class="dv">1</span>]</span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a><span class="fu">### Creating the $\textbf{M}$ matrix to deal with shared controls</span></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>We can now calculate the log response ratio (*lnRR*) from the two treatments within the data:</span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: calc-lnrr</span></span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the log response ratio</span></span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>mass_data<span class="ot">&lt;-</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ROM"</span>, <span class="at">n1i =</span> treat_N ,      <span class="at">n2i =</span> control_N , </span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">m1i =</span> treat_mean ,   <span class="at">m2i =</span> control_mean , </span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">sd1i =</span> treat_error , <span class="at">sd2i =</span> control_error , <span class="at">data =</span> mass_data)</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>mass_data<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(mass_data)[<span class="dv">1</span>]</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>When setting the data up it is important that there is a column indicating which rows share a common control conditions. Rows that have the same value within this column indicate which effects need to have a covariance calculated for the off-diagonal element of the $\textbf{M}$ matrix. In this data set the <span class="in">`comparison_ID`</span> column represents this indicator. </span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a><span class="fu">### Creating the $\textbf{M}$ matrix to deal with shared controls</span></span>
 <span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>Once we have a column indicating what effects share a common control we now want to calculate the covariance between the sampling errors for these effects. To do this, we can monopolize of covariance equations for various effect sizes <span class="co">[</span><span class="ot">many large-sample approximations for these can be found in @GleserOlkin2009; and @Lajeunesse2011</span><span class="co">]</span>. For the log response ratio, @Lajeunesse2011 provides this equation. We won't go over the details, other than to say that it exists and that some of these formulas are already built in to the <span class="in">`make_VCV_matrix`</span> function in the <span class="co">[</span><span class="ot">`metaAidR`</span><span class="co">](https://github.com/daniel1noble/metaAidR)</span> package. </span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>When setting the data up it is important that there is a column indicating which rows share a common control conditions. Rows that have the same value within this column indicate which effects need to have a covariance calculated for the off-diagonal element of the $\textbf{M}$ matrix. In this data set the <span class="in">`comparison_ID`</span> column represents this indicator. </span>
 <span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: calc-vcv-matrix</span></span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the M matrix</span></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">make_VCV_matrix</span>(<span class="at">data =</span> mass_data, <span class="at">V =</span> <span class="st">"vi"</span>, </span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>                               <span class="at">cluster =</span> <span class="st">"comparison_ID"</span>, </span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>                               <span class="at">m =</span> <span class="st">"control_mean"</span>, <span class="at">sd =</span> <span class="st">"control_error"</span>, <span class="at">n =</span> <span class="st">"control_N"</span>, </span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>                               <span class="at">type =</span> <span class="st">"vcv"</span>, <span class="at">vcal =</span> <span class="st">"ROM"</span>, <span class="at">obs =</span> <span class="st">"obs"</span>)</span>
-<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>We can see the block structure from the shared controls in the data using <span class="in">`corrplot`</span> (@fig-corrplot). While we present the correlation matrix the actual $\textbf{M}$ matrix has calculated the covariance and stores this in the off-diagonal. This uses @Lajeunesse2011's equation 8, which shows that the covariance is simply the control variance part of the log response ratio sampling variance. </span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>Once we have a column indicating what effects share a common control we now want to calculate the covariance between the sampling errors for these effects. To do this, we can monopolize of covariance equations for various effect sizes <span class="co">[</span><span class="ot">many large-sample approximations for these can be found in @GleserOlkin2009; and @Lajeunesse2011</span><span class="co">]</span>. For the log response ratio, @Lajeunesse2011 provides this equation. We won't go over the details, other than to say that it exists and that some of these formulas are already built in to the <span class="in">`make_VCV_matrix`</span> function in the <span class="co">[</span><span class="ot">`metaAidR`</span><span class="co">](https://github.com/daniel1noble/metaAidR)</span> package. </span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: calc-vcv-matrix</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the M matrix</span></span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">make_VCV_matrix</span>(<span class="at">data =</span> mass_data, <span class="at">V =</span> <span class="st">"vi"</span>, </span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>                               <span class="at">cluster =</span> <span class="st">"comparison_ID"</span>, </span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>                               <span class="at">m =</span> <span class="st">"control_mean"</span>, <span class="at">sd =</span> <span class="st">"control_error"</span>, <span class="at">n =</span> <span class="st">"control_N"</span>, </span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>                               <span class="at">type =</span> <span class="st">"vcv"</span>, <span class="at">vcal =</span> <span class="st">"ROM"</span>, <span class="at">obs =</span> <span class="st">"obs"</span>)</span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-corrplot</span></span>
-<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Correlation plot of the M matrix. The (co)variance matrix is converted to a correlation matrix and plotted. We can see the blocked structure in the matrix with off-diagonals indicating the effects sizes that share a common control. In this data there are not a huge number, but enough to see."</span></span>
-<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot the M matrix as a correlation matrix</span></span>
-<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a>corrplot<span class="sc">::</span><span class="fu">corrplot</span>(<span class="fu">cov2cor</span>(M))</span>
-<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a><span class="fu">### Including the $\textbf{M}$ matrix in our Multi-level Meta-analytic Model</span></span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a>We can see the block structure from the shared controls in the data using <span class="in">`corrplot`</span> (@fig-corrplot). While we present the correlation matrix the actual $\textbf{M}$ matrix has calculated the covariance and stores this in the off-diagonal. This uses @Lajeunesse2011's equation 8, which shows that the covariance is simply the control variance part of the log response ratio sampling variance. </span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-corrplot</span></span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Correlation plot of the M matrix. The (co)variance matrix is converted to a correlation matrix and plotted. We can see the blocked structure in the matrix with off-diagonals indicating the effects sizes that share a common control. In this data there are not a huge number, but enough to see."</span></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot the M matrix as a correlation matrix</span></span>
+<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a>corrplot<span class="sc">::</span><span class="fu">corrplot</span>(<span class="fu">cov2cor</span>(M))</span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>Now that we have constructed the $\textbf{M}$ matrix we are now ready to fit our multi-level meta-analytic model. Note that @Raynal2022 included a phylogenetic correlation matrix in their model, but, we'll save that for the next tutorial and simplify the model. We'll control for study ID, species ID and estimate a residual (within-study) variance:</span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### Including the $\textbf{M}$ matrix in our Multi-level Meta-analytic Model</span></span>
 <span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mlma</span></span>
-<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a><span class="co">#full model including all random effects and moderators to do AICc model selection on</span></span>
-<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a>mlma <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> yi, <span class="at">V =</span> M, <span class="at">mod =</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
-<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a>                       <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>paper_no, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Genus_species, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>data_ID), </span>
-<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> mass_data, <span class="at">method =</span> <span class="st">'REML'</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>)</span>
-<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mlma)</span>
-<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a>As you can see in the model, the <span class="in">`V`</span> argument in <span class="in">`metafor`</span> takes the $\textbf{M}$ matrix directly. This will account for the shared-control usage in the data. This model is a little different than the one actually fit in @Raynal2022 because it does not include phylogeny, but it gives us essentially the same result. </span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>Now that we have constructed the $\textbf{M}$ matrix we are now ready to fit our multi-level meta-analytic model. Note that @Raynal2022 included a phylogenetic correlation matrix in their model, but, we'll save that for the next tutorial and simplify the model. We'll control for study ID, species ID and estimate a residual (within-study) variance:</span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mlma</span></span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a><span class="co">#full model including all random effects and moderators to do AICc model selection on</span></span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a>mlma <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> yi, <span class="at">V =</span> M, <span class="at">mod =</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a>                       <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>paper_no, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Genus_species, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>data_ID), </span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> mass_data, <span class="at">method =</span> <span class="st">'REML'</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>)</span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mlma)</span>
+<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>As you can see in the model, the <span class="in">`V`</span> argument in <span class="in">`metafor`</span> takes the $\textbf{M}$ matrix directly. This will account for the shared-control usage in the data. This model is a little different than the one actually fit in @Raynal2022 because it does not include phylogeny, but it gives us essentially the same result. </span>
 <span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
 <span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the overall mean estimate and variance, and what does it mean in the context of fluctuating temperature on body mass?** </span></span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
 <span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**What is the overall mean estimate and variance, and what does it mean in the context of fluctuating temperature on body mass?** </span></span>
 <span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;In essence, what this model is telling us is that there is, on average, a  **`r (1 - predict(mlma, transf = exp)$pred)*100`% decrease** in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the **95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from a zero** (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.</span></span>
+<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
 <span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;In essence, what this model is telling us is that there is, on average, a  **`r (1 - predict(mlma, transf = exp)$pred)*100`% decrease** in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the **95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from a zero** (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.</span></span>
 <span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Robust Variance Estimation -- a useful tool to deal with unknown dependency**</span></span>
+<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>Sometimes we may not be able to deal with all sources of dependency. There are a lot of unknowns with respect to how effect sizes might be correlated, to what extent they are related and it might vary across studies. A very promising tool are **robust variance estimators** which relax the need to known and understand the dependency in your data. <span class="co">[</span><span class="ot">James Pustejovsky</span><span class="co">](https://www.jepusto.com)</span> provides a fantastic overview of the problem and how robust variance estimators can help make it easier to deal with various sources of non-independence. </span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Robust Variance Estimation -- a useful tool to deal with unknown dependency**</span></span>
 <span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>{{&lt; video https://www.youtube.com/watch?v=sJUc39vneWk &gt;}}</span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>Sometimes we may not be able to deal with all sources of dependency. There are a lot of unknowns with respect to how effect sizes might be correlated, to what extent they are related and it might vary across studies. A very promising tool are **robust variance estimators** which relax the need to known and understand the dependency in your data. <span class="co">[</span><span class="ot">James Pustejovsky</span><span class="co">](https://www.jepusto.com)</span> provides a fantastic overview of the problem and how robust variance estimators can help make it easier to deal with various sources of non-independence. </span>
 <span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a>We can apply robust variance methods to our model above using the <span class="in">`robust`</span> function in <span class="in">`metafor`</span>. It's reasonably simple.</span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a>{{&lt; video https://www.youtube.com/watch?v=sJUc39vneWk &gt;}}</span>
 <span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rve</span></span>
-<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a><span class="fu">robust</span>(mlma, <span class="at">cluster =</span> mass_data<span class="sc">$</span>paper_no)</span>
-<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a>As we can see here, there are really no changes, which isn't too surprising because we have mostly accounted for all the sources of dependence. In simulations, we and others have shown RVE's do a very good job dealing with dependency <span class="co">[</span><span class="ot">@Nakagawa2021; @Song2021; @Pustejovsky2021; @Tipton2013</span><span class="co">]</span> .</span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a>We can apply robust variance methods to our model above using the <span class="in">`robust`</span> function in <span class="in">`metafor`</span>. It's reasonably simple.</span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rve</span></span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a><span class="fu">robust</span>(mlma, <span class="at">cluster =</span> mass_data<span class="sc">$</span>paper_no)</span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a>As we can see here, there are really no changes, which isn't too surprising because we have mostly accounted for all the sources of dependence. In simulations, we and others have shown RVE's do a very good job dealing with dependency <span class="co">[</span><span class="ot">@Nakagawa2021; @Song2021; @Pustejovsky2021; @Tipton2013</span><span class="co">]</span> .</span>
 <span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a>There are a tonne of different sources of non-independence you might encounter in meta-analysis -- some of these are somewhat unique <span class="co">[</span><span class="ot">@Noble2017</span><span class="co">]</span>. In the next tutorial we'll talk about another common source -- phylogeny. Unfortunately, we don't have time (or enough examples) to overview the different types and how to deal with them all. In some cases, it may not really matter whether all sources are correctly dealt with in the model, and it can get quite complex such that it may not be possible to deal with them all anyway. </span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
 <span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a>Having said that, @Noble2017 recommend: </span>
+<span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a>There are a tonne of different sources of non-independence you might encounter in meta-analysis -- some of these are somewhat unique <span class="co">[</span><span class="ot">@Noble2017</span><span class="co">]</span>. In the next tutorial we'll talk about another common source -- phylogeny. Unfortunately, we don't have time (or enough examples) to overview the different types and how to deal with them all. In some cases, it may not really matter whether all sources are correctly dealt with in the model, and it can get quite complex such that it may not be possible to deal with them all anyway. </span>
 <span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>reporting on the different sources of non-independence explicitly </span>
-<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>conducting sensitivity analyses to explore the impacts of non-independence on inferences. </span>
-<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a>The use of robust variance estimators shows immense promise in dealing with a multitude of dependency within a data set without having to specify it all explicitly <span class="co">[</span><span class="ot">@Pustejovsky2021; @Tipton2013; @Hedges2010; @Hedges2019; @Nakagawa2021; @Song2021</span><span class="co">]</span>.</span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a>Having said that, @Noble2017 recommend: </span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>reporting on the different sources of non-independence explicitly </span>
+<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>conducting sensitivity analyses to explore the impacts of non-independence on inferences. </span>
 <span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a>The use of robust variance estimators shows immense promise in dealing with a multitude of dependency within a data set without having to specify it all explicitly <span class="co">[</span><span class="ot">@Pustejovsky2021; @Tipton2013; @Hedges2010; @Hedges2019; @Nakagawa2021; @Song2021</span><span class="co">]</span>.</span>
 <span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb9-267"><a href="#cb9-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-nonind</span></span>
-<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-268"><a href="#cb9-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-nonind</span></span>
+<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

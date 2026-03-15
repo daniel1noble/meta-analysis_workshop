@@ -4,7 +4,7 @@ project:
 
 book:
   title: "Meta-Analysis Workshop"
-  author: "Daniel W.A. Noble"
+  author: "Daniel W.A. Noble, Patrice Pottier"
   date: today
   sidebar:
     logo: figs/logo.png

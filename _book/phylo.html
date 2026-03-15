@@ -428,22 +428,26 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="formal-definition-of-phylogenetic-meta-analytic-model"><strong>Formal Definition of Phylogenetic Meta-analytic Model</strong></h2>
 <p><a href="./multi-level.html">Recall</a> our multilevel meta-analytic model we previously discussed:</p>
 <p><span class="math display">\[
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}\textbf{I}) \\
-s_{j} \sim N(0, \tau^2\textbf{I}) \\
-s_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
-e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+\begin{aligned}
+y_{i} &amp;= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}\textbf{I}) \\
+s_{j} &amp;\sim N(0, \tau^2\textbf{I}) \\
+s_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) \\
+e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})
+\end{aligned}
 \]</span></p>
 <p>Here, <span class="math inline">\(y_{i}\)</span> is the <em>i</em>th effect size estimate and <span class="math inline">\(m_{i}\)</span> is the sampling error (deviation from <span class="math inline">\(\mu\)</span>) for effect size <em>i</em>. <span class="math inline">\(e_{i}\)</span> is the effect-size-specific effect (within study effect) (that’s a mouthful!) applied to each effect <em>i</em>. <span class="math inline">\(s_{j[i]}\)</span> is the study specific effect, <em>j</em>, applied to the <em>i</em>th effect size, where <em>j</em> = 1,…,<span class="math inline">\(N_{studies}\)</span>, <span class="math inline">\(spp_{k[i]}\)</span> is the species specific effect, <em>k</em>, applied to the <em>i</em>th effect size, where <em>k</em> = 1,…,<span class="math inline">\(N_{species}\)</span>. As we discussed in the previous tutorial on <a href="./complex-nonind.html">non-independence</a>, <span class="math inline">\(\textbf{I}\)</span> denotes the fact that effect size estimates are independently and identically distributed.</p>
 <p>This model accounts for the fact that effect size values from the same study and species are clustered (i.e.&nbsp;non-independent) because they all share the same ‘effect’ sampled from the same distribution. However, in reality, this doesn’t account for the fact that some species effects are more similar to each other than others because of the shared evolutionary history between species <span class="citation" data-cites="Hadfield2010 Lajeunesse2009 NakagawaSantos2012">(<a href="#ref-Hadfield2010" role="doc-biblioref">Hadfield, 2010</a>; <a href="#ref-Lajeunesse2009" role="doc-biblioref">Lajeunesse, 2009</a>; <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>)</span>.</p>
 <p>To account for shared evolutionary history between species we need to modify the <span class="math inline">\(\textbf{I}\)</span> matrix to model the correlation between ‘species effects’. This can be done by estimating a new random phylogenetic effect (<span class="math inline">\(a_{k}\)</span>), and replacing the <span class="math inline">\(\textbf{I}\)</span> matrix with an <span class="math inline">\(\textbf{A}\)</span> matrix as follows:</p>
 <p><span class="math display">\[
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + a_{sp[i]}+ e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}\textbf{I}) \\
-s_{j} \sim N(0, \tau^2\textbf{I}) \\
-spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
-a_{k} \sim N(0, \sigma_{a}^2\textbf{A}) \\
-e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+\begin{aligned}
+y_{i} &amp;= \mu + s_{j[i]} + spp_{k[i]} + a_{sp[i]}+ e_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}\textbf{I}) \\
+s_{j} &amp;\sim N(0, \tau^2\textbf{I}) \\
+spp_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) \\
+a_{k} &amp;\sim N(0, \sigma_{a}^2\textbf{A}) \\
+e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})
+\end{aligned}
 \]</span></p>
 <p>Here, <span class="math inline">\(a_{k[i]}\)</span> is a phylogenetic effect for the <em>k</em> species applied to effect size <em>i</em>. These effects are now sampled from a normal distribution (denoted by <em>N</em>) with a mean of 0 and <span class="math inline">\(\sigma_{a}^2\)</span> which is the phylogenetic variance. However, now <span class="math inline">\(\textbf{A}\)</span> is a <span class="math inline">\(N_{species}\)</span> by <span class="math inline">\(N_{species}\)</span> correlation matrix of distances between species extracted from a phylogenetic tree, which means that species effects will be correlated (off-diagonals will be non-zero) based on the distance from the root of the tree to the most recent common ancestor <span class="citation" data-cites="NakagawaSantos2012 Hadfield2010 Noble2017">(<a href="#ref-Hadfield2010" role="doc-biblioref">Hadfield, 2010</a>; <a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span>.</p>
 <p>You will notice that we have <em>two</em> species-level random effects in our model. We are ‘trying’ (and we may not succeed) to distinguish between species-specific effects driven by shared evolutionary history (i.e., <span class="math inline">\(a_{k}\)</span>) and non-phylogenetic species-specific effects (i.e., <span class="math inline">\(spp_{k}\)</span>), driven by, say, shared ecology. <strong>It may not always be possible to estimate both effects in a single model</strong>. It is worth keeping this in mind as these are data-hungry models and estimating these parameters will require a large sample size. Often, it is necessary to resort to some form of model selection or to use your <em>a priori</em> judgement about what species-specific effect is most important.</p>
@@ -1176,177 +1180,181 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Recall</span><span class="co">](multi-level.qmd)</span> our multilevel meta-analytic model we previously discussed: </span>
 <span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>s_{k} \sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2\textbf{I})</span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>Here, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. $e_{i}$ is the effect-size-specific effect (within study effect) (that's a mouthful!) applied to each effect *i*. $s_{j[i]}$ is the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, $spp_{k[i]}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. As we discussed in the previous tutorial on <span class="co">[</span><span class="ot">non-independence</span><span class="co">](complex-nonind.qmd)</span>, $\textbf{I}$ denotes the fact that effect size estimates are independently and identically distributed.</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>s_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>This model accounts for the fact that effect size values from the same study and species are clustered (i.e. non-independent) because they all share the same 'effect' sampled from the same distribution. However, in reality, this doesn't account for the fact that some species effects are more similar to each other than others because of the shared evolutionary history between species <span class="co">[</span><span class="ot">@Hadfield2010; @Lajeunesse2009; @NakagawaSantos2012</span><span class="co">]</span>. </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>Here, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. $e_{i}$ is the effect-size-specific effect (within study effect) (that's a mouthful!) applied to each effect *i*. $s_{j[i]}$ is the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, $spp_{k[i]}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. As we discussed in the previous tutorial on <span class="co">[</span><span class="ot">non-independence</span><span class="co">](complex-nonind.qmd)</span>, $\textbf{I}$ denotes the fact that effect size estimates are independently and identically distributed.</span>
 <span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>To account for shared evolutionary history between species we need to modify the $\textbf{I}$ matrix to model the correlation between 'species effects'. This can be done by estimating a new random phylogenetic effect ($a_{k}$), and replacing the $\textbf{I}$ matrix with an $\textbf{A}$ matrix as follows:</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>This model accounts for the fact that effect size values from the same study and species are clustered (i.e. non-independent) because they all share the same 'effect' sampled from the same distribution. However, in reality, this doesn't account for the fact that some species effects are more similar to each other than others because of the shared evolutionary history between species <span class="co">[</span><span class="ot">@Hadfield2010; @Lajeunesse2009; @NakagawaSantos2012</span><span class="co">]</span>. </span>
 <span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + a_{sp<span class="co">[</span><span class="ot">i</span><span class="co">]</span>}+ e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>a_{k} \sim N(0, \sigma_{a}^2\textbf{A}) <span class="sc">\\</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2\textbf{I})</span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>Here, $a_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>}$ is a phylogenetic effect for the *k* species applied to effect size *i*. These effects are now sampled from a normal distribution (denoted by *N*) with a mean of 0 and $\sigma_{a}^2$ which is the phylogenetic variance. However, now $\textbf{A}$ is a $N_{species}$ by $N_{species}$ correlation matrix of distances between species extracted from a phylogenetic tree, which means that species effects will be correlated (off-diagonals will be non-zero) based on the distance from the root of the tree to the most recent common ancestor <span class="co">[</span><span class="ot">@NakagawaSantos2012; @Hadfield2010; @Noble2017</span><span class="co">]</span>. </span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>You will notice that we have *two* species-level random effects in our model. We are 'trying' (and we may not succeed) to distinguish between species-specific effects driven by shared evolutionary history (i.e., $a_{k}$) and non-phylogenetic species-specific effects (i.e., $spp_{k}$), driven by, say, shared ecology. **It may not always be possible to estimate both effects in a single model**. It is worth keeping this in mind as these are data-hungry models and estimating these parameters will require a large sample size. Often, it is necessary to resort to some form of model selection or to use your *a priori* judgement about what species-specific effect is most important. </span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>To account for shared evolutionary history between species we need to modify the $\textbf{I}$ matrix to model the correlation between 'species effects'. This can be done by estimating a new random phylogenetic effect ($a_{k}$), and replacing the $\textbf{I}$ matrix with an $\textbf{A}$ matrix as follows:</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + a_{sp<span class="co">[</span><span class="ot">i</span><span class="co">]</span>}+ e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>a_{k} &amp;\sim N(0, \sigma_{a}^2\textbf{A}) <span class="sc">\\</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example of Phylogenetic Multi-level Meta-analysis**</span></span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>Here, $a_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>}$ is a phylogenetic effect for the *k* species applied to effect size *i*. These effects are now sampled from a normal distribution (denoted by *N*) with a mean of 0 and $\sigma_{a}^2$ which is the phylogenetic variance. However, now $\textbf{A}$ is a $N_{species}$ by $N_{species}$ correlation matrix of distances between species extracted from a phylogenetic tree, which means that species effects will be correlated (off-diagonals will be non-zero) based on the distance from the root of the tree to the most recent common ancestor <span class="co">[</span><span class="ot">@NakagawaSantos2012; @Hadfield2010; @Noble2017</span><span class="co">]</span>. </span>
 <span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>You will notice that we have *two* species-level random effects in our model. We are 'trying' (and we may not succeed) to distinguish between species-specific effects driven by shared evolutionary history (i.e., $a_{k}$) and non-phylogenetic species-specific effects (i.e., $spp_{k}$), driven by, say, shared ecology. **It may not always be possible to estimate both effects in a single model**. It is worth keeping this in mind as these are data-hungry models and estimating these parameters will require a large sample size. Often, it is necessary to resort to some form of model selection or to use your *a priori* judgement about what species-specific effect is most important. </span>
 <span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Format raw data for analysis</span></span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>We will use the dispersal data set (Z-transformed correlation coefficient or Zr) from <span class="co">[</span><span class="ot">@WuSeebacher2022</span><span class="co">](https://www.nature.com/articles/s42003-022-03055-y)</span> (see <span class="co">[</span><span class="ot">Effect Size tutorial</span><span class="co">](effect-size.qmd)</span> on background and effect size calculation) to demonstrate the following analysis. First, load the the raw data and add the following additional column effect size ID (<span class="in">`es_ID`</span>). Then, calculate effect size as <span class="in">`Zr`</span> and sampling variance as <span class="in">`V_Zr`</span>.</span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw data}</span></span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a><span class="do">## Load packages</span></span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pacman")</span></span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, ape, phytools)</span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span> <span class="co"># remove irrelevant columns</span></span>
-<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span> <span class="co"># add effect size ID</span></span>
-<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>)) <span class="co"># remove underscore for some species with missing underscore. Some inconsistency when curating the database.</span></span>
-<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Fisher's r-to-z transformed correlation coefficient (ZCOR) as yi = effect size and vi = sampling variances, where ri = raw correlation coefficients, and ni = sample size.</span></span>
-<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size, <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
-<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example of Phylogenetic Multi-level Meta-analysis**</span></span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Format raw data for analysis</span></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>We will use the dispersal data set (Z-transformed correlation coefficient or Zr) from <span class="co">[</span><span class="ot">@WuSeebacher2022</span><span class="co">](https://www.nature.com/articles/s42003-022-03055-y)</span> (see <span class="co">[</span><span class="ot">Effect Size tutorial</span><span class="co">](effect-size.qmd)</span> on background and effect size calculation) to demonstrate the following analysis. First, load the the raw data and add the following additional column effect size ID (<span class="in">`es_ID`</span>). Then, calculate effect size as <span class="in">`Zr`</span> and sampling variance as <span class="in">`V_Zr`</span>.</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw data}</span></span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a><span class="do">## Load packages</span></span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pacman")</span></span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, ape, phytools)</span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span> <span class="co"># remove irrelevant columns</span></span>
+<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span> <span class="co"># add effect size ID</span></span>
+<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>)) <span class="co"># remove underscore for some species with missing underscore. Some inconsistency when curating the database.</span></span>
 <span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Phylogenetic reconstruction</span></span>
-<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>We will now reconstruct the phylogeny for species extracted in the raw data set. There are different ways to obtain phylogenetic trees. You can extract trees as a <span class="in">`.nex`</span> or <span class="in">`.tre`</span> file from existing phylogeny database or studies with such data available (see https://vertlife.org/data/ for example taxa specific trees), load it to *R* using the <span class="in">`ape`</span> package, and prune (keep only the species you have) the tree to match the data set. See the <span class="in">`drop_tip`</span> function by <span class="co">[</span><span class="ot">Liam Revell</span><span class="co">](http://blog.phytools.org/2011/03/prune-tree-to-list-of-taxa.html)</span> to prune tree tips to match the data set species name. </span>
+<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Fisher's r-to-z transformed correlation coefficient (ZCOR) as yi = effect size and vi = sampling variances, where ri = raw correlation coefficients, and ni = sample size.</span></span>
+<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size, <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
+<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>If you are comparing effect sizes from a broad phylogenetic range (e.g. including Prokaryotes or Plantae), you can extract species names from the <span class="co">[</span><span class="ot">Open Tree of Life</span><span class="co">](https://tree.opentreeoflife.org/opentree/argus/opentree13.4@ott93302)</span> (OTL) data set using the <span class="in">`rotl`</span> *R* package. Tutorials for the `rotl` *R* package can be found here: https://cran.r-project.org/web/packages/rotl/vignettes/rotl.html</span>
+<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a><span class="fu">### Phylogenetic reconstruction</span></span>
 <span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a>For the purpose of this tutorial, we will follow the second method. Notice that we have a separate column in the raw data set called <span class="in">`species_OTL`</span>. This is because to reconstruct the phylogeny, we need the names in the data set to match the OTL data set. The species names described in the paper (especially older papers) may not match the OTL names. Check that the names match before running the following codes or else it will not run successfully. This also applies to any phylogenetic trees extracted.</span>
+<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a>We will now reconstruct the phylogeny for species extracted in the raw data set. There are different ways to obtain phylogenetic trees. You can extract trees as a <span class="in">`.nex`</span> or <span class="in">`.tre`</span> file from existing phylogeny database or studies with such data available (see https://vertlife.org/data/ for example taxa specific trees), load it to *R* using the <span class="in">`ape`</span> package, and prune (keep only the species you have) the tree to match the data set. See the <span class="in">`drop_tip`</span> function by <span class="co">[</span><span class="ot">Liam Revell</span><span class="co">](http://blog.phytools.org/2011/03/prune-tree-to-list-of-taxa.html)</span> to prune tree tips to match the data set species name. </span>
 <span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a><span class="fu">#### IMPORTANT NOTE</span></span>
+<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>If you are comparing effect sizes from a broad phylogenetic range (e.g. including Prokaryotes or Plantae), you can extract species names from the <span class="co">[</span><span class="ot">Open Tree of Life</span><span class="co">](https://tree.opentreeoflife.org/opentree/argus/opentree13.4@ott93302)</span> (OTL) data set using the <span class="in">`rotl`</span> *R* package. Tutorials for the `rotl` *R* package can be found here: https://cran.r-project.org/web/packages/rotl/vignettes/rotl.html</span>
 <span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>For the purpose of this tutorial, we will follow the second method. Notice that we have a separate column in the raw data set called <span class="in">`species_OTL`</span>. This is because to reconstruct the phylogeny, we need the names in the data set to match the OTL data set. The species names described in the paper (especially older papers) may not match the OTL names. Check that the names match before running the following codes or else it will not run successfully. This also applies to any phylogenetic trees extracted.</span>
 <span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errors in matching names</span></span>
+<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a><span class="fu">#### IMPORTANT NOTE</span></span>
 <span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **What can we do if errors occur when matching taxa names in the phylogeny with those in the data set?**</span></span>
+<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Suggestions</span></span>
+<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Errors in matching names</span></span>
 <span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Name matching errors come in different forms and flavours with the OTL. The easiest way to avoid most errors is to check that the **names in the raw data match the OTL database** each time you add a new species. OTL will also check for taxa synoymn's -- changes to taxa names. You can check for these and update your dataset so the taxa match. This will address many errors matching names down the track. We have included code to check which names are inconsistent in case you missed some. The remaining errors come down to formatting which you can see below. As an example with this dataset, we have to re-add the underscore between the Genus and species name because some names (I noticed 3 species in this dataset) such as "Gambusia affinis" (without the underscore) matches up with "Bambusia affinis" in the OTL database. Clearly this is a different taxa. We can get around it by first removing the underscore before matching the names (see code for raw before), then adding it back when matching the names to the tree (which has underscores).</span></span>
+<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **What can we do if errors occur when matching taxa names in the phylogeny with those in the data set?**</span></span>
 <span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## Suggestions</span></span>
 <span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Name matching errors come in different forms and flavours with the OTL. The easiest way to avoid most errors is to check that the **names in the raw data match the OTL database** each time you add a new species. OTL will also check for taxa synoymn's -- changes to taxa names. You can check for these and update your dataset so the taxa match. This will address many errors matching names down the track. We have included code to check which names are inconsistent in case you missed some. The remaining errors come down to formatting which you can see below. As an example with this dataset, we have to re-add the underscore between the Genus and species name because some names (I noticed 3 species in this dataset) such as "Gambusia affinis" (without the underscore) matches up with "Bambusia affinis" in the OTL database. Clearly this is a different taxa. We can get around it by first removing the underscore before matching the names (see code for raw before), then adding it back when matching the names to the tree (which has underscores).</span></span>
 <span id="cb14-96"><a href="#cb14-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a><span class="fu">### Build the tree and create correlation matrix</span></span>
-<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: phylo</span></span>
-<span id="cb14-102"><a href="#cb14-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb14-103"><a href="#cb14-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb14-104"><a href="#cb14-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Load additional packages for phylogenetic reconstruction</span></span>
-<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(rotl, ape)</span>
-<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-108"><a href="#cb14-108" aria-hidden="true" tabindex="-1"></a><span class="co"># Create species list based on OTL names and match with OTL database</span></span>
-<span id="cb14-109"><a href="#cb14-109" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL))) <span class="co"># generate list of species (as character format)</span></span>
-<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species) <span class="co"># match taxonomic names to the OTL</span></span>
+<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb14-98"><a href="#cb14-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-99"><a href="#cb14-99" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Build the tree and create correlation matrix</span></span>
+<span id="cb14-104"><a href="#cb14-104" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: phylo</span></span>
+<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb14-108"><a href="#cb14-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-109"><a href="#cb14-109" aria-hidden="true" tabindex="-1"></a><span class="co"># Load additional packages for phylogenetic reconstruction</span></span>
+<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(rotl, ape)</span>
 <span id="cb14-111"><a href="#cb14-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if species list do not match OTL identifier</span></span>
-<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a>taxa[taxa<span class="sc">$</span>approximate_match <span class="sc">==</span> <span class="cn">TRUE</span>,] <span class="co"># none so far</span></span>
-<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(zr_data<span class="sc">$</span>species_OTL)) <span class="co"># 74 species</span></span>
-<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(taxa) <span class="co"># 74 species</span></span>
-<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieving phylogenetic relationships among taxa in the form of a trimmed sub-tree</span></span>
-<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
-<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a>tree_tip_label <span class="ot">&lt;-</span> tree<span class="sc">$</span>tip.label <span class="co"># extract tree tip names</span></span>
-<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a>species_list   <span class="ot">&lt;-</span> <span class="fu">unique</span>(stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(zr_data<span class="sc">$</span>species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)) <span class="co"># extract species name and add underscore to match tree_trip_label</span></span>
-<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(tree_tip_label, species_list) <span class="co"># check what names from the raw data is not found in tree. </span></span>
-<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a><span class="co"># If names do not match the tree, then replace name in raw data to match tree</span></span>
-<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also visually inspect the tree via plot function to check if the species extracted are correct.</span></span>
-<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(tree, cex = 0.6, label.offset = 0.1, no.margin = TRUE) # plot tree</span></span>
-<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) </span>
-<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>) <span class="co"># compute branch lengths</span></span>
-<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>) <span class="co"># use a randomization approach to deal with polytomies</span></span>
+<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Create species list based on OTL names and match with OTL database</span></span>
+<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL))) <span class="co"># generate list of species (as character format)</span></span>
+<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species) <span class="co"># match taxonomic names to the OTL</span></span>
+<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if species list do not match OTL identifier</span></span>
+<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a>taxa[taxa<span class="sc">$</span>approximate_match <span class="sc">==</span> <span class="cn">TRUE</span>,] <span class="co"># none so far</span></span>
+<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(zr_data<span class="sc">$</span>species_OTL)) <span class="co"># 74 species</span></span>
+<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(taxa) <span class="co"># 74 species</span></span>
+<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieving phylogenetic relationships among taxa in the form of a trimmed sub-tree</span></span>
+<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
+<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a>tree_tip_label <span class="ot">&lt;-</span> tree<span class="sc">$</span>tip.label <span class="co"># extract tree tip names</span></span>
+<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a>species_list   <span class="ot">&lt;-</span> <span class="fu">unique</span>(stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(zr_data<span class="sc">$</span>species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)) <span class="co"># extract species name and add underscore to match tree_trip_label</span></span>
+<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>(tree_tip_label, species_list) <span class="co"># check what names from the raw data is not found in tree. </span></span>
+<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a><span class="co"># If names do not match the tree, then replace name in raw data to match tree</span></span>
+<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also visually inspect the tree via plot function to check if the species extracted are correct.</span></span>
+<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(tree, cex = 0.6, label.offset = 0.1, no.margin = TRUE) # plot tree</span></span>
 <span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, an internal node of a phylogenetic tree is described as a polytomy if (i) it is in a rooted tree and is linked to three or more subtrees or (ii) it is in an unrooted tree and is attached to four or more branches which is commonly observed with data extracted from OTL. This is the result of insufficient phylogenetic information such such as divergence time. To resolve polytomies, we use the multi2di function from the ape package. </span></span>
-<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Check tree is ultrametric</span></span>
-<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a><span class="co">#ape::is.ultrametric(tree) # TRUE</span></span>
-<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation matrix for analysis</span></span>
-<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a>phylo_cor <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> T)</span>
-<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) </span>
+<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>) <span class="co"># compute branch lengths</span></span>
+<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>) <span class="co"># use a randomization approach to deal with polytomies</span></span>
+<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, an internal node of a phylogenetic tree is described as a polytomy if (i) it is in a rooted tree and is linked to three or more subtrees or (ii) it is in an unrooted tree and is attached to four or more branches which is commonly observed with data extracted from OTL. This is the result of insufficient phylogenetic information such such as divergence time. To resolve polytomies, we use the multi2di function from the ape package. </span></span>
+<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a><span class="co"># Check tree is ultrametric</span></span>
+<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a><span class="co">#ape::is.ultrametric(tree) # TRUE</span></span>
 <span id="cb14-142"><a href="#cb14-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a>We can also have a look at the final tree:</span>
-<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree</span></span>
-<span id="cb14-149"><a href="#cb14-149" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb14-150"><a href="#cb14-150" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Phylogenetic tree generated for species in the Wu &amp; Seebacher (2022) dataset."</span></span>
-<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree, <span class="at">type =</span> <span class="st">"phylogram"</span>, <span class="at">cex =</span> <span class="fl">0.3</span>)</span>
-<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a><span class="fu">### Run phylogenetically corrected, multi-level meta-analysis on overall effect</span></span>
+<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation matrix for analysis</span></span>
+<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a>phylo_cor <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> T)</span>
+<span id="cb14-145"><a href="#cb14-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-146"><a href="#cb14-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a>We can also have a look at the final tree:</span>
+<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree</span></span>
+<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Phylogenetic tree generated for species in the Wu &amp; Seebacher (2022) dataset."</span></span>
 <span id="cb14-156"><a href="#cb14-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a>Lets say we are interested in the **overall relationship** of physiology and movement (Zr). The following code runs a phylogeneticlly corrected, multi-level meta-analysis via the <span class="in">`rma.mv`</span> function. Building upon the multi-level meta-analytic model from the <span class="co">[</span><span class="ot">Multi-level Meta-analysis tutorial</span><span class="co">](multi-level.qmd)</span>, we also included random effects (<span class="in">`random`</span> argument) to account for non-independence such as  <span class="in">`es_ID`</span> (effect size identity), <span class="in">`study_ID`</span> (unique study identity), <span class="in">`species`</span> (unique species identity), <span class="in">`species_OTL`</span> (species relatedness). The <span class="in">`R`</span> argument allows the correlation matrix (here, <span class="in">`phylo_cor`</span>) to be incorporated to the model which corresponds to the components specified in the <span class="in">`random`</span> argument <span class="in">`~1 | species_OTL`</span>.</span>
-<span id="cb14-158"><a href="#cb14-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a>Note: remember to add underscore to the species OTL because the tree tip names have underscores.</span>
+<span id="cb14-157"><a href="#cb14-157" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree, <span class="at">type =</span> <span class="st">"phylogram"</span>, <span class="at">cex =</span> <span class="fl">0.3</span>)</span>
+<span id="cb14-158"><a href="#cb14-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a><span class="fu">### Run phylogenetically corrected, multi-level meta-analysis on overall effect</span></span>
 <span id="cb14-160"><a href="#cb14-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r analysis}</span></span>
-<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
-<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
-<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
-<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
-<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
-<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
-<span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
-<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
-<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a>Lets say we are interested in the **overall relationship** of physiology and movement (Zr). The following code runs a phylogeneticlly corrected, multi-level meta-analysis via the <span class="in">`rma.mv`</span> function. Building upon the multi-level meta-analytic model from the <span class="co">[</span><span class="ot">Multi-level Meta-analysis tutorial</span><span class="co">](multi-level.qmd)</span>, we also included random effects (<span class="in">`random`</span> argument) to account for non-independence such as  <span class="in">`es_ID`</span> (effect size identity), <span class="in">`study_ID`</span> (unique study identity), <span class="in">`species`</span> (unique species identity), <span class="in">`species_OTL`</span> (species relatedness). The <span class="in">`R`</span> argument allows the correlation matrix (here, <span class="in">`phylo_cor`</span>) to be incorporated to the model which corresponds to the components specified in the <span class="in">`random`</span> argument <span class="in">`~1 | species_OTL`</span>.</span>
+<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a>Note: remember to add underscore to the species OTL because the tree tip names have underscores.</span>
+<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r analysis}</span></span>
+<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
+<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
+<span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
+<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-172"><a href="#cb14-172" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
+<span id="cb14-173"><a href="#cb14-173" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
+<span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb14-175"><a href="#cb14-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
 <span id="cb14-177"><a href="#cb14-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there an overall positive or negative relationship between physiology and movement?** </span></span>
+<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
 <span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates **a positive relationship** between physiology and movement with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. In this analysis, we also observe high heterogeneity among our effect size estimates with our Q-test being significant, a very common observation in ecological and evolutionary meta-analysis studies. Some of this heterogeneity may be driven by variation among studies, within studies, among species, and phylogeny as seen by the variance components of the model.</span></span>
+<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there an overall positive or negative relationship between physiology and movement?** </span></span>
 <span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
 <span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates **a positive relationship** between physiology and movement with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. In this analysis, we also observe high heterogeneity among our effect size estimates with our Q-test being significant, a very common observation in ecological and evolutionary meta-analysis studies. Some of this heterogeneity may be driven by variation among studies, within studies, among species, and phylogeny as seen by the variance components of the model.</span></span>
 <span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb14-189"><a href="#cb14-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb14-191"><a href="#cb14-191" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb14-192"><a href="#cb14-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
-<span id="cb14-194"><a href="#cb14-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-197"><a href="#cb14-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
-<span id="cb14-199"><a href="#cb14-199" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb14-200"><a href="#cb14-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-201"><a href="#cb14-201" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-202"><a href="#cb14-202" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb14-191"><a href="#cb14-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-192"><a href="#cb14-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-194"><a href="#cb14-194" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb14-195"><a href="#cb14-195" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb14-196"><a href="#cb14-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-197"><a href="#cb14-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-201"><a href="#cb14-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-202"><a href="#cb14-202" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb14-203"><a href="#cb14-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb14-204"><a href="#cb14-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-205"><a href="#cb14-205" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-206"><a href="#cb14-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

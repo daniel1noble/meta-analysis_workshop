@@ -24,11 +24,13 @@ In this tutorial, we'll overview some of these unique forms of non-independence 
 Let's briefly overview why non-independence can be an issue and why simple multilevel meta-analytic models do not always deal with the problem sufficiently well. Recall our multi-level meta-analytic (MLMA) model from the [last tutorial](multi-level.qmd). 
 
 $$
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}) \\
+s_{j} &\sim N(0, \tau^2) \\
+spp_{k} &\sim N(0, \sigma_{k}^2) \\
+e_{i} &\sim N(0, \sigma_{e}^2)
+\end{aligned}
 $$
 
 We hid some important notation to avoid drawing attention to it initially. The notation we neglected to mention is now included below:

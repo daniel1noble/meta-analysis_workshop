@@ -86,8 +86,10 @@ We notice a few important differences here. In the RE data set the variance acro
 What is a fixed effect meta-analysis anyway? If it wasn't clear from the above simulated data lets be more formal. We simulated data according to the following model, a fixed effects meta-analytic model:
 
 $$
-y_{i} = \mu + m_{i} \\
-m_{i} \sim N(0, v_{i})
+\begin{aligned}
+y_{i} &= \mu + m_{i} \\
+m_{i} &\sim N(0, v_{i})
+\end{aligned}
 $$
 where $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. You may notice from this model, and the simulated data, that we are assuming that there is a single overall mean from the pooled effect sizes we have, that effects are assumed to be independently, and identically distributed, and that the only deviation from $\mu$ is the result of sampling error, which is related to the sample size or power of the study. There are no additional sources of variance added to effect size estimates. 
 
@@ -184,9 +186,11 @@ se_mean_meta <- m$se
 ## **Random Effect Meta-Analysis**
 Now lets turn to the formal definition of a random effects meta-analysis. It looks at the outset as being very similar to our fixed effect model, but with a critically important addition:
 $$
-y_{i} = \mu + s_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{i} \sim N(0, \tau^2)
+\begin{aligned}
+y_{i} &= \mu + s_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}) \\
+s_{i} &\sim N(0, \tau^2)
+\end{aligned}
 $$
 Again, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. However, you will notice now that we have an additional source of variation, $s_{i}$, which is the study specific deviation. **Here, we are assuming now that every study has it's own mean effect size which is again sampled from a normal distribution with a between study variance, $\tau^2$ (read, tau-squared)**.  
 

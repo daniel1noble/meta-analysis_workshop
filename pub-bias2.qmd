@@ -56,11 +56,13 @@ arnold_data_endo$obs <- 1:dim(arnold_data_endo)[1]
 @Nakagawa2021b [building off of work by @Stanley2012; @Stanley2014] outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:
 
 $$
-y_{i} = \mu + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &= \mu + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}) \\
+s_{j} &\sim N(0, \tau^2) \\
+spp_{k} &\sim N(0, \sigma_{k}^2) \\
+e_{i} &\sim N(0, \sigma_{e}^2)
+\end{aligned}
 $$
 
 Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in [past tutorials](metaregression.qmd):

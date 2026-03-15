@@ -430,11 +430,13 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="extending-our-multi-level-meta-analytic-model-to-a-multi-level-meta-regression-model"><strong>Extending our Multi-level Meta-analytic Model to a Multi-level Meta-regression Model</strong></h2>
 <p>We can extend our multi-level meta-analytic model, which only has an intercept, to include moderators quite easily:</p>
 <p><span class="math display">\[
-y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-s_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &amp;= \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &amp;\sim N(0, v_{i}) \\
+s_{j} &amp;\sim N(0, \tau^2) \\
+s_{k} &amp;\sim N(0, \sigma_{k}^2) \\
+e_{i} &amp;\sim N(0, \sigma_{e}^2)
+\end{aligned}
 \]</span></p>
 <p>Here, <span class="math inline">\(\beta_{m}\)</span> is the slope (or contrast) for the <em>m th</em> moderator (where m = 1, …, <span class="math inline">\(N_{moderator}\)</span> or <span class="math inline">\(N_{m}\)</span>). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for <a href="./nuis-het.html">nuisance hetereogenity</a>, others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature – they might compare ectotherms to endotherms, for example.</p>
 </section>
@@ -1175,164 +1177,166 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>We can extend our multi-level meta-analytic model, which only has an intercept, to include moderators quite easily: </span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>m_{i} \sim N(0, v_{i}) <span class="sc">\\</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>s_{j} \sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>s_{k} \sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>e_{i} \sim N(0, \sigma_{e}^2)</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>Here, $\beta_{m}$ is the slope (or contrast) for the *m th* moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for <span class="co">[</span><span class="ot">nuisance hetereogenity</span><span class="co">](nuis-het.qmd)</span>, others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature -- they might compare ectotherms to endotherms, for example.  </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>s_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Phylogenetic Multi-level Meta-regression**</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>Here, $\beta_{m}$ is the slope (or contrast) for the *m th* moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). We can include different types of continuous and categorical moderators in our model. Some of these moderators might control for <span class="co">[</span><span class="ot">nuisance hetereogenity</span><span class="co">](nuis-het.qmd)</span>, others might be to understand how different experimental designs affect the magnitude and direction of mean effect size and some may simply be biological in nature -- they might compare ectotherms to endotherms, for example.  </span>
 <span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>We'll turn again to the study by @WuSeebacher2022.  We can run the same phylogenetic meta-analysis that we did in the <span class="co">[</span><span class="ot">Phylogenetic meta-analytic models tutorial</span><span class="co">](phylo.qmd)</span>, but this time we can include moderators or predictors that we think will explain some variation in effects. From the original study aim, the first thing @WuSeebacher2022 were interested in is the relationship of physiology with activity, exploration and dispersal (Zr). In addition to the random effects  --  <span class="in">`es_ID`</span> (effect size identity), <span class="in">`study_ID`</span>(unique study identity), <span class="in">`species`</span>(unique species identity), and <span class="in">`species_OTL`</span>(phylogenetic relatedness), they were also interested in comparing whether the correlation (or Zr) differences depending on whether the behavioural trait of interest was activity, exploration or dispersal. As such, a phylogenetic meta-regression model was fit with a moderator <span class="in">`disp_trait`</span> (activity, exploration, or dispersal) to explicitly test whether Zr varied across these effect types.</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Phylogenetic Multi-level Meta-regression**</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
 <span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="fu">### Load data and phylogeny</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>We'll turn again to the study by @WuSeebacher2022.  We can run the same phylogenetic meta-analysis that we did in the <span class="co">[</span><span class="ot">Phylogenetic meta-analytic models tutorial</span><span class="co">](phylo.qmd)</span>, but this time we can include moderators or predictors that we think will explain some variation in effects. From the original study aim, the first thing @WuSeebacher2022 were interested in is the relationship of physiology with activity, exploration and dispersal (Zr). In addition to the random effects  --  <span class="in">`es_ID`</span> (effect size identity), <span class="in">`study_ID`</span>(unique study identity), <span class="in">`species`</span>(unique species identity), and <span class="in">`species_OTL`</span>(phylogenetic relatedness), they were also interested in comparing whether the correlation (or Zr) differences depending on whether the behavioural trait of interest was activity, exploration or dispersal. As such, a phylogenetic meta-regression model was fit with a moderator <span class="in">`disp_trait`</span> (activity, exploration, or dispersal) to explicitly test whether Zr varied across these effect types.</span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>We'll start again by loading the raw data and reconstructing the phylogenetic tree, which will be used to control for shared evolutionary history. The other random effects are already in the dataset.</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="fu">### Load data and phylogeny</span></span>
 <span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: raw-data</span></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(rotl, ape, tidyverse, devtools, R.rsp)</span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the orchaRd package</span></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"daniel1noble/orchaRd"</span>, <span class="at">force =</span> <span class="cn">TRUE</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span> <span class="co"># remove irrelevant columns</span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span> <span class="co"># add effect size ID</span></span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>)) <span class="co"># remove underscore for some species with missing underscore. Some inconsistency when curating the database.</span></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Zr and sampling variance</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size, <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Create species list based on OTL names and match with OTL database</span></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL))) <span class="co"># generate list of species (as character format)</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species) <span class="co"># match taxonomic names to the OTL</span></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieving phylogenetic relationships among taxa in the form of a trimmed sub-tree</span></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) </span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>) <span class="co"># compute branch lengths</span></span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>) <span class="co"># use a randomization approach to deal with polytomies</span></span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation matrix for analysis</span></span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>phylo_cor <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> T)</span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fit the Phylogenetic Meta-regression Model</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>We'll start again by loading the raw data and reconstructing the phylogenetic tree, which will be used to control for shared evolutionary history. The other random effects are already in the dataset.</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: raw-data</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(rotl, ape, tidyverse, devtools, R.rsp)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the orchaRd package</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"daniel1noble/orchaRd"</span>, <span class="at">force =</span> <span class="cn">TRUE</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(orchaRd)</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span> <span class="co"># remove irrelevant columns</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span> <span class="co"># add effect size ID</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>)) <span class="co"># remove underscore for some species with missing underscore. Some inconsistency when curating the database.</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Zr and sampling variance</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size, <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Create species list based on OTL names and match with OTL database</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL))) <span class="co"># generate list of species (as character format)</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species) <span class="co"># match taxonomic names to the OTL</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieving phylogenetic relationships among taxa in the form of a trimmed sub-tree</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>) </span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>) <span class="co"># compute branch lengths</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>) <span class="co"># use a randomization approach to deal with polytomies</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Create correlation matrix for analysis</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>phylo_cor <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> T)</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>We can now fit our multi-level meta-regression model including the <span class="in">`disp_trait`</span> moderator:</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fit the Phylogenetic Meta-regression Model</span></span>
 <span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>**Note**: Remember to add an underscore to the species OTL because the tree tip names have underscores and these need to match exactly.</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>We can now fit our multi-level meta-regression model including the <span class="in">`disp_trait`</span> moderator:</span>
 <span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: analysis</span></span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> disp_trait, </span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>**Note**: Remember to add an underscore to the species OTL because the tree tip names have underscores and these need to match exactly.</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: analysis</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> disp_trait, </span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
 <span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there a relationship between physiology with either activity, exploration, and dispersal?** </span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
 <span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there a relationship between physiology with either activity, exploration, and dispersal?** </span></span>
 <span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates **a positive relationship** between physiology and activity with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. Exploration and dispersal was also, on average, positively associated with physiology, but exploration had higher level of uncertainty (Exploration = </span><span class="in">`r overall_model$b[3,]`</span><span class="at"> </span><span class="co">[</span><span class="ot">95% CI `r overall_model$ci.lb[3]`, `r overall_model$ci.ub[3]`</span><span class="co">]</span><span class="at">, Dispersal = </span><span class="in">`r overall_model$b[2,]`</span><span class="at">, </span><span class="co">[</span><span class="ot">95% CI `r overall_model$ci.lb[2]`, `r overall_model$ci.ub[2]`</span><span class="co">]</span><span class="at">). Heterogeneity remained high in this analysis based on the Q-test. </span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
 <span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see from above that the model estimates **a positive relationship** between physiology and activity with **an overall mean of `r overall_model$b[1,]` with a 95% confidence interval (95% CI) of `r overall_model$ci.lb[1]` to `r overall_model$ci.ub[1]`**. Exploration and dispersal was also, on average, positively associated with physiology, but exploration had higher level of uncertainty (Exploration = </span><span class="in">`r overall_model$b[3,]`</span><span class="at"> </span><span class="co">[</span><span class="ot">95% CI `r overall_model$ci.lb[3]`, `r overall_model$ci.ub[3]`</span><span class="co">]</span><span class="at">, Dispersal = </span><span class="in">`r overall_model$b[2,]`</span><span class="at">, </span><span class="co">[</span><span class="ot">95% CI `r overall_model$ci.lb[2]`, `r overall_model$ci.ub[2]`</span><span class="co">]</span><span class="at">). Heterogeneity remained high in this analysis based on the Q-test. </span></span>
 <span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contrasts between Trait Levels</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>You might have noticed that we suppressed the intercept in this model (i.e., <span class="in">`-1`</span>). This is very typical in meta-analysis because we are interested in the overall mean effect size in each of the three levels of the moderator. However, you may instead want to explicitly compare whether there are significant differences in *Zr* between categories. To estimate these contrasts you can add the intercept back into the model and the resulting parameters are now contrasts between the intercept (in this case <span class="in">`Activity`</span>) and <span class="in">`Dispersal`</span> and <span class="in">`Exploration`</span>.</span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="fu">### Contrasts between Trait Levels</span></span>
 <span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: analysis2</span></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> disp_trait, </span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
-<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a>You might have noticed that we suppressed the intercept in this model (i.e., <span class="in">`-1`</span>). This is very typical in meta-analysis because we are interested in the overall mean effect size in each of the three levels of the moderator. However, you may instead want to explicitly compare whether there are significant differences in *Zr* between categories. To estimate these contrasts you can add the intercept back into the model and the resulting parameters are now contrasts between the intercept (in this case <span class="in">`Activity`</span>) and <span class="in">`Dispersal`</span> and <span class="in">`Exploration`</span>.</span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: analysis2</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a>overall_model <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> V_Zr, </span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mod    =</span> <span class="sc">~</span> disp_trait, </span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> study_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> es_ID, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species, <span class="sc">~</span><span class="dv">1</span> <span class="sc">|</span> species_OTL),</span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">R      =</span> <span class="fu">list</span>(<span class="at">species_OTL =</span> phylo_cor),</span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">data   =</span> zr_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a>                                   dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>)))</span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(overall_model)</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>We can see that the model coefficients have changed. The <span class="in">`intrcpt`</span> now takes on the mean *Zr* for `Activity`. In other words, this is the mean *Zr* for the correlations between physiology and activity. As such, this is the same value as the previous model. For the `intrcpt`, the null hypothesis being tested is whether the mean differs significantly from zero, which it does. In contrast, `disp_traitDispersal` and `disp_traitExploration` are no longer meta-analytic means for `Dispersal` and `Exploration` as in the previous model. Rather, they are now contrasts, or differences, between the mean *Zr* for `Activity` and the mean *Zr* for `Dispersal` and `Exploration`. They are now testing the null hypothesis that the difference between *Activity and Dispersal* (i.e., `disp_traitDispersal`) and *Activity and Exploration* (i.e., <span class="in">`disp_traitExploration`</span>) are different from zero.</span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **What does the model output tell us?**</span></span>
 <span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>We can see that the model coefficients have changed. The <span class="in">`intrcpt`</span> now takes on the mean *Zr* for `Activity`. In other words, this is the mean *Zr* for the correlations between physiology and activity. As such, this is the same value as the previous model. For the `intrcpt`, the null hypothesis being tested is whether the mean differs significantly from zero, which it does. In contrast, `disp_traitDispersal` and `disp_traitExploration` are no longer meta-analytic means for `Dispersal` and `Exploration` as in the previous model. Rather, they are now contrasts, or differences, between the mean *Zr* for `Activity` and the mean *Zr* for `Dispersal` and `Exploration`. They are now testing the null hypothesis that the difference between *Activity and Dispersal* (i.e., `disp_traitDispersal`) and *Activity and Exploration* (i.e., <span class="in">`disp_traitExploration`</span>) are different from zero.</span>
 <span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
 <span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Does the mean *Zr* for Exploration and Dispersal differ from Activity?** </span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
 <span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Does the mean *Zr* for Exploration and Dispersal differ from Activity?** </span></span>
 <span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see that the mean Z-transformed correlation (*Zr*) between physiology and activity **do not differ significantly** from *Zr* between *Activity and Dispersal* and *Activity and Exploration*. The model also explains only </span><span class="in">`r orchaRd::r2_ml(overall_model)[1]`</span><span class="at">% ($R_{marginal}^2$) of the variation, so we can be confident that there is little predictive power from this moderator. </span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
 <span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can see that the mean Z-transformed correlation (*Zr*) between physiology and activity **do not differ significantly** from *Zr* between *Activity and Dispersal* and *Activity and Exploration*. The model also explains only </span><span class="in">`r orchaRd::r2_ml(overall_model)[1]`</span><span class="at">% ($R_{marginal}^2$) of the variation, so we can be confident that there is little predictive power from this moderator. </span></span>
 <span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can also visually depict the differences in *r* between these groups using an orchard plot [@Nakagawa2021c] after back-transforming from *Zr*: </span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;We can also visually depict the differences in *r* between these groups using an orchard plot [@Nakagawa2021c] after back-transforming from *Zr*: </span></span>
 <span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: orchard</span></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Orchard plot of mean correlation coefficient between physiology and activity, dispersal and exploration. k indicates the number of effect sizes (studies in brackets). Thick black bars are 95% confidence intervals and the thin (`twigs`) are 95% prediction intervals"</span></span>
-<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">orchard_plot</span>(overall_model, <span class="at">group =</span> <span class="st">"study_ID"</span>, <span class="at">mod =</span> <span class="st">"disp_trait"</span>, <span class="at">xlab =</span> <span class="st">"Correlation Coefficient (r)"</span>, <span class="at">transfm =</span> <span class="st">"tanh"</span>, <span class="at">angle =</span> <span class="dv">45</span>)</span>
-<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: orchard</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Orchard plot of mean correlation coefficient between physiology and activity, dispersal and exploration. k indicates the number of effect sizes (studies in brackets). Thick black bars are 95% confidence intervals and the thin (`twigs`) are 95% prediction intervals"</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>orchaRd<span class="sc">::</span><span class="fu">orchard_plot</span>(overall_model, <span class="at">group =</span> <span class="st">"study_ID"</span>, <span class="at">mod =</span> <span class="st">"disp_trait"</span>, <span class="at">xlab =</span> <span class="st">"Correlation Coefficient (r)"</span>, <span class="at">transfm =</span> <span class="st">"tanh"</span>, <span class="at">angle =</span> <span class="dv">45</span>)</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
 <span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
 <span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-metareg</span></span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-metareg</span></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

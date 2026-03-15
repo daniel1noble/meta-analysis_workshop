@@ -26,11 +26,13 @@ The most commonly encountered measures of heterogeneity in comparative physiolog
 For the purpose of this tutorial we'll assume the following multilevel meta-analytic model is fit as described in the [multilevel model tutorial](multi-level.qmd). If you can't quite remember all the notation we recommend going back to review that page.  
 
 $$
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}) \\
-s_{j} \sim N(0, \tau^2) \\
-spp_{k} \sim N(0, \sigma_{k}^2) \\
-e_{i} \sim N(0, \sigma_{e}^2)
+\begin{aligned}
+y_{i} &= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}) \\
+s_{j} &\sim N(0, \tau^2) \\
+spp_{k} &\sim N(0, \sigma_{k}^2) \\
+e_{i} &\sim N(0, \sigma_{e}^2)
+\end{aligned}
 $$
 We will return to the meta-analysis by @Pottier2021 that we already detailed in the [multilevel meta-analysis tutorial](multi-level.qmd). We'll walk through the different types of heterogeneity statistics that we can calculate for the model. 
 

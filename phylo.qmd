@@ -21,11 +21,13 @@ Recent simulations by @Cinar2021 emphasise the importance of modelling phylogeny
 [Recall](multi-level.qmd) our multilevel meta-analytic model we previously discussed: 
 
 $$
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}\textbf{I}) \\
-s_{j} \sim N(0, \tau^2\textbf{I}) \\
-s_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
-e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+\begin{aligned}
+y_{i} &= \mu + s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}\textbf{I}) \\
+s_{j} &\sim N(0, \tau^2\textbf{I}) \\
+s_{k} &\sim N(0, \sigma_{k}^2\textbf{I}) \\
+e_{i} &\sim N(0, \sigma_{e}^2\textbf{I})
+\end{aligned}
 $$
 
 Here, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. $e_{i}$ is the effect-size-specific effect (within study effect) (that's a mouthful!) applied to each effect *i*. $s_{j[i]}$ is the study specific effect, *j*, applied to the *i*th effect size, where *j* = 1,...,$N_{studies}$, $spp_{k[i]}$ is the species specific effect, *k*, applied to the *i*th effect size, where *k* = 1,...,$N_{species}$. As we discussed in the previous tutorial on [non-independence](complex-nonind.qmd), $\textbf{I}$ denotes the fact that effect size estimates are independently and identically distributed.
@@ -35,12 +37,14 @@ This model accounts for the fact that effect size values from the same study and
 To account for shared evolutionary history between species we need to modify the $\textbf{I}$ matrix to model the correlation between 'species effects'. This can be done by estimating a new random phylogenetic effect ($a_{k}$), and replacing the $\textbf{I}$ matrix with an $\textbf{A}$ matrix as follows:
 
 $$
-y_{i} = \mu + s_{j[i]} + spp_{k[i]} + a_{sp[i]}+ e_{i} + m_{i} \\
-m_{i} \sim N(0, v_{i}\textbf{I}) \\
-s_{j} \sim N(0, \tau^2\textbf{I}) \\
-spp_{k} \sim N(0, \sigma_{k}^2\textbf{I}) \\
-a_{k} \sim N(0, \sigma_{a}^2\textbf{A}) \\
-e_{i} \sim N(0, \sigma_{e}^2\textbf{I})
+\begin{aligned}
+y_{i} &= \mu + s_{j[i]} + spp_{k[i]} + a_{sp[i]}+ e_{i} + m_{i} \\
+m_{i} &\sim N(0, v_{i}\textbf{I}) \\
+s_{j} &\sim N(0, \tau^2\textbf{I}) \\
+spp_{k} &\sim N(0, \sigma_{k}^2\textbf{I}) \\
+a_{k} &\sim N(0, \sigma_{a}^2\textbf{A}) \\
+e_{i} &\sim N(0, \sigma_{e}^2\textbf{I})
+\end{aligned}
 $$
 
 Here, $a_{k[i]}$ is a phylogenetic effect for the *k* species applied to effect size *i*. These effects are now sampled from a normal distribution (denoted by *N*) with a mean of 0 and $\sigma_{a}^2$ which is the phylogenetic variance. However, now $\textbf{A}$ is a $N_{species}$ by $N_{species}$ correlation matrix of distances between species extracted from a phylogenetic tree, which means that species effects will be correlated (off-diagonals will be non-zero) based on the distance from the root of the tree to the most recent common ancestor [@NakagawaSantos2012; @Hadfield2010; @Noble2017]. 
