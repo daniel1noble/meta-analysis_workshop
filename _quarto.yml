@@ -7,6 +7,8 @@ book:
   author: "Daniel W.A. Noble, Patrice Pottier"
   date: today
   sidebar:
+    style: docked
+    collapse-level: 1
     logo: figs/logo.png
   chapters:
     - part: "**Welcome**"
