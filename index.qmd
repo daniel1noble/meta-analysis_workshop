@@ -4,7 +4,7 @@ This book contains materials for a 1.5-2 day meta-analysis workshop run by [Dani
 
 We'd like to acknowledge the many people who have contributed to the development of this workshop over the years, especially [Shinichi Nakagawa](https://www.cossee.org/shinichi-nakagawa.html), [Malgorzata Lagisz](https://mlagisz.weebly.com/), [Nicholas Wu](https://wunicholas.wixsite.com/home), as well as [Wolfgang Viechtbauer](https://www.wvbauer.com) and [Marc Lajeunesse](https://www.usf.edu/arts-sciences/departments/ib/people/faculty/marc-lajeunesse.aspx) who have provided valuable online resources for teaching. The materials in this workshop have been developed and refined over many years of teaching and research, and we are grateful for the contributions of all those colleagues who have helped shape it.
 
-## **Workshop Overview**
+# **Workshop Overview**
 
 Over the course of this workshop, you will learn:
 
@@ -32,7 +32,7 @@ Systematic searches are important to comprehensive, transparent and reproducible
 
 We also provide a list of [useful readings](#read) and [software](https://daniel1noble.github.io/meta-workshop/software) for earlier elements of a meta-analysis (e.g., extracting data from figures literature searching, snowballing etc). Please cite these software in your meta-analysis. Many of the authors spend a huge amount of time developing and maintaining these free resources. They are as important to cite as the statistical software used to analyse the data. 
 
-## **Preparation for the workshop**
+# **Preparation for the workshop**
 
 In preparation for the workshop, we highly recommend the following background knowledge as we will use the `metafor` *R* package ([Viechtbauer 2010](https://www.jstatsoft.org/article/view/v036i03)) as our primary method for constructing meta-analytic models:
 
@@ -40,7 +40,7 @@ In preparation for the workshop, we highly recommend the following background kn
 * Familiarise yourself with the `metafor` package and its functions (see [`metafor` website](https://wviechtb.github.io/metafor/))
 * As our workshop focuses on real-world data (and the complexities that it comes with) we highly recommend working through the ["Meta-Analysis in *R* with {metafor}](https://www.youtube.com/watch?v=IkduL5iRdqo&t=1602s&ab_channel=UseROslo) tutorial from "UseR Olso". Having said that, this is not essential as we will walk participants through the code we provide. 
 
-### **Prerequisites**
+# **Prerequisites**
 
 This workshop assumes you have:
 
@@ -48,7 +48,7 @@ This workshop assumes you have:
 - Understanding of fundamental statistical concepts
 - Interest in synthesizing research findings
 
-### **Recommended readings** {#read}
+# **Recommended readings** {#read}
 
 * Ten appraisal questions for biologist conducting meta-analysis studies ([Nakagawa *et al.* 2017](https://bmcbiol.biomedcentral.com/articles/10.1186/s12915-017-0357-7))
 * Meta-analytic approaches and effect sizes to account for ‘nuisance heterogeneity’ in comparative physiology ([Noble *et al.* 2022](https://journals.biologists.com/jeb/article/225/Suppl_1/jeb243225/274278/Meta-analytic-approaches-and-effect-sizes-to))
@@ -59,6 +59,6 @@ This workshop assumes you have:
 
 For a comprehensive guide on meta-analysis starting from a scoping study to writing a meta-analysis paper, see the YouTube [Hard-Boiled Synthesis](https://www.youtube.com/c/LajeunesseLab/featured) course by Marc Lajeunesse. It covers materials in detail beyond our workshop.
 
-## **Contact**
+# **Contact**
 
 For questions or feedback, please contact [Dan](mailto:daniel.noble@anu.edu.au).
