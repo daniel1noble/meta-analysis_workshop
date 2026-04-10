@@ -1,13 +1,11 @@
 # **Welcome** {.unnumbered}
 
-This book contains materials for a 1.5-2 day meta-analysis workshop run by [Daniel Noble](https://sites.google.com/view/noblelab/home) from The [Australian National University](https://www.anu.edu.au/) and [Patrice Pottier](https://patricepottier.academicwebsite.com/) from [Gothenburg University](https://www.gu.se/en). The workshop provides comprehensive coverage of meta-analytic methods, from basic concepts to advanced topics.
-
-We'd like to acknowledge the many people who have contributed to the development of this workshop over the years, especially [Shinichi Nakagawa](https://www.cossee.org/shinichi-nakagawa.html), [Malgorzata Lagisz](https://mlagisz.weebly.com/), [Nicholas Wu](https://wunicholas.wixsite.com/home), as well as [Wolfgang Viechtbauer](https://www.wvbauer.com) and [Marc Lajeunesse](https://www.usf.edu/arts-sciences/departments/ib/people/faculty/marc-lajeunesse.aspx) who have provided valuable online resources for teaching. The materials in this workshop have been developed and refined over many years of teaching and research, and we are grateful for the contributions of all those colleagues who have helped shape it.
+This book contains materials for a 1.5-2 day meta-analysis workshop run by [Daniel Noble](https://sites.google.com/view/noblelab/home) from The [Australian National University](https://www.anu.edu.au/) and [Patrice Pottier](https://patricepottier.academicwebsite.com/) from [Gothenburg University](https://www.gu.se/en). The workshop provides comprehensive coverage of meta-analytic approaches and methods, from basic concepts to advanced topics.
 
 # **Workshop Overview**
 
 Over the course of this workshop, you will learn:
-
+- **Systematic Review Protocols and Data Curation**: How to conduct systematic searches and curate data for meta-analysis
 - **Fundamentals of meta-analysis**: Understanding what meta-analysis is and when to use it
 - **Effect sizes**: How to calculate and interpret different effect size metrics
 - **Statistical models**: Fixed-effect vs. random-effects models and when to use each
@@ -58,6 +56,9 @@ This workshop assumes you have:
 * Testing for publication bias in ecological and evolutionary meta-analyses ([Nakagawa *et al.* 2021](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13724))
 
 For a comprehensive guide on meta-analysis starting from a scoping study to writing a meta-analysis paper, see the YouTube [Hard-Boiled Synthesis](https://www.youtube.com/c/LajeunesseLab/featured) course by Marc Lajeunesse. It covers materials in detail beyond our workshop.
+
+# **Acknowledgements**
+We'd like to acknowledge the many people who have contributed to the development of this workshop over the years, especially [Shinichi Nakagawa](https://www.cossee.org/shinichi-nakagawa.html), [Malgorzata Lagisz](https://mlagisz.weebly.com/), [Nicholas Wu](https://wunicholas.wixsite.com/home), as well as [Wolfgang Viechtbauer](https://www.wvbauer.com) and [Marc Lajeunesse](https://www.usf.edu/arts-sciences/departments/ib/people/faculty/marc-lajeunesse.aspx) who have provided valuable online resources for teaching. The materials in this workshop have been developed and refined over many years of teaching and research, and we are grateful for the contributions of all those colleagues who have helped shape it.
 
 # **Contact**
 
