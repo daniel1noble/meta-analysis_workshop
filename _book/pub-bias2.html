@@ -422,13 +422,6 @@ window.Quarto = {
 </header>
 
 
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-The downloaded binary packages are in
-    /var/folders/48/07fr3p6n4nv8gq_s3kl6vj2c0000gn/T//Rtmp8kates/downloaded_packages</code></pre>
-</div>
-</div>
 <section id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="analytical-approaches-for-assessment-of-publication-bias-in-meta-analysis"><strong>Analytical Approaches for Assessment of Publication Bias in Meta-analysis</strong></h2>
 <p>In the <a href="./pub-bias1.html">last tutorial</a> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="citation" data-cites="Jennions2013 Nakagawa2021b Rothstein2005">(<a href="#ref-Jennions2013" role="doc-biblioref">Jennions et al., 2013</a>; <a href="#ref-Nakagawa2021b" role="doc-biblioref">Nakagawa et al., 2022a</a>; <a href="#ref-Rothstein2005" role="doc-biblioref">Rothstein et al., 2005</a>)</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as sensitivity analyses <span class="citation" data-cites="Noble2017 Koricheva2013">(<a href="#ref-Koricheva2013" role="doc-biblioref">Koricheva et al., 2013</a>; <a href="#ref-Noble2017" role="doc-biblioref">Noble et al., 2017</a>)</span> because we will never truly know how many missing effect sizes actually exist.</p>
@@ -452,25 +445,25 @@ The downloaded binary packages are in
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -522,9 +515,9 @@ y_{i} = \mu + \beta_{se}*0  =
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -559,9 +552,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -636,15 +629,15 @@ A note on effect size choice
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean-centre publication year so the intercept is the effect at the mean year</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>year_c <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Year <span class="sc">-</span> <span class="fu">mean</span>(arnold_data_endo<span class="sc">$</span>Year)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>metareg_year <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> year_c,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean-centre publication year so the intercept is the effect at the mean year</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>year_c <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Year <span class="sc">-</span> <span class="fu">mean</span>(arnold_data_endo<span class="sc">$</span>Year)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>metareg_year <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> year_c,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -679,12 +672,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>metareg_full <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v) <span class="sc">+</span> year_c,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>metareg_full <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v) <span class="sc">+</span> year_c,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -753,27 +746,27 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) Naive multilevel meta-analytic mean (MLMA; inverse-variance + tau^2 weighted)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>mod_naive <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) Step 1 of Yang et al. 2024: bias-robust FE + VCV model.</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     We build a block-diagonal within-study VCV assuming a constant sampling</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     correlation of rho = 0.5 between effect sizes from the same study, then</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     fit a fixed-effect multivariate model (no random = argument).</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>VCV <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">vcalc</span>(<span class="at">vi =</span> Zr_v,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster =</span> Ref,</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                       <span class="at">obs =</span> obs,</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> arnold_data_endo)</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>mod_MLFE <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> VCV,</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> arnold_data_endo)</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_MLFE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) Naive multilevel meta-analytic mean (MLMA; inverse-variance + tau^2 weighted)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mod_naive <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) Step 1 of Yang et al. 2024: bias-robust FE + VCV model.</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     We build a block-diagonal within-study VCV assuming a constant sampling</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     correlation of rho = 0.5 between effect sizes from the same study, then</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     fit a fixed-effect multivariate model (no random = argument).</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>VCV <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">vcalc</span>(<span class="at">vi =</span> Zr_v,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster =</span> Ref,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                       <span class="at">obs =</span> obs,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> arnold_data_endo)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>mod_MLFE <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> VCV,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> arnold_data_endo)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_MLFE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -797,13 +790,13 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) Step 2: cluster-robust inference (CR2) on the FE + VCV model,</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     clustering on study (Ref). This uses clubSandwich under the hood.</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">robust</span>(mod_MLFE,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">cluster =</span> arnold_data_endo<span class="sc">$</span>Ref,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">adjust =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">clubSandwich =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) Step 2: cluster-robust inference (CR2) on the FE + VCV model,</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     clustering on study (Ref). This uses clubSandwich under the hood.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">robust</span>(mod_MLFE,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">cluster =</span> arnold_data_endo<span class="sc">$</span>Ref,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">adjust =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">clubSandwich =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -834,29 +827,29 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Naive MLMA estimate</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>naive_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"Naive MLMA (Ref + obs random effects)"</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> mod_naive<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> mod_naive<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> mod_naive<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(v)-adjusted Egger-type estimate (from earlier in this tutorial)</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>egger_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"sqrt(v)-adjusted (Nakagawa 2022)"</span>,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> metareg_se<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> metareg_se<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> metareg_se<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias-robust FE + VCV with CR2 cluster-robust inference (Yang 2024)</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>robust_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"FE + VCV + CR2 (Yang 2024)"</span>,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Estimate =</span> mod_MLFE_RVE<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_lower =</span> mod_MLFE_RVE<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_upper =</span> mod_MLFE_RVE<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">rbind</span>(naive_row, egger_row, robust_row)</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>flextable<span class="sc">::</span><span class="fu">flextable</span>(comparison)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Naive MLMA estimate</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>naive_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"Naive MLMA (Ref + obs random effects)"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> mod_naive<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> mod_naive<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> mod_naive<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(v)-adjusted Egger-type estimate (from earlier in this tutorial)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>egger_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"sqrt(v)-adjusted (Nakagawa 2022)"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> metareg_se<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> metareg_se<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> metareg_se<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias-robust FE + VCV with CR2 cluster-robust inference (Yang 2024)</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>robust_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"FE + VCV + CR2 (Yang 2024)"</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Estimate =</span> mod_MLFE_RVE<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_lower =</span> mod_MLFE_RVE<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_upper =</span> mod_MLFE_RVE<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">rbind</span>(naive_row, egger_row, robust_row)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>flextable<span class="sc">::</span><span class="fu">flextable</span>(comparison)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-cd8492b6{}.cl-cd7fdbae{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-cd8173ec{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cd8173f6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-cd8188c8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd8188c9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd8188ca{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd8188cb{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd8188d2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-cd8188d3{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-cd8492b6"><thead><tr style="overflow-wrap:break-word;"><th class="cl-cd8188c8"><p class="cl-cd8173ec"><span class="cl-cd7fdbae">Method</span></p></th><th class="cl-cd8188c9"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">Estimate</span></p></th><th class="cl-cd8188c9"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">CI_lower</span></p></th><th class="cl-cd8188c9"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">CI_upper</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-cd8188ca"><p class="cl-cd8173ec"><span class="cl-cd7fdbae">Naive MLMA (Ref + obs random effects)</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.1676</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.0774</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.2578</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cd8188ca"><p class="cl-cd8173ec"><span class="cl-cd7fdbae">sqrt(v)-adjusted (Nakagawa 2022)</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">-0.0668</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">-0.2122</span></p></td><td class="cl-cd8188cb"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.0787</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-cd8188d2"><p class="cl-cd8173ec"><span class="cl-cd7fdbae">FE + VCV + CR2 (Yang 2024)</span></p></td><td class="cl-cd8188d3"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.0664</span></p></td><td class="cl-cd8188d3"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.0185</span></p></td><td class="cl-cd8188d3"><p class="cl-cd8173f6"><span class="cl-cd7fdbae">0.1142</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-df9f903a{}.cl-df9bc5d6{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-df9d5e28{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-df9d5e32{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-df9d7020{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-df9d7021{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-df9d702a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-df9d702b{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-df9d702c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-df9d7034{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-df9f903a"><thead><tr style="overflow-wrap:break-word;"><th class="cl-df9d7020"><p class="cl-df9d5e28"><span class="cl-df9bc5d6">Method</span></p></th><th class="cl-df9d7021"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">Estimate</span></p></th><th class="cl-df9d7021"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">CI_lower</span></p></th><th class="cl-df9d7021"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">CI_upper</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-df9d702a"><p class="cl-df9d5e28"><span class="cl-df9bc5d6">Naive MLMA (Ref + obs random effects)</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.1676</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.0774</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.2578</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-df9d702a"><p class="cl-df9d5e28"><span class="cl-df9bc5d6">sqrt(v)-adjusted (Nakagawa 2022)</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">-0.0668</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">-0.2122</span></p></td><td class="cl-df9d702b"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.0787</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-df9d702c"><p class="cl-df9d5e28"><span class="cl-df9bc5d6">FE + VCV + CR2 (Yang 2024)</span></p></td><td class="cl-df9d7034"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.0664</span></p></td><td class="cl-df9d7034"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.0185</span></p></td><td class="cl-df9d7034"><p class="cl-df9d5e32"><span class="cl-df9bc5d6">0.1142</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <section id="which-estimate-would-you-report" class="level4">
@@ -1405,337 +1398,338 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
   <div class="nav-page nav-page-next">
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Publication Bias: Analytical Approaches</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, clubSandwich, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">3</span>)</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Analytical Approaches for Assessment of Publication Bias in Meta-analysis**</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>In the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](pub-bias1.qmd)</span> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as sensitivity analyses <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span> because we will never truly know how many missing effect sizes actually exist.</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>In this tutorial, we'll walk through three complementary analytical tools that together provide a more defensible picture of whether publication bias is shaping our conclusions:</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Multilevel Egger-type regression** -- including the sampling error as a moderator in a multilevel meta-regression to test for small-study effects and obtain an "adjusted" meta-analytic mean <span class="co">[</span><span class="ot">@Nakagawa2021b; @Stanley2014</span><span class="co">]</span>.</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Time-lag bias tests** -- including publication year as a moderator to test whether effect sizes are shrinking over time, one form of the "decline effect" <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Bias-robust weighting with cluster-robust variance estimation** -- a recent two-step framework from @Yang2024 that simultaneously tackles selective reporting and non-independence, which @Yang2024 show can jointly inflate effect sizes by over 100% and deflate standard errors by over 120% when ignored.</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>No single test is definitive, and each rests on assumptions that can fail in ecological data. The point is to triangulate: if several complementary approaches tell the same story, we can have more confidence in our conclusions.</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Statistically Testing and Correcting for Publication Bias**</span></span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/arnold.png)</span></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>We're now going to expand upon the meta-analysis by @Arnold2021 to explore more rigorously whether publication bias is present, and if so, try and re-interpret effects as if such bias did not actually exist. </span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Download the Data</span></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rawdata</span></span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
-<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
-<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
-<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
-<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
-<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span>
-<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a><span class="fu">### Meta-regression Approaches to Publication Bias </span></span>
-<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>@Nakagawa2021b <span class="co">[</span><span class="ot">building off of work by @Stanley2012; @Stanley2014</span><span class="co">]</span> outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:</span>
-<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
-<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
-<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
-<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2)</span>
-<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <span class="co">[</span><span class="ot">past tutorials</span><span class="co">](metaregression.qmd)</span>:</span>
-<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>Here, $\beta_{m}$ is the slope (or contrast) for the $m^{th}$ moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). Of course, $\beta_{se}se$ can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. @Stanley2012 and @Stanley2014 have shown that when $\mu$ in a model that estimates $\beta_{se}$ is significant than the intercept (in this case, $\mu$) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">] [see correction for original paper @Nakagawa2022cor]</span>. However, @Stanley2012 and @Stanley2014 have shown that when $\mu$ is significant than including SE is best replaced with the sampling variance (i.e., $SE^2$) instead because the intercept using SE is downwardly biased. </span>
-<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.</span>
-<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**</span></span>
-<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Think about how the intercept, $\mu$, changes its meaning when a continuous moderator, such as $se$, is included in the model. When estimating $\beta_{se}$ explicitly how do we now interpret the intercept or meta-analytic mean?**</span></span>
-<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The reason why the intercept ($\mu$) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is **no** sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</span></span>
-<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}*0  =</span>
-<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>\mu  <span class="sc">\\</span></span>
-<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</span></span>
-<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. </span>
-<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
-<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span>
-<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>We'll also fit the model with sampling variance for good measure, but given that the <span class="in">`intrcpt`</span> is not significant we can interpret the first model.</span>
-<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: V</span></span>
-<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
-<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span>
-<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the results**</span></span>
-<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?**</span></span>
-<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Yes, there is evidence for publication bias because the slope estimate for </span><span class="in">`sqrt(Zr)`</span><span class="at"> or the sampling standard error is significant. Given that the </span><span class="in">`intrcpt`</span><span class="at"> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted </span><span class="in">`Zr`</span><span class="at"> when there is *no* uncertainty is </span><span class="in">`r metareg_se$b[1]`</span><span class="at">with a 95% confidence interval that overlaps zero (i.e., 95% CI = </span><span class="in">`r metareg_se$ci.lb[1]`</span><span class="at"> to </span><span class="in">`r metareg_se$ci.ub[1]`</span><span class="at">). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, </span><span class="in">`r tanh(metareg_se$b[1])`</span><span class="at">. </span></span>
-<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
-<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a><span class="fu">### A note on effect size choice</span></span>
-<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>The above approach works cleanly for Fisher's $Z_r$ because the sampling variance of $Z_r$ depends only on sample size, not on the effect size itself. For standardised mean differences (SMD / Hedges' $g$) and log response ratios (lnRR), the sampling variance is mathematically coupled to the point estimate, so using $\sqrt{v}$ as a moderator can induce a spurious slope even when there is no publication bias at all <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>. @Nakagawa2021b therefore recommend using a transformation of the *effective sample size* as the moderator instead of $\sqrt{v}$ when working with SMD or lnRR. For SMD and lnRR a good default is:</span>
-<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>\text{moderator} = \sqrt{\frac{\tilde{n}_{1} + \tilde{n}_{2}}{\tilde{n}_{1}\tilde{n}_{2}}},</span>
-<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>where $\tilde{n}_{1}$ and $\tilde{n}_{2}$ are the per-group sample sizes. This is proportional to the "design-based" sampling standard error but does not depend on the observed effect size. In <span class="in">`metafor`</span> this simply means replacing <span class="in">`sqrt(Zr_v)`</span> in the <span class="in">`mods =`</span> argument with the precomputed moderator column.</span>
-<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a><span class="fu">### (2) Testing for Time-lag Bias</span></span>
-<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>Another useful diagnostic asks whether effect sizes are *shrinking over time* -- a pattern often called a **time-lag bias** or **decline effect** [@Nakagawa2021b; @Jennions2013]. The intuition is that for early studies addressing a research question, large and significant results are disproportionately likely to be published first (because they are "exciting", or simply easier to write up and accept). As the field matures, smaller and null results catch up, and the apparent effect size decays. We can test this directly by including publication year as a moderator in the multilevel model. To make the intercept interpretable as the mean effect at the *average* publication year, we mean-centre year first. However, publication year could be centered on any year of interest. </span>
-<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: timelag</span></span>
-<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean-centre publication year so the intercept is the effect at the mean year</span></span>
-<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>year_c <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Year <span class="sc">-</span> <span class="fu">mean</span>(arnold_data_endo<span class="sc">$</span>Year)</span>
-<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a>metareg_year <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> year_c,</span>
-<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_year)</span>
-<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a>We can also fit a combined model that tests for small-study effects and time-lag bias *simultaneously*, which is the model advocated by @Nakagawa2021b:</span>
-<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eggeryear</span></span>
-<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>metareg_full <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v) <span class="sc">+</span> year_c,</span>
-<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_full)</span>
-<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the time-lag test**</span></span>
-<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-207"><a href="#cb16-207" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb16-208"><a href="#cb16-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Look at the slope for `year_c` in the combined model. Is there evidence that effect sizes in the Arnold dataset have changed systematically over time? How would you report this alongside the small-study effect test?**</span></span>
-<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;A significant *negative* slope on `year_c` would indicate a decline effect: more recent studies report smaller $Z_r$ values than older ones. A *positive* slope would suggest the opposite -- that earlier studies underestimated the effect. A slope that is indistinguishable from zero means there is no detectable time-lag bias, and the intercept (at the mean year) is a reasonable summary of the long-term average effect. Because both $\sqrt{v}$ and `year_c` are included simultaneously, each slope tests for its own bias *after adjusting* for the other, which is useful because time-lag and small-study effects can be partially confounded (early studies were often smaller).</span></span>
-<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a><span class="fu">### (3) Bias-robust Estimation with Dependent Effect Sizes</span></span>
-<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a>The approaches above all rely on the usual multilevel random-effects (MLMA) weights, which for effect size $i$ are proportional to $1/(v_i + \tau^2)$, where $v_i$ is the sampling variance and $\tau^2$ is the estimated between-study heterogeneity. @Yang2024 point out two problems with this when selective reporting is present alongside non-independent effect sizes:</span>
-<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Adding $\tau^2$ to the weights erodes the protection against small-study effects.** In the classical fixed-effect model the weights are $1/v_i$, so imprecise (small-$n$) studies are penalised heavily and have little influence on the pooled mean. In the random-effects model, as $\tau^2$ grows large relative to $v_i$, the weights become increasingly similar across studies -- small studies start to receive almost as much weight as large ones. If the literature is *also* selectively reporting large effects from small studies (the classic file-drawer pattern), the MLMA model gives those biased effects far more influence than a fixed-effect model would. @Yang2024 show this is why conventional MLMA estimates tend to inherit selective-reporting bias.</span>
-<span id="cb16-228"><a href="#cb16-228" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Standard parametric SEs assume a correctly specified dependence structure.** Clustered effect sizes (multiple effects per study, phylogenetic clustering, shared controls) inflate type-I error rates even when random effects are included, because the working covariance structure is rarely specified perfectly.</span>
-<span id="cb16-229"><a href="#cb16-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-230"><a href="#cb16-230" aria-hidden="true" tabindex="-1"></a>@Yang2024 re-analysed 448 ecological and evolutionary meta-analyses and showed that the *joint* impact of these two problems can be substantial: on average, effect sizes are overestimated and standard errors are underestimated when both are ignored. They propose a simple **two-step procedure**:</span>
-<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Step 1 -- bias-robust point estimation.** Fit a *fixed-effect* multivariate model (no study- or observation-level random effects) using a within-study variance--covariance matrix built with `metafor::vcalc()`. Because this model uses $1/v_i$-type weights rather than $1/(v_i + \tau^2)$, imprecise studies are penalised as they would be in a classical FE meta-analysis, making the pooled mean far less sensitive to selective reporting. This is sometimes called the **FE + VCV** or **unrestricted weighted least squares (UWLS)** estimator.</span>
-<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Step 2 -- cluster-robust variance estimation (CRVE).** Wrap the Step 1 model in <span class="in">`metafor::robust()`</span> with <span class="in">`clubSandwich = TRUE`</span> (or equivalently call <span class="in">`clubSandwich::coef_test()`</span>) and set <span class="in">`cluster =`</span> to the study ID. This produces CR2 small-sample--corrected sandwich standard errors and Satterthwaite-style degrees of freedom, which remain valid even though the Step 1 model deliberately ignores between-study heterogeneity. Note that CR2 is only applicable when the underlying model has no random effects, which is exactly why Step 1 is fixed-effect.</span>
-<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a>Let's apply this to the Arnold endotherm data. We'll compare the naive multilevel estimate, the $\sqrt{v}$-adjusted Egger estimate, and the bias-robust FE + VCV estimate with CRVE.</span>
-<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: biasrobust</span></span>
-<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) Naive multilevel meta-analytic mean (MLMA; inverse-variance + tau^2 weighted)</span></span>
-<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a>mod_naive <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
-<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>                     <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> arnold_data_endo,</span>
-<span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a>                     <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
-<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-251"><a href="#cb16-251" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) Step 1 of Yang et al. 2024: bias-robust FE + VCV model.</span></span>
-<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a><span class="co">#     We build a block-diagonal within-study VCV assuming a constant sampling</span></span>
-<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a><span class="co">#     correlation of rho = 0.5 between effect sizes from the same study, then</span></span>
-<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a><span class="co">#     fit a fixed-effect multivariate model (no random = argument).</span></span>
-<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a>VCV <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">vcalc</span>(<span class="at">vi =</span> Zr_v,</span>
-<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster =</span> Ref,</span>
-<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a>                       <span class="at">obs =</span> obs,</span>
-<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a>                       <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
-<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> arnold_data_endo)</span>
-<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a>mod_MLFE <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> VCV,</span>
-<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
-<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
-<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> arnold_data_endo)</span>
-<span id="cb16-265"><a href="#cb16-265" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_MLFE)</span>
-<span id="cb16-266"><a href="#cb16-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-267"><a href="#cb16-267" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) Step 2: cluster-robust inference (CR2) on the FE + VCV model,</span></span>
-<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a><span class="co">#     clustering on study (Ref). This uses clubSandwich under the hood.</span></span>
-<span id="cb16-269"><a href="#cb16-269" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">robust</span>(mod_MLFE,</span>
-<span id="cb16-270"><a href="#cb16-270" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">cluster =</span> arnold_data_endo<span class="sc">$</span>Ref,</span>
-<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">adjust =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">clubSandwich =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE</span>
-<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a>We can now assemble a side-by-side comparison of the three approaches:</span>
-<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-280"><a href="#cb16-280" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-281"><a href="#cb16-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: biasrobust-compare</span></span>
-<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-284"><a href="#cb16-284" aria-hidden="true" tabindex="-1"></a><span class="co"># Naive MLMA estimate</span></span>
-<span id="cb16-285"><a href="#cb16-285" aria-hidden="true" tabindex="-1"></a>naive_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"Naive MLMA (Ref + obs random effects)"</span>,</span>
-<span id="cb16-286"><a href="#cb16-286" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> mod_naive<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb16-287"><a href="#cb16-287" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> mod_naive<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb16-288"><a href="#cb16-288" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> mod_naive<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb16-289"><a href="#cb16-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-290"><a href="#cb16-290" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(v)-adjusted Egger-type estimate (from earlier in this tutorial)</span></span>
-<span id="cb16-291"><a href="#cb16-291" aria-hidden="true" tabindex="-1"></a>egger_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"sqrt(v)-adjusted (Nakagawa 2022)"</span>,</span>
-<span id="cb16-292"><a href="#cb16-292" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> metareg_se<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb16-293"><a href="#cb16-293" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> metareg_se<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb16-294"><a href="#cb16-294" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> metareg_se<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb16-295"><a href="#cb16-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-296"><a href="#cb16-296" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias-robust FE + VCV with CR2 cluster-robust inference (Yang 2024)</span></span>
-<span id="cb16-297"><a href="#cb16-297" aria-hidden="true" tabindex="-1"></a>robust_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"FE + VCV + CR2 (Yang 2024)"</span>,</span>
-<span id="cb16-298"><a href="#cb16-298" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Estimate =</span> mod_MLFE_RVE<span class="sc">$</span>b[<span class="dv">1</span>],</span>
-<span id="cb16-299"><a href="#cb16-299" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_lower =</span> mod_MLFE_RVE<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
-<span id="cb16-300"><a href="#cb16-300" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_upper =</span> mod_MLFE_RVE<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
-<span id="cb16-301"><a href="#cb16-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-302"><a href="#cb16-302" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">rbind</span>(naive_row, egger_row, robust_row)</span>
-<span id="cb16-303"><a href="#cb16-303" aria-hidden="true" tabindex="-1"></a>flextable<span class="sc">::</span><span class="fu">flextable</span>(comparison)</span>
-<span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-305"><a href="#cb16-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-306"><a href="#cb16-306" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Which estimate would you report?**</span></span>
-<span id="cb16-307"><a href="#cb16-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-308"><a href="#cb16-308" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb16-309"><a href="#cb16-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-310"><a href="#cb16-310" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-312"><a href="#cb16-312" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Compare the three estimates in the table above. Do they tell the same story, or do they disagree? Which would you report as your headline estimate, and how would you use the others?**</span></span>
-<span id="cb16-313"><a href="#cb16-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-314"><a href="#cb16-314" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-315"><a href="#cb16-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb16-317"><a href="#cb16-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-318"><a href="#cb16-318" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;There is no single "right" answer here, and that is the point. The naive REML estimate is what most readers will expect to see, but it is the most vulnerable to both selective reporting and under-estimated standard errors. The $\sqrt{v}$-adjusted estimate asks "what would the effect be in a hypothetical study with no sampling error?" and is the standard ecological publication-bias sensitivity check. The bias-robust + CRVE estimate asks "what does the pooled mean look like if we do not let the smallest-variance studies dominate, and if we refuse to trust the parametric standard errors?". A defensible strategy is to report the naive estimate as the primary result and present the other two as sensitivity analyses -- if all three agree qualitatively, the conclusion is robust. If they disagree strongly, the disagreement itself is the result, and you should be cautious about any strong claims from the naive model.</span></span>
-<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
-<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a>Rather than relying on a single publication-bias test, the current best-practice workflow for ecological meta-analyses is to triangulate across several complementary tools:</span>
-<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Start with a **contour-enhanced funnel plot** of both raw effects and meta-analytic residuals to build intuition about what might be missing and where.</span>
-<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit a **multilevel Egger-type model** including $\sqrt{v}$ (or the effective-sample-size moderator for SMD/lnRR) to test for small-study effects and obtain an adjusted mean <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
-<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Add **publication year** as a moderator to test for time-lag bias and decline effects <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
-<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Finally, refit the model using **bias-robust weights and cluster-robust variance estimation** to check whether your pooled mean is being driven by selective reporting or by assumed-away non-independence <span class="co">[</span><span class="ot">@Yang2024</span><span class="co">]</span>.</span>
-<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a>If these analyses tell a consistent story, you can report your meta-analytic mean with reasonable confidence. If they disagree, the disagreement is itself an important result and should be reported transparently. None of these tools provides definitive proof that publication bias is (or is not) present -- they are sensitivity analyses designed to make your conclusions more defensible in the face of an inherently incomplete literature <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span>.</span>
-<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
-<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
-<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
-<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb15" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Publication Bias: Analytical Approaches</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, clubSandwich, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Analytical Approaches for Assessment of Publication Bias in Meta-analysis**</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>In the <span class="co">[</span><span class="ot">last tutorial</span><span class="co">](pub-bias1.qmd)</span> we talked about one of the most common visual tools for assessing whether publication bias might be present, funnel plots <span class="co">[</span><span class="ot">@Jennions2013; @Nakagawa2021b; @Rothstein2005</span><span class="co">]</span>. However, how do we know for sure if publication bias is actually going to be a problem? Do we have less subjective tools that can both quantitatively test and correct for the possibility of publication bias? The short answer is, we do! The caveat being here that these are still not definitive proof for publication bias and we must keep that in mind. Any results from publication bias tests should be interpreted with caution and viewed as sensitivity analyses <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span> because we will never truly know how many missing effect sizes actually exist.</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>In this tutorial, we'll walk through three complementary analytical tools that together provide a more defensible picture of whether publication bias is shaping our conclusions:</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Multilevel Egger-type regression** -- including the sampling error as a moderator in a multilevel meta-regression to test for small-study effects and obtain an "adjusted" meta-analytic mean <span class="co">[</span><span class="ot">@Nakagawa2021b; @Stanley2014</span><span class="co">]</span>.</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Time-lag bias tests** -- including publication year as a moderator to test whether effect sizes are shrinking over time, one form of the "decline effect" <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Bias-robust weighting with cluster-robust variance estimation** -- a recent two-step framework from @Yang2024 that simultaneously tackles selective reporting and non-independence, which @Yang2024 show can jointly inflate effect sizes by over 100% and deflate standard errors by over 120% when ignored.</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>No single test is definitive, and each rests on assumptions that can fail in ecological data. The point is to triangulate: if several complementary approaches tell the same story, we can have more confidence in our conclusions.</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Statistically Testing and Correcting for Publication Bias**</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### Introduction</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/arnold.png)</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>We're now going to expand upon the meta-analysis by @Arnold2021 to explore more rigorously whether publication bias is present, and if so, try and re-interpret effects as if such bias did not actually exist. </span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Download the Data</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: rawdata</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Packages</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, metafor, orchaRd)</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data. Exclude NA in r and sample size columns</span></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/pieterarnold/fitness-rmr-meta/main/MR_Fitness_Data_revised.csv"</span>)</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude some NA's in sample size and r</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> arnold_data[<span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>n.rep) <span class="sc">&amp;</span> <span class="fu">complete.cases</span>(arnold_data<span class="sc">$</span>r),]</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the effect size, ZCOR</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>arnold_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> r, <span class="at">ni =</span> n.rep, <span class="at">data =</span> arnold_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"Zr_v"</span>))</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets subset to endotherms for demonstration purposes</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>arnold_data_endo <span class="ot">&lt;-</span> arnold_data <span class="sc">%&gt;%</span> </span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>               <span class="fu">mutate</span>(<span class="at">endos =</span> <span class="fu">ifelse</span>(Class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Mammalia"</span>, <span class="st">"Aves"</span>), <span class="st">"endo"</span>, <span class="st">"ecto"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(endos <span class="sc">==</span> <span class="st">"endo"</span> <span class="sc">&amp;</span> Zr <span class="sc">&lt;=</span> <span class="dv">3</span>) <span class="co"># Note that one sample that was an extreme outlier was removed in the paper.</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Add in observation-level (residual) </span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>obs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(arnold_data_endo)[<span class="dv">1</span>]</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Meta-regression Approaches to Publication Bias </span></span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>@Nakagawa2021b <span class="co">[</span><span class="ot">building off of work by @Stanley2012; @Stanley2014</span><span class="co">]</span> outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}) <span class="sc">\\</span></span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2) <span class="sc">\\</span></span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2) <span class="sc">\\</span></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2)</span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a>Of course, we could also include a suite of other moderators in our analysis to also account for more heterogeneity like we have shown in <span class="co">[</span><span class="ot">past tutorials</span><span class="co">](metaregression.qmd)</span>:</span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a>Here, $\beta_{m}$ is the slope (or contrast) for the $m^{th}$ moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). Of course, $\beta_{se}se$ can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. @Stanley2012 and @Stanley2014 have shown that when $\mu$ in a model that estimates $\beta_{se}$ is significant than the intercept (in this case, $\mu$) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">] [see correction for original paper @Nakagawa2022cor]</span>. However, @Stanley2012 and @Stanley2014 have shown that when $\mu$ is significant than including SE is best replaced with the sampling variance (i.e., $SE^2$) instead because the intercept using SE is downwardly biased. </span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a>As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.</span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**</span></span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Think about how the intercept, $\mu$, changes its meaning when a continuous moderator, such as $se$, is included in the model. When estimating $\beta_{se}$ explicitly how do we now interpret the intercept or meta-analytic mean?**</span></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;The reason why the intercept ($\mu$) is an adjusted meta-analytic mean is because when we include a continuous moderator the intercept itself takes on a different meaning. For example, if we fit the multilevel meta-regression model using SE than the intercept estimated in that model is the overall meta-analytic mean when the SE is zero. Or, in other words, when there is **no** sampling variability or uncertainty around the estimate. We can see that this is true by setting SE = 0 in the equation:</span></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a>y_{i} = \mu + \beta_{se}*0  =</span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a>\mu  <span class="sc">\\</span></span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias</span></span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a>Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. </span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling standard error as moderator</span></span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a>metareg_se <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v), <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb15-122"><a href="#cb15-122" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_se)</span>
+<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a>We'll also fit the model with sampling variance for good measure, but given that the <span class="in">`intrcpt`</span> is not significant we can interpret the first model.</span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-130"><a href="#cb15-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: V</span></span>
+<span id="cb15-131"><a href="#cb15-131" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-132"><a href="#cb15-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a><span class="co"># Including sampling variance as moderator</span></span>
+<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a>metareg_v <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v, <span class="at">mods =</span> <span class="sc">~</span> Zr_v, <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>, <span class="at">data =</span> arnold_data_endo, <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_v)</span>
+<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-138"><a href="#cb15-138" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the results**</span></span>
+<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-140"><a href="#cb15-140" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-141"><a href="#cb15-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-142"><a href="#cb15-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb15-143"><a href="#cb15-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-144"><a href="#cb15-144" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Is there evidence for publication bias? If so, what is the adjusted meta-analytic mean estimate?**</span></span>
+<span id="cb15-145"><a href="#cb15-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-146"><a href="#cb15-146" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-147"><a href="#cb15-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-148"><a href="#cb15-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb15-149"><a href="#cb15-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-150"><a href="#cb15-150" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Yes, there is evidence for publication bias because the slope estimate for </span><span class="in">`sqrt(Zr)`</span><span class="at"> or the sampling standard error is significant. Given that the </span><span class="in">`intrcpt`</span><span class="at"> is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted </span><span class="in">`Zr`</span><span class="at"> when there is *no* uncertainty is </span><span class="in">`r metareg_se$b[1]`</span><span class="at">with a 95% confidence interval that overlaps zero (i.e., 95% CI = </span><span class="in">`r metareg_se$ci.lb[1]`</span><span class="at"> to </span><span class="in">`r metareg_se$ci.ub[1]`</span><span class="at">). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, </span><span class="in">`r tanh(metareg_se$b[1])`</span><span class="at">. </span></span>
+<span id="cb15-151"><a href="#cb15-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-152"><a href="#cb15-152" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-153"><a href="#cb15-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-154"><a href="#cb15-154" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-155"><a href="#cb15-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-156"><a href="#cb15-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-157"><a href="#cb15-157" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
+<span id="cb15-158"><a href="#cb15-158" aria-hidden="true" tabindex="-1"></a><span class="fu">### A note on effect size choice</span></span>
+<span id="cb15-159"><a href="#cb15-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-160"><a href="#cb15-160" aria-hidden="true" tabindex="-1"></a>The above approach works cleanly for Fisher's $Z_r$ because the sampling variance of $Z_r$ depends only on sample size, not on the effect size itself. For standardised mean differences (SMD / Hedges' $g$) and log response ratios (lnRR), the sampling variance is mathematically coupled to the point estimate, so using $\sqrt{v}$ as a moderator can induce a spurious slope even when there is no publication bias at all <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>. @Nakagawa2021b therefore recommend using a transformation of the *effective sample size* as the moderator instead of $\sqrt{v}$ when working with SMD or lnRR. For SMD and lnRR a good default is:</span>
+<span id="cb15-161"><a href="#cb15-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-162"><a href="#cb15-162" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-163"><a href="#cb15-163" aria-hidden="true" tabindex="-1"></a>\text{moderator} = \sqrt{\frac{\tilde{n}_{1} + \tilde{n}_{2}}{\tilde{n}_{1}\tilde{n}_{2}}},</span>
+<span id="cb15-164"><a href="#cb15-164" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-165"><a href="#cb15-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-166"><a href="#cb15-166" aria-hidden="true" tabindex="-1"></a>where $\tilde{n}_{1}$ and $\tilde{n}_{2}$ are the per-group sample sizes. This is proportional to the "design-based" sampling standard error but does not depend on the observed effect size. In <span class="in">`metafor`</span> this simply means replacing <span class="in">`sqrt(Zr_v)`</span> in the <span class="in">`mods =`</span> argument with the precomputed moderator column.</span>
+<span id="cb15-167"><a href="#cb15-167" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-168"><a href="#cb15-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-169"><a href="#cb15-169" aria-hidden="true" tabindex="-1"></a><span class="fu">### (2) Testing for Time-lag Bias</span></span>
+<span id="cb15-170"><a href="#cb15-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-171"><a href="#cb15-171" aria-hidden="true" tabindex="-1"></a>Another useful diagnostic asks whether effect sizes are *shrinking over time* -- a pattern often called a **time-lag bias** or **decline effect** [@Nakagawa2021b; @Jennions2013]. The intuition is that for early studies addressing a research question, large and significant results are disproportionately likely to be published first (because they are "exciting", or simply easier to write up and accept). As the field matures, smaller and null results catch up, and the apparent effect size decays. We can test this directly by including publication year as a moderator in the multilevel model. To make the intercept interpretable as the mean effect at the *average* publication year, we mean-centre year first. However, publication year could be centered on any year of interest. </span>
+<span id="cb15-172"><a href="#cb15-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-175"><a href="#cb15-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-176"><a href="#cb15-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: timelag</span></span>
+<span id="cb15-177"><a href="#cb15-177" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-178"><a href="#cb15-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-179"><a href="#cb15-179" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean-centre publication year so the intercept is the effect at the mean year</span></span>
+<span id="cb15-180"><a href="#cb15-180" aria-hidden="true" tabindex="-1"></a>arnold_data_endo<span class="sc">$</span>year_c <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Year <span class="sc">-</span> <span class="fu">mean</span>(arnold_data_endo<span class="sc">$</span>Year)</span>
+<span id="cb15-181"><a href="#cb15-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-182"><a href="#cb15-182" aria-hidden="true" tabindex="-1"></a>metareg_year <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb15-183"><a href="#cb15-183" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> year_c,</span>
+<span id="cb15-184"><a href="#cb15-184" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb15-185"><a href="#cb15-185" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb15-187"><a href="#cb15-187" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_year)</span>
+<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-189"><a href="#cb15-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-190"><a href="#cb15-190" aria-hidden="true" tabindex="-1"></a>We can also fit a combined model that tests for small-study effects and time-lag bias *simultaneously*, which is the model advocated by @Nakagawa2021b:</span>
+<span id="cb15-191"><a href="#cb15-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-194"><a href="#cb15-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-195"><a href="#cb15-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eggeryear</span></span>
+<span id="cb15-196"><a href="#cb15-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-197"><a href="#cb15-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-198"><a href="#cb15-198" aria-hidden="true" tabindex="-1"></a>metareg_full <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb15-199"><a href="#cb15-199" aria-hidden="true" tabindex="-1"></a>                        <span class="at">mods =</span> <span class="sc">~</span> <span class="fu">sqrt</span>(Zr_v) <span class="sc">+</span> year_c,</span>
+<span id="cb15-200"><a href="#cb15-200" aria-hidden="true" tabindex="-1"></a>                        <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb15-201"><a href="#cb15-201" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb15-202"><a href="#cb15-202" aria-hidden="true" tabindex="-1"></a>                        <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb15-203"><a href="#cb15-203" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(metareg_full)</span>
+<span id="cb15-204"><a href="#cb15-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Interpreting the time-lag test**</span></span>
+<span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Look at the slope for `year_c` in the combined model. Is there evidence that effect sizes in the Arnold dataset have changed systematically over time? How would you report this alongside the small-study effect test?**</span></span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;A significant *negative* slope on `year_c` would indicate a decline effect: more recent studies report smaller $Z_r$ values than older ones. A *positive* slope would suggest the opposite -- that earlier studies underestimated the effect. A slope that is indistinguishable from zero means there is no detectable time-lag bias, and the intercept (at the mean year) is a reasonable summary of the long-term average effect. Because both $\sqrt{v}$ and `year_c` are included simultaneously, each slope tests for its own bias *after adjusting* for the other, which is useful because time-lag and small-study effects can be partially confounded (early studies were often smaller).</span></span>
+<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-223"><a href="#cb15-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-224"><a href="#cb15-224" aria-hidden="true" tabindex="-1"></a><span class="fu">### (3) Bias-robust Estimation with Dependent Effect Sizes</span></span>
+<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a>The approaches above all rely on the usual multilevel random-effects (MLMA) weights, which for effect size $i$ are proportional to $1/(v_i + \tau^2)$, where $v_i$ is the sampling variance and $\tau^2$ is the estimated between-study heterogeneity. @Yang2024 point out two problems with this when selective reporting is present alongside non-independent effect sizes:</span>
+<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-228"><a href="#cb15-228" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Adding $\tau^2$ to the weights erodes the protection against small-study effects.** In the classical fixed-effect model the weights are $1/v_i$, so imprecise (small-$n$) studies are penalised heavily and have little influence on the pooled mean. In the random-effects model, as $\tau^2$ grows large relative to $v_i$, the weights become increasingly similar across studies -- small studies start to receive almost as much weight as large ones. If the literature is *also* selectively reporting large effects from small studies (the classic file-drawer pattern), the MLMA model gives those biased effects far more influence than a fixed-effect model would. @Yang2024 show this is why conventional MLMA estimates tend to inherit selective-reporting bias.</span>
+<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Standard parametric SEs assume a correctly specified dependence structure.** Clustered effect sizes (multiple effects per study, phylogenetic clustering, shared controls) inflate type-I error rates even when random effects are included, because the working covariance structure is rarely specified perfectly.</span>
+<span id="cb15-230"><a href="#cb15-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a>@Yang2024 re-analysed 448 ecological and evolutionary meta-analyses and showed that the *joint* impact of these two problems can be substantial: on average, effect sizes are overestimated and standard errors are underestimated when both are ignored. They propose a simple **two-step procedure**:</span>
+<span id="cb15-232"><a href="#cb15-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-233"><a href="#cb15-233" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Step 1 -- bias-robust point estimation.** Fit a *fixed-effect* multivariate model (no study- or observation-level random effects) using a within-study variance--covariance matrix built with `metafor::vcalc()`. Because this model uses $1/v_i$-type weights rather than $1/(v_i + \tau^2)$, imprecise studies are penalised as they would be in a classical FE meta-analysis, making the pooled mean far less sensitive to selective reporting. This is sometimes called the **FE + VCV** or **unrestricted weighted least squares (UWLS)** estimator.</span>
+<span id="cb15-234"><a href="#cb15-234" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Step 2 -- cluster-robust variance estimation (CRVE).** Wrap the Step 1 model in <span class="in">`metafor::robust()`</span> with <span class="in">`clubSandwich = TRUE`</span> (or equivalently call <span class="in">`clubSandwich::coef_test()`</span>) and set <span class="in">`cluster =`</span> to the study ID. This produces CR2 small-sample--corrected sandwich standard errors and Satterthwaite-style degrees of freedom, which remain valid even though the Step 1 model deliberately ignores between-study heterogeneity. Note that CR2 is only applicable when the underlying model has no random effects, which is exactly why Step 1 is fixed-effect.</span>
+<span id="cb15-235"><a href="#cb15-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-236"><a href="#cb15-236" aria-hidden="true" tabindex="-1"></a>Let's apply this to the Arnold endotherm data. We'll compare the naive multilevel estimate, the $\sqrt{v}$-adjusted Egger estimate, and the bias-robust FE + VCV estimate with CRVE.</span>
+<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: biasrobust</span></span>
+<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb15-244"><a href="#cb15-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb15-245"><a href="#cb15-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) Naive multilevel meta-analytic mean (MLMA; inverse-variance + tau^2 weighted)</span></span>
+<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a>mod_naive <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> Zr_v,</span>
+<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a>                     <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> arnold_data_endo,</span>
+<span id="cb15-250"><a href="#cb15-250" aria-hidden="true" tabindex="-1"></a>                     <span class="at">random =</span> <span class="fu">list</span>(<span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>Ref, <span class="sc">~</span><span class="dv">1</span><span class="sc">|</span>obs))</span>
+<span id="cb15-251"><a href="#cb15-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-252"><a href="#cb15-252" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) Step 1 of Yang et al. 2024: bias-robust FE + VCV model.</span></span>
+<span id="cb15-253"><a href="#cb15-253" aria-hidden="true" tabindex="-1"></a><span class="co">#     We build a block-diagonal within-study VCV assuming a constant sampling</span></span>
+<span id="cb15-254"><a href="#cb15-254" aria-hidden="true" tabindex="-1"></a><span class="co">#     correlation of rho = 0.5 between effect sizes from the same study, then</span></span>
+<span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a><span class="co">#     fit a fixed-effect multivariate model (no random = argument).</span></span>
+<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a>VCV <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">vcalc</span>(<span class="at">vi =</span> Zr_v,</span>
+<span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster =</span> Ref,</span>
+<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a>                       <span class="at">obs =</span> obs,</span>
+<span id="cb15-259"><a href="#cb15-259" aria-hidden="true" tabindex="-1"></a>                       <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
+<span id="cb15-260"><a href="#cb15-260" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> arnold_data_endo)</span>
+<span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-262"><a href="#cb15-262" aria-hidden="true" tabindex="-1"></a>mod_MLFE <span class="ot">&lt;-</span> <span class="fu">rma.mv</span>(<span class="at">yi =</span> Zr, <span class="at">V =</span> VCV,</span>
+<span id="cb15-263"><a href="#cb15-263" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"REML"</span>,</span>
+<span id="cb15-264"><a href="#cb15-264" aria-hidden="true" tabindex="-1"></a>                    <span class="at">test =</span> <span class="st">"t"</span>, <span class="at">dfs =</span> <span class="st">"contain"</span>,</span>
+<span id="cb15-265"><a href="#cb15-265" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> arnold_data_endo)</span>
+<span id="cb15-266"><a href="#cb15-266" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_MLFE)</span>
+<span id="cb15-267"><a href="#cb15-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a><span class="co"># (c) Step 2: cluster-robust inference (CR2) on the FE + VCV model,</span></span>
+<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a><span class="co">#     clustering on study (Ref). This uses clubSandwich under the hood.</span></span>
+<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">robust</span>(mod_MLFE,</span>
+<span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">cluster =</span> arnold_data_endo<span class="sc">$</span>Ref,</span>
+<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">adjust =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">clubSandwich =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>mod_MLFE_RVE</span>
+<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a>We can now assemble a side-by-side comparison of the three approaches:</span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: biasrobust-compare</span></span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a><span class="co"># Naive MLMA estimate</span></span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a>naive_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"Naive MLMA (Ref + obs random effects)"</span>,</span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> mod_naive<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> mod_naive<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> mod_naive<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb15-290"><a href="#cb15-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-291"><a href="#cb15-291" aria-hidden="true" tabindex="-1"></a><span class="co"># sqrt(v)-adjusted Egger-type estimate (from earlier in this tutorial)</span></span>
+<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a>egger_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"sqrt(v)-adjusted (Nakagawa 2022)"</span>,</span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Estimate =</span> metareg_se<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_lower =</span> metareg_se<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a>                         <span class="at">CI_upper =</span> metareg_se<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a><span class="co"># Bias-robust FE + VCV with CR2 cluster-robust inference (Yang 2024)</span></span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>robust_row <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Method =</span> <span class="st">"FE + VCV + CR2 (Yang 2024)"</span>,</span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Estimate =</span> mod_MLFE_RVE<span class="sc">$</span>b[<span class="dv">1</span>],</span>
+<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_lower =</span> mod_MLFE_RVE<span class="sc">$</span>ci.lb[<span class="dv">1</span>],</span>
+<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>                          <span class="at">CI_upper =</span> mod_MLFE_RVE<span class="sc">$</span>ci.ub[<span class="dv">1</span>])</span>
+<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">rbind</span>(naive_row, egger_row, robust_row)</span>
+<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>flextable<span class="sc">::</span><span class="fu">flextable</span>(comparison)</span>
+<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **Which estimate would you report?**</span></span>
+<span id="cb15-308"><a href="#cb15-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-309"><a href="#cb15-309" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**Compare the three estimates in the table above. Do they tell the same story, or do they disagree? Which would you report as your headline estimate, and how would you use the others?**</span></span>
+<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;There is no single "right" answer here, and that is the point. The naive REML estimate is what most readers will expect to see, but it is the most vulnerable to both selective reporting and under-estimated standard errors. The $\sqrt{v}$-adjusted estimate asks "what would the effect be in a hypothetical study with no sampling error?" and is the standard ecological publication-bias sensitivity check. The bias-robust + CRVE estimate asks "what does the pooled mean look like if we do not let the smallest-variance studies dominate, and if we refuse to trust the parametric standard errors?". A defensible strategy is to report the naive estimate as the primary result and present the other two as sensitivity analyses -- if all three agree qualitatively, the conclusion is robust. If they disagree strongly, the disagreement itself is the result, and you should be cautious about any strong claims from the naive model.</span></span>
+<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>Rather than relying on a single publication-bias test, the current best-practice workflow for ecological meta-analyses is to triangulate across several complementary tools:</span>
+<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Start with a **contour-enhanced funnel plot** of both raw effects and meta-analytic residuals to build intuition about what might be missing and where.</span>
+<span id="cb15-330"><a href="#cb15-330" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fit a **multilevel Egger-type model** including $\sqrt{v}$ (or the effective-sample-size moderator for SMD/lnRR) to test for small-study effects and obtain an adjusted mean <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
+<span id="cb15-331"><a href="#cb15-331" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Add **publication year** as a moderator to test for time-lag bias and decline effects <span class="co">[</span><span class="ot">@Nakagawa2021b</span><span class="co">]</span>.</span>
+<span id="cb15-332"><a href="#cb15-332" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Finally, refit the model using **bias-robust weights and cluster-robust variance estimation** to check whether your pooled mean is being driven by selective reporting or by assumed-away non-independence <span class="co">[</span><span class="ot">@Yang2024</span><span class="co">]</span>.</span>
+<span id="cb15-333"><a href="#cb15-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-334"><a href="#cb15-334" aria-hidden="true" tabindex="-1"></a>If these analyses tell a consistent story, you can report your meta-analytic mean with reasonable confidence. If they disagree, the disagreement is itself an important result and should be reported transparently. None of these tools provides definitive proof that publication bias is (or is not) present -- they are sensitivity analyses designed to make your conclusions more defensible in the face of an inherently incomplete literature <span class="co">[</span><span class="ot">@Noble2017; @Koricheva2013</span><span class="co">]</span>.</span>
+<span id="cb15-335"><a href="#cb15-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-336"><a href="#cb15-336" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb15-337"><a href="#cb15-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-338"><a href="#cb15-338" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb15-339"><a href="#cb15-339" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb15-340"><a href="#cb15-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-341"><a href="#cb15-341" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb15-342"><a href="#cb15-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-345"><a href="#cb15-345" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb15-346"><a href="#cb15-346" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb15-347"><a href="#cb15-347" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb15-348"><a href="#cb15-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-349"><a href="#cb15-349" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-350"><a href="#cb15-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
