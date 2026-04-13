@@ -4,6 +4,7 @@
 #| echo: false
 #| message: false
 #| warning: false
+#| include: false
 
 # Load packages
 pacman::p_load(metafor, clubSandwich, flextable, tidyverse, orchaRd, pander, mathjaxr, equatags, magick)
