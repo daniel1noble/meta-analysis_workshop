@@ -210,17 +210,17 @@ summary(metareg_full)
 
 ### (3) Bias-robust Estimation with Dependent Effect Sizes
 
-The approaches above all rely on **inverse-variance weighted** estimation, which, for a multi-level model is $1/v_i + tau^2$. @Yang2024 point out two problems with this when selective reporting is present:
+The approaches above all rely on the usual multilevel random-effects (MLMA) weights, which for effect size $i$ are proportional to $1/(v_i + \tau^2)$, where $v_i$ is the sampling variance and $\tau^2$ is the estimated between-study heterogeneity. @Yang2024 point out two problems with this when selective reporting is present alongside non-independent effect sizes:
 
-1. **Inverse-variance weighting including $tau^2$ amplifies selective reporting.** In essence, when between study heterogeneity is large it dominates the weights and the model no longer protects against small-study effects. This is because the weights are no longer primarily determined by sampling variance, so the smallest-variance studies no longer receive disproportionate weight. In fact, when $tau^2$ is large, the weights become more similar across studies, which can actually *reduce* the impact of selective reporting on the pooled mean. However, this also means that the model is less sensitive to detecting small-study effects through the $\sqrt{v}$ moderator, and it can lead to underestimation of the true effect size if smaller studies with larger effects are overrepresented in the literature.
-2. **Standard parametric SEs assume independence.** Clustered effect sizes (multiple effects per study, phylogenetic clustering, shared controls) inflate type-I error rates even after including random effects, because the working covariance structure is rarely specified perfectly.
+1. **Adding $\tau^2$ to the weights erodes the protection against small-study effects.** In the classical fixed-effect model the weights are $1/v_i$, so imprecise (small-$n$) studies are penalised heavily and have little influence on the pooled mean. In the random-effects model, as $\tau^2$ grows large relative to $v_i$, the weights become increasingly similar across studies -- small studies start to receive almost as much weight as large ones. If the literature is *also* selectively reporting large effects from small studies (the classic file-drawer pattern), the MLMA model gives those biased effects far more influence than a fixed-effect model would. @Yang2024 show this is why conventional MLMA estimates tend to inherit selective-reporting bias.
+2. **Standard parametric SEs assume a correctly specified dependence structure.** Clustered effect sizes (multiple effects per study, phylogenetic clustering, shared controls) inflate type-I error rates even when random effects are included, because the working covariance structure is rarely specified perfectly.
 
 @Yang2024 re-analysed 448 ecological and evolutionary meta-analyses and showed that the *joint* impact of these two problems can be substantial: on average, effect sizes are overestimated and standard errors are underestimated when both are ignored. They propose a simple **two-step procedure**:
 
-- **Step 1 -- bias-robust point estimation.** Refit the meta-analytic model with a weighting scheme that does *not* depend on the sampling variance. A simple and defensible choice is to use *equal* (unit) weights, which in `rma.mv` is done by passing a constant vector via the `W =` argument. The resulting pooled mean is far less sensitive to selective reporting because small, potentially cherry-picked studies no longer receive disproportionate weight.
-- **Step 2 -- cluster-robust variance estimation (CRVE).** Wrap the fitted model in `clubSandwich::coef_test()` (or equivalently `metafor::robust()`) with `cluster =` set to the study ID. This produces sandwich-type standard errors and confidence intervals that remain valid even if the working random-effect structure is misspecified.
+- **Step 1 -- bias-robust point estimation.** Fit a *fixed-effect* multivariate model (no study- or observation-level random effects) using a within-study variance--covariance matrix built with `metafor::vcalc()`. Because this model uses $1/v_i$-type weights rather than $1/(v_i + \tau^2)$, imprecise studies are penalised as they would be in a classical FE meta-analysis, making the pooled mean far less sensitive to selective reporting. This is sometimes called the **FE + VCV** or **unrestricted weighted least squares (UWLS)** estimator.
+- **Step 2 -- cluster-robust variance estimation (CRVE).** Wrap the Step 1 model in `metafor::robust()` with `clubSandwich = TRUE` (or equivalently call `clubSandwich::coef_test()`) and set `cluster =` to the study ID. This produces CR2 small-sample--corrected sandwich standard errors and Satterthwaite-style degrees of freedom, which remain valid even though the Step 1 model deliberately ignores between-study heterogeneity. Note that CR2 is only applicable when the underlying model has no random effects, which is exactly why Step 1 is fixed-effect.
 
-Let's apply this to the Arnold endotherm data. We'll compare the naive multilevel estimate, the $\sqrt{v}$-adjusted Egger estimate, and the bias-robust estimate with CRVE.
+Let's apply this to the Arnold endotherm data. We'll compare the naive multilevel estimate, the $\sqrt{v}$-adjusted Egger estimate, and the bias-robust FE + VCV estimate with CRVE.
 
 ```{r}
 #| label: biasrobust
@@ -228,50 +228,60 @@ Let's apply this to the Arnold endotherm data. We'll compare the naive multileve
 #| message: false
 #| warning: false
 
-# (a) Naive multilevel meta-analytic mean (inverse-variance weighted)
+# (a) Naive multilevel meta-analytic mean (MLMA; inverse-variance + tau^2 weighted)
 mod_naive <- rma.mv(yi = Zr, V = Zr_v,
                      test = "t", dfs = "contain",
                      data = arnold_data_endo,
                      random = list(~1|Ref, ~1|obs))
 
-# (b) Step 1 of Yang et al. 2024: equal-weights point estimation
-#     Passing W = a constant vector overrides the default inverse-variance weights.
-mod_eq <- # NOt correct
+# (b) Step 1 of Yang et al. 2024: bias-robust FE + VCV model.
+#     We build a block-diagonal within-study VCV assuming a constant sampling
+#     correlation of rho = 0.5 between effect sizes from the same study, then
+#     fit a fixed-effect multivariate model (no random = argument).
+VCV <- metafor::vcalc(vi = Zr_v,
+                       cluster = Ref,
+                       obs = obs,
+                       rho = 0.5,
+                       data = arnold_data_endo)
 
-# (c) Step 2: cluster-robust inference, clustering on study (Ref)
-robust_eq <- clubSandwich::coef_test(mod_eq,
-                                       vcov = "CR2",
-                                       cluster = arnold_data_endo$Ref)
+mod_MLFE <- rma.mv(yi = Zr, V = VCV,
+                    method = "REML",
+                    test = "t", dfs = "contain",
+                    data = arnold_data_endo)
+summary(mod_MLFE)
 
-robust_eq
+# (c) Step 2: cluster-robust inference (CR2) on the FE + VCV model,
+#     clustering on study (Ref). This uses clubSandwich under the hood.
+mod_MLFE_RVE <- metafor::robust(mod_MLFE,
+                                 cluster = arnold_data_endo$Ref,
+                                 adjust = TRUE,
+                                 clubSandwich = TRUE)
+mod_MLFE_RVE
 ```
 
-We can then assemble a side-by-side comparison of the three approaches:
+We can now assemble a side-by-side comparison of the three approaches:
 
 ```{r}
 #| label: biasrobust-compare
 #| echo: true
 
-# Naive estimate
-naive_row <- data.frame(Method = "Naive REML (inverse-variance)",
+# Naive MLMA estimate
+naive_row <- data.frame(Method = "Naive MLMA (Ref + obs random effects)",
                          Estimate = mod_naive$b[1],
                          CI_lower = mod_naive$ci.lb[1],
                          CI_upper = mod_naive$ci.ub[1])
 
-# Egger-type adjusted estimate (from earlier in this tutorial)
+# sqrt(v)-adjusted Egger-type estimate (from earlier in this tutorial)
 egger_row <- data.frame(Method = "sqrt(v)-adjusted (Nakagawa 2022)",
                          Estimate = metareg_se$b[1],
                          CI_lower = metareg_se$ci.lb[1],
                          CI_upper = metareg_se$ci.ub[1])
 
-# Bias-robust + CRVE estimate (Yang 2024)
-ci_eq <- clubSandwich::conf_int(mod_eq,
-                                  vcov = "CR2",
-                                  cluster = arnold_data_endo$Ref)
-robust_row <- data.frame(Method = "Bias-robust + CRVE (Yang 2024)",
-                          Estimate = ci_eq$beta[1],
-                          CI_lower = ci_eq$CI_L[1],
-                          CI_upper = ci_eq$CI_U[1])
+# Bias-robust FE + VCV with CR2 cluster-robust inference (Yang 2024)
+robust_row <- data.frame(Method = "FE + VCV + CR2 (Yang 2024)",
+                          Estimate = mod_MLFE_RVE$b[1],
+                          CI_lower = mod_MLFE_RVE$ci.lb[1],
+                          CI_upper = mod_MLFE_RVE$ci.ub[1])
 
 comparison <- rbind(naive_row, egger_row, robust_row)
 flextable::flextable(comparison)
