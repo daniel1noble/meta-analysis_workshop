@@ -141,7 +141,7 @@ orchaRd::r2_ml(metareg)*100
 
 #### Funnel Plot with Residuals
 
-Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals. 
+Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals (@fig-funnelresid). 
 
 ```{r}
 #| label: fig-funnelresid
