@@ -143,7 +143,6 @@ orchaRd::r2_ml(metareg)*100
 
 Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals. 
 
-
 ```{r}
 #| label: fig-funnelresid
 #| echo: true

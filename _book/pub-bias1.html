@@ -1328,71 +1328,70 @@ Figure&nbsp;11.2: Funnel plot of meta-analytic residuals against precision (1 / 
 <span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a>Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals. </span>
 <span id="cb8-155"><a href="#cb8-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-156"><a href="#cb8-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-159"><a href="#cb8-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-160"><a href="#cb8-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-funnelresid</span></span>
-<span id="cb8-161"><a href="#cb8-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
-<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Funnel plot of meta-analytic residuals against precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant."</span></span>
-<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract residuals based on the fixed effect predictions (marginal) and the fixed and random effect (conditional)</span></span>
-<span id="cb8-166"><a href="#cb8-166" aria-hidden="true" tabindex="-1"></a>resid_marg <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr <span class="sc">-</span> <span class="fu">predict</span>(metareg)[[<span class="dv">1</span>]]     <span class="co"># Calculates the residuals based on fixed effects only</span></span>
-<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a> vi_residm <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr_v <span class="sc">+</span> <span class="fu">predict</span>(metareg)[[<span class="dv">2</span>]]<span class="sc">^</span><span class="dv">2</span> <span class="co"># Adds prediction errors</span></span>
-<span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a><span class="co"># Conditional requires random effect blups for study (Ref) and effect size obs</span></span>
-<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a> blups <span class="ot">&lt;-</span> <span class="fu">ranef</span>(metareg)  <span class="co"># extracts blups for each random effect. Stored as a list.</span></span>
-<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a> study_ef <span class="ot">&lt;-</span> blups<span class="sc">$</span>Ref[[<span class="dv">1</span>]][<span class="fu">match</span>(arnold_data_endo<span class="sc">$</span>Ref, <span class="fu">row.names</span>(blups<span class="sc">$</span>Ref))] <span class="co"># This code will expand each random effect for study out to match the study ID across the entire dataset</span></span>
-<span id="cb8-173"><a href="#cb8-173" aria-hidden="true" tabindex="-1"></a>study_vi <span class="ot">&lt;-</span> (blups<span class="sc">$</span>Ref[[<span class="dv">2</span>]][<span class="fu">match</span>(arnold_data_endo<span class="sc">$</span>Ref, <span class="fu">row.names</span>(blups<span class="sc">$</span>Ref))])<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a>effect_effect <span class="ot">&lt;-</span> blups<span class="sc">$</span>obs[[<span class="dv">1</span>]]</span>
-<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a>    vi_effect <span class="ot">&lt;-</span> blups<span class="sc">$</span>obs[[<span class="dv">1</span>]]<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a> <span class="co"># Now we have everything we need to calculate residuals</span></span>
-<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a>     resid_cond <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr <span class="sc">-</span> (<span class="fu">predict</span>(metareg)[[<span class="dv">1</span>]] <span class="sc">+</span> study_ef <span class="sc">+</span> effect_effect)</span>
-<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a>  vi_resid_cond <span class="ot">&lt;-</span> vi_residm <span class="sc">+</span> study_vi <span class="sc">+</span> vi_effect</span>
-<span id="cb8-181"><a href="#cb8-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-182"><a href="#cb8-182" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets make a funnel plot to visualize the data in relation to the precision, inverse sampling standard error, </span></span>
-<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
-<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a>metafor<span class="sc">::</span><span class="fu">funnel</span>(<span class="at">x =</span> resid_marg, <span class="at">vi =</span> vi_residm, <span class="at">yaxis =</span> <span class="st">"seinv"</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">level =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span>), <span class="at">shade =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"gray55"</span>, <span class="st">"gray 75"</span>), <span class="at">las =</span> <span class="dv">1</span>, <span class="at">xlab =</span> <span class="st">"Meta-analytic Residuals (marginal)"</span>, <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a>metafor<span class="sc">::</span><span class="fu">funnel</span>(<span class="at">x =</span> resid_cond, <span class="at">vi =</span> vi_resid_cond, <span class="at">yaxis =</span> <span class="st">"seinv"</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">level =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span>), <span class="at">shade =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"gray55"</span>, <span class="st">"gray 75"</span>), <span class="at">las =</span> <span class="dv">1</span>, <span class="at">xlab =</span> <span class="st">"Meta-analytic Residuals (conditional)"</span>, <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-158"><a href="#cb8-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-159"><a href="#cb8-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-funnelresid</span></span>
+<span id="cb8-160"><a href="#cb8-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb8-161"><a href="#cb8-161" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-align: center</span></span>
+<span id="cb8-162"><a href="#cb8-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Funnel plot of meta-analytic residuals against precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant."</span></span>
+<span id="cb8-163"><a href="#cb8-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-164"><a href="#cb8-164" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract residuals based on the fixed effect predictions (marginal) and the fixed and random effect (conditional)</span></span>
+<span id="cb8-165"><a href="#cb8-165" aria-hidden="true" tabindex="-1"></a>resid_marg <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr <span class="sc">-</span> <span class="fu">predict</span>(metareg)[[<span class="dv">1</span>]]     <span class="co"># Calculates the residuals based on fixed effects only</span></span>
+<span id="cb8-166"><a href="#cb8-166" aria-hidden="true" tabindex="-1"></a> vi_residm <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr_v <span class="sc">+</span> <span class="fu">predict</span>(metareg)[[<span class="dv">2</span>]]<span class="sc">^</span><span class="dv">2</span> <span class="co"># Adds prediction errors</span></span>
+<span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a><span class="co"># Conditional requires random effect blups for study (Ref) and effect size obs</span></span>
+<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a> blups <span class="ot">&lt;-</span> <span class="fu">ranef</span>(metareg)  <span class="co"># extracts blups for each random effect. Stored as a list.</span></span>
+<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-171"><a href="#cb8-171" aria-hidden="true" tabindex="-1"></a> study_ef <span class="ot">&lt;-</span> blups<span class="sc">$</span>Ref[[<span class="dv">1</span>]][<span class="fu">match</span>(arnold_data_endo<span class="sc">$</span>Ref, <span class="fu">row.names</span>(blups<span class="sc">$</span>Ref))] <span class="co"># This code will expand each random effect for study out to match the study ID across the entire dataset</span></span>
+<span id="cb8-172"><a href="#cb8-172" aria-hidden="true" tabindex="-1"></a>study_vi <span class="ot">&lt;-</span> (blups<span class="sc">$</span>Ref[[<span class="dv">2</span>]][<span class="fu">match</span>(arnold_data_endo<span class="sc">$</span>Ref, <span class="fu">row.names</span>(blups<span class="sc">$</span>Ref))])<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb8-173"><a href="#cb8-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-174"><a href="#cb8-174" aria-hidden="true" tabindex="-1"></a>effect_effect <span class="ot">&lt;-</span> blups<span class="sc">$</span>obs[[<span class="dv">1</span>]]</span>
+<span id="cb8-175"><a href="#cb8-175" aria-hidden="true" tabindex="-1"></a>    vi_effect <span class="ot">&lt;-</span> blups<span class="sc">$</span>obs[[<span class="dv">1</span>]]<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb8-176"><a href="#cb8-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-177"><a href="#cb8-177" aria-hidden="true" tabindex="-1"></a> <span class="co"># Now we have everything we need to calculate residuals</span></span>
+<span id="cb8-178"><a href="#cb8-178" aria-hidden="true" tabindex="-1"></a>     resid_cond <span class="ot">&lt;-</span> arnold_data_endo<span class="sc">$</span>Zr <span class="sc">-</span> (<span class="fu">predict</span>(metareg)[[<span class="dv">1</span>]] <span class="sc">+</span> study_ef <span class="sc">+</span> effect_effect)</span>
+<span id="cb8-179"><a href="#cb8-179" aria-hidden="true" tabindex="-1"></a>  vi_resid_cond <span class="ot">&lt;-</span> vi_residm <span class="sc">+</span> study_vi <span class="sc">+</span> vi_effect</span>
+<span id="cb8-180"><a href="#cb8-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-181"><a href="#cb8-181" aria-hidden="true" tabindex="-1"></a><span class="co"># Lets make a funnel plot to visualize the data in relation to the precision, inverse sampling standard error, </span></span>
+<span id="cb8-182"><a href="#cb8-182" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb8-183"><a href="#cb8-183" aria-hidden="true" tabindex="-1"></a>metafor<span class="sc">::</span><span class="fu">funnel</span>(<span class="at">x =</span> resid_marg, <span class="at">vi =</span> vi_residm, <span class="at">yaxis =</span> <span class="st">"seinv"</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">level =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span>), <span class="at">shade =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"gray55"</span>, <span class="st">"gray 75"</span>), <span class="at">las =</span> <span class="dv">1</span>, <span class="at">xlab =</span> <span class="st">"Meta-analytic Residuals (marginal)"</span>, <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-184"><a href="#cb8-184" aria-hidden="true" tabindex="-1"></a>metafor<span class="sc">::</span><span class="fu">funnel</span>(<span class="at">x =</span> resid_cond, <span class="at">vi =</span> vi_resid_cond, <span class="at">yaxis =</span> <span class="st">"seinv"</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">level =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.01</span>), <span class="at">shade =</span> <span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"gray55"</span>, <span class="st">"gray 75"</span>), <span class="at">las =</span> <span class="dv">1</span>, <span class="at">xlab =</span> <span class="st">"Meta-analytic Residuals (conditional)"</span>, <span class="at">legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-185"><a href="#cb8-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-186"><a href="#cb8-186" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-187"><a href="#cb8-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **How do our conclusions about the possibility of publication bias change by plotting residuals?**</span></span>
-<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-193"><a href="#cb8-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
-<span id="cb8-194"><a href="#cb8-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-195"><a href="#cb8-195" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**After looking at the new funnel plots (@fig-funnelresid) that account for varying amounts of heterogeneity in the model would you say our conclusions about publication bias being present or not change at all? If not, why not?** </span></span>
-<span id="cb8-196"><a href="#cb8-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
-<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Maybe. Even after accounting for factors that explain (or estimate) heterogeneity in the data we still see areas of the funnel plot that appear to be missing effect size estimates, notably for the marginal residuals we still see the missing effects on the left side. However, when looking at the conditional (taking into account fixed and random effects) we see that there is a gap yet when precision is low, but we are still seeing some effect size estimates being published with very low precision, which is not really what we might expect from publication bias.</span></span>
-<span id="cb8-202"><a href="#cb8-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-203"><a href="#cb8-203" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-205"><a href="#cb8-205" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb8-206"><a href="#cb8-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-207"><a href="#cb8-207" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
-<span id="cb8-208"><a href="#cb8-208" aria-hidden="true" tabindex="-1"></a>While funnel plots can be useful they do have clear limitations. @Nakagawa2021c overview the many assumption being made, particularly when using residuals, and how non-independence of sampling errors can cause problems. In particular, residual funnel plots inherit the dependence structure of the fitted model, and @Yang2024 recently showed that ignoring such dependence together with selective reporting can *overestimate* effect sizes on average while simultaneously *underestimating* standard errors. Visual assessment is therefore best viewed as a first pass -- in the next section, we'll overview more sophisticated and less subjective ways to assess and correct for publication bias, including the multilevel Egger-type regression of @Nakagawa2021b and the bias-robust weighting + cluster-robust variance framework of @Yang2024.</span>
-<span id="cb8-209"><a href="#cb8-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-210"><a href="#cb8-210" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
-<span id="cb8-211"><a href="#cb8-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-212"><a href="#cb8-212" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
-<span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
-<span id="cb8-216"><a href="#cb8-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
-<span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb8-224"><a href="#cb8-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-188"><a href="#cb8-188" aria-hidden="true" tabindex="-1"></a><span class="fu">#### **How do our conclusions about the possibility of publication bias change by plotting residuals?**</span></span>
+<span id="cb8-189"><a href="#cb8-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-190"><a href="#cb8-190" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb8-191"><a href="#cb8-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-192"><a href="#cb8-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task!</span></span>
+<span id="cb8-193"><a href="#cb8-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-194"><a href="#cb8-194" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;**After looking at the new funnel plots (@fig-funnelresid) that account for varying amounts of heterogeneity in the model would you say our conclusions about publication bias being present or not change at all? If not, why not?** </span></span>
+<span id="cb8-195"><a href="#cb8-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-196"><a href="#cb8-196" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb8-197"><a href="#cb8-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-198"><a href="#cb8-198" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer!</span></span>
+<span id="cb8-199"><a href="#cb8-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-200"><a href="#cb8-200" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;Maybe. Even after accounting for factors that explain (or estimate) heterogeneity in the data we still see areas of the funnel plot that appear to be missing effect size estimates, notably for the marginal residuals we still see the missing effects on the left side. However, when looking at the conditional (taking into account fixed and random effects) we see that there is a gap yet when precision is low, but we are still seeing some effect size estimates being published with very low precision, which is not really what we might expect from publication bias.</span></span>
+<span id="cb8-201"><a href="#cb8-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-202"><a href="#cb8-202" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb8-203"><a href="#cb8-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-204"><a href="#cb8-204" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb8-205"><a href="#cb8-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-206"><a href="#cb8-206" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Conclusions**</span></span>
+<span id="cb8-207"><a href="#cb8-207" aria-hidden="true" tabindex="-1"></a>While funnel plots can be useful they do have clear limitations. @Nakagawa2021c overview the many assumption being made, particularly when using residuals, and how non-independence of sampling errors can cause problems. In particular, residual funnel plots inherit the dependence structure of the fitted model, and @Yang2024 recently showed that ignoring such dependence together with selective reporting can *overestimate* effect sizes on average while simultaneously *underestimating* standard errors. Visual assessment is therefore best viewed as a first pass -- in the next section, we'll overview more sophisticated and less subjective ways to assess and correct for publication bias, including the multilevel Egger-type regression of @Nakagawa2021b and the bias-robust weighting + cluster-robust variance framework of @Yang2024.</span>
+<span id="cb8-208"><a href="#cb8-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-209"><a href="#cb8-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb8-210"><a href="#cb8-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-211"><a href="#cb8-211" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb8-212"><a href="#cb8-212" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span> </span>
+<span id="cb8-213"><a href="#cb8-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-214"><a href="#cb8-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb8-215"><a href="#cb8-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-218"><a href="#cb8-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-219"><a href="#cb8-219" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo</span></span>
+<span id="cb8-220"><a href="#cb8-220" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-221"><a href="#cb8-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-222"><a href="#cb8-222" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-223"><a href="#cb8-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
