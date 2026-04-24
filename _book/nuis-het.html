@@ -85,7 +85,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./fixed-vs-random.html" rel="next">
-<link href="./effect-assume.html" rel="prev">
+<link href="./effect-size.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -268,11 +268,6 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./effect-assume.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Effect size assumptions and checking their suitability</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./nuis-het.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Nuisance heterogeneity</span></a>
   </div>
 </li>
@@ -430,15 +425,15 @@ window.Quarto = {
 <p>To begin, recall that <span class="math inline">\(Q_{10}\)</span>, is defined as:</p>
 <p><span id="eq-q10"><span class="math display">\[
 Q_{10} = \left( \frac{R_{2}}{R_{1}} \right)^{ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }
-\tag{4.1}\]</span></span></p>
-<p>Here, <span class="math inline">\(R_{1}\)</span> and <span class="math inline">\(R_{2}\)</span> are mean physiological rates and <span class="math inline">\(T_{1}\)</span> and <span class="math inline">\(T_{2}\)</span> are the temperatures that these rates are measured. Natural log transformation of <a href="#eq-q10" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> leads to the following log transformed <span class="math inline">\(Q_{10}\)</span>:</p>
+\tag{3.1}\]</span></span></p>
+<p>Here, <span class="math inline">\(R_{1}\)</span> and <span class="math inline">\(R_{2}\)</span> are mean physiological rates and <span class="math inline">\(T_{1}\)</span> and <span class="math inline">\(T_{2}\)</span> are the temperatures that these rates are measured. Natural log transformation of <a href="#eq-q10" class="quarto-xref">Equation&nbsp;<span>3.1</span></a> leads to the following log transformed <span class="math inline">\(Q_{10}\)</span>:</p>
 <p><span id="eq-lnq10"><span class="math display">\[
 lnRR_{Q_{10}} = ln\left( \frac{R_{2}}{R_{1}} \right){ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }
-\tag{4.2}\]</span></span></p>
-<p><span class="citation" data-cites="Noble2022">Noble et al. (<a href="#ref-Noble2022" role="doc-biblioref">2022</a>)</span> call this transformed effect size <span class="math inline">\(LnRR_{Q_{10}}\)</span> because of its similarities with the log response ratio. <a href="#eq-lnq10" class="quarto-xref">Equation&nbsp;<span>4.2</span></a> is essentially a temperature-corrected equivalent of <em>lnRR</em> when the numerator and denominator are measured at different temperatures. <span class="math inline">\(lnRR_{Q_{10}}\)</span> is more likely to satisfy the assumption of residual normality than <span class="math inline">\(Q_{10}\)</span> and given it’s similarities to <em>lnRR</em> we can now approximate it’s sampling variance <span class="citation" data-cites="Hedges1999">(see <a href="#ref-Hedges1999" role="doc-biblioref">Hedges et al., 1999</a>)</span>. The recognition of this equivalence means that we can calculate the sampling variance for <a href="#eq-lnq10" class="quarto-xref">Equation&nbsp;<span>4.2</span></a> as follows:</p>
+\tag{3.2}\]</span></span></p>
+<p><span class="citation" data-cites="Noble2022">Noble et al. (<a href="#ref-Noble2022" role="doc-biblioref">2022</a>)</span> call this transformed effect size <span class="math inline">\(LnRR_{Q_{10}}\)</span> because of its similarities with the log response ratio. <a href="#eq-lnq10" class="quarto-xref">Equation&nbsp;<span>3.2</span></a> is essentially a temperature-corrected equivalent of <em>lnRR</em> when the numerator and denominator are measured at different temperatures. <span class="math inline">\(lnRR_{Q_{10}}\)</span> is more likely to satisfy the assumption of residual normality than <span class="math inline">\(Q_{10}\)</span> and given it’s similarities to <em>lnRR</em> we can now approximate it’s sampling variance <span class="citation" data-cites="Hedges1999">(see <a href="#ref-Hedges1999" role="doc-biblioref">Hedges et al., 1999</a>)</span>. The recognition of this equivalence means that we can calculate the sampling variance for <a href="#eq-lnq10" class="quarto-xref">Equation&nbsp;<span>3.2</span></a> as follows:</p>
 <p><span id="eq-Vlnq10"><span class="math display">\[
 s^2_{lnRR_{Q_{10}}} = \left( \frac{SD_{2}^2}{R^2_{2}N_{2}} + \frac{SD_{1}^2}{R^2_{1}N_{1}} \right){ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }^2
-\tag{4.3}\]</span></span></p>
+\tag{3.3}\]</span></span></p>
 <section id="lnrr_q_10-diving-vertebrates-and-climate-change" class="level4">
 <h4 class="anchored" data-anchor-id="lnrr_q_10-diving-vertebrates-and-climate-change"><span class="math inline">\(lnRR_{Q_{10}}\)</span>: Diving vertebrates and climate change</h4>
 <p><img src="./figs/rodgers_2021.png" class="img-fluid"></p>
@@ -581,12 +576,12 @@ s^2_{lnRR_{Q_{10}}} = \left( \frac{SD_{2}^2}{R^2_{2}N_{2}} + \frac{SD_{1}^2}{R^2
 <p><span class="citation" data-cites="Pottier2021">Pottier et al. (<a href="#ref-Pottier2021" role="doc-biblioref">2021</a>)</span> used the acclimation response ratio, ARR, to investigate variation in the relationship between acclimation temperature and thermal tolerance (i.e.&nbsp;variation in slope). Because heat tolerance is consistently measured in degrees Celsius (<code>CTmax</code>) in the studies compiled, the slope between acclimation temperature and heat tolerance can be calculated, which is termed as the acclimation response ratio (<code>ARR</code>) in the literature. It is defined as the difference in the trait mean between the higher and lower acclimation temperature, divided by the difference in acclimation temperature:</p>
 <p><span id="eq-arr"><span class="math display">\[
 \text{ARR} = \frac{M_{\text{high}} - M_{\text{low}}}{T_{\text{high}} - T_{\text{low}}},
-\tag{4.4}\]</span></span> where <span class="math inline">\(M_{\text{high}}\)</span> and <span class="math inline">\(M_{\text{low}}\)</span> are the mean trait values (e.g.&nbsp;<code>CTmax</code>) at the higher and lower acclimation temperatures, and <span class="math inline">\(T_{\text{high}}\)</span> and <span class="math inline">\(T_{\text{low}}\)</span> are those acclimation temperatures. Because <span class="math inline">\(T_{\text{high}} &gt; T_{\text{low}}\)</span>, the sign of ARR simply tracks the sign of <span class="math inline">\(M_{\text{high}} - M_{\text{low}}\)</span>: a positive ARR means the trait <em>increases</em> with acclimation temperature.</p>
+\tag{3.4}\]</span></span> where <span class="math inline">\(M_{\text{high}}\)</span> and <span class="math inline">\(M_{\text{low}}\)</span> are the mean trait values (e.g.&nbsp;<code>CTmax</code>) at the higher and lower acclimation temperatures, and <span class="math inline">\(T_{\text{high}}\)</span> and <span class="math inline">\(T_{\text{low}}\)</span> are those acclimation temperatures. Because <span class="math inline">\(T_{\text{high}} &gt; T_{\text{low}}\)</span>, the sign of ARR simply tracks the sign of <span class="math inline">\(M_{\text{high}} - M_{\text{low}}\)</span>: a positive ARR means the trait <em>increases</em> with acclimation temperature.</p>
 <p>When the two groups are independent, the sampling variance for <span class="math inline">\(ARR\)</span> follows from applying the variance of a linear combination and dividing by the (fixed) squared temperature difference:</p>
 <p><span id="eq-varr"><span class="math display">\[
 \sigma^2_{ARR} = \left( \frac{1}{T_{\text{high}} - T_{\text{low}}} \right)^2
 \left( \frac{SD^2_{\text{high}}}{N_{\text{high}}} + \frac{SD^2_{\text{low}}}{N_{\text{low}}} \right)
-\tag{4.5}\]</span></span></p>
+\tag{3.5}\]</span></span></p>
 <p>In this example, we will use a simplified data set from <span class="citation" data-cites="Pottier2021">Pottier et al. (<a href="#ref-Pottier2021" role="doc-biblioref">2021</a>)</span>, and demonstrate how to investigate the mean effect of acclimation temperature on heat tolerance.This effect size is calculated as the difference between the heat tolerance at the higher (<code>mean_high</code>) and the lower (<code>mean_low</code>) acclimation temperatures, divided by the difference between acclimation temperatures (<code>acc_temp_high</code> - <code>acc_temp_low</code>).</p>
 <section id="download-data-and-functions-for-arr" class="level4">
 <h4 class="anchored" data-anchor-id="download-data-and-functions-for-arr">Download Data and Functions for <span class="math inline">\(ARR\)</span></h4>
@@ -693,8 +688,8 @@ s^2_{lnRR_{Q_{10}}} = \left( \frac{SD_{2}^2}{R^2_{2}N_{2}} + \frac{SD_{1}^2}{R^2
 <p><strong>R version 4.5.3 (2026-03-11)</strong></p>
 <p><strong>Platform:</strong> aarch64-apple-darwin20</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.1)</em>, <em>purrr(v.1.2.1)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.2)</em> and <em>tidyverse(v.2.0.0)</em></p>
-<p><strong>loaded via a namespace (and not attached):</strong> <em>gtable(v.0.3.6)</em>, <em>jsonlite(v.2.0.0)</em>, <em>compiler(v.4.5.3)</em>, <em>Rcpp(v.1.1.1)</em>, <em>tidyselect(v.1.2.1)</em>, <em>scales(v.1.4.0)</em>, <em>yaml(v.2.3.12)</em>, <em>fastmap(v.1.2.0)</em>, <em>R6(v.2.6.1)</em>, <em>generics(v.0.1.4)</em>, <em>knitr(v.1.51)</em>, <em>htmlwidgets(v.1.6.4)</em>, <em>pander(v.0.6.6)</em>, <em>pillar(v.1.11.1)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>tzdb(v.0.5.0)</em>, <em>rlang(v.1.2.0)</em>, <em>stringi(v.1.8.7)</em>, <em>xfun(v.0.57)</em>, <em>S7(v.0.2.1)</em>, <em>otel(v.0.2.0)</em>, <em>timechange(v.0.4.0)</em>, <em>cli(v.3.6.5)</em>, <em>withr(v.3.0.2)</em>, <em>magrittr(v.2.0.5)</em>, <em>digest(v.0.6.39)</em>, <em>grid(v.4.5.3)</em>, <em>hms(v.1.1.4)</em>, <em>lifecycle(v.1.0.5)</em>, <em>vctrs(v.0.7.2)</em>, <em>evaluate(v.1.0.5)</em>, <em>glue(v.1.8.0)</em>, <em>farver(v.2.1.2)</em>, <em>rmarkdown(v.2.31)</em>, <em>tools(v.4.5.3)</em>, <em>pkgconfig(v.2.0.3)</em> and <em>htmltools(v.0.5.9)</em></p>
+<p><strong>other attached packages:</strong> <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.1)</em>, <em>purrr(v.1.2.2)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.2)</em> and <em>tidyverse(v.2.0.0)</em></p>
+<p><strong>loaded via a namespace (and not attached):</strong> <em>gtable(v.0.3.6)</em>, <em>jsonlite(v.2.0.0)</em>, <em>compiler(v.4.5.3)</em>, <em>Rcpp(v.1.1.1)</em>, <em>tidyselect(v.1.2.1)</em>, <em>scales(v.1.4.0)</em>, <em>yaml(v.2.3.12)</em>, <em>fastmap(v.1.2.0)</em>, <em>R6(v.2.6.1)</em>, <em>generics(v.0.1.4)</em>, <em>knitr(v.1.51)</em>, <em>htmlwidgets(v.1.6.4)</em>, <em>pander(v.0.6.6)</em>, <em>pillar(v.1.11.1)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>tzdb(v.0.5.0)</em>, <em>rlang(v.1.2.0)</em>, <em>stringi(v.1.8.7)</em>, <em>xfun(v.0.57)</em>, <em>S7(v.0.2.1)</em>, <em>otel(v.0.2.0)</em>, <em>timechange(v.0.4.0)</em>, <em>cli(v.3.6.6)</em>, <em>withr(v.3.0.2)</em>, <em>magrittr(v.2.0.5)</em>, <em>digest(v.0.6.39)</em>, <em>grid(v.4.5.3)</em>, <em>hms(v.1.1.4)</em>, <em>lifecycle(v.1.0.5)</em>, <em>vctrs(v.0.7.3)</em>, <em>evaluate(v.1.0.5)</em>, <em>glue(v.1.8.0)</em>, <em>farver(v.2.1.2)</em>, <em>rmarkdown(v.2.31)</em>, <em>tools(v.4.5.3)</em>, <em>pkgconfig(v.2.0.3)</em> and <em>htmltools(v.0.5.9)</em></p>
 </div>
 </div>
 
@@ -1156,8 +1151,8 @@ s^2_{lnRR_{Q_{10}}} = \left( \frac{SD_{2}^2}{R^2_{2}N_{2}} + \frac{SD_{1}^2}{R^2
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./effect-assume.html" class="pagination-link" aria-label="Effect size assumptions and checking their suitability">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Effect size assumptions and checking their suitability</span></span>
+      <a href="./effect-size.html" class="pagination-link" aria-label="Calculating and interpreting effect sizes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Calculating and interpreting effect sizes</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

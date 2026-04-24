@@ -20,7 +20,6 @@ book:
     - part: "**Effect Sizes**"
       chapters:
         - effect-size.qmd
-        - effect-assume.qmd
         - nuis-het.qmd
     - part: "**Statistical Models**"
       chapters:
