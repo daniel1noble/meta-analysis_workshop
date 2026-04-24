@@ -250,6 +250,11 @@ window.Quarto = {
   <a href="./introduction-to-meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Introduction to Meta-analysis</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./systematic_review.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Systematic Review</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -486,7 +491,7 @@ e_{i} &amp;\sim N(0, \sigma_{e}^2)
 <h3 class="anchored" data-anchor-id="visualising-heterogeneity-with-an-orchard-plot">Visualising Heterogeneity with an Orchard Plot</h3>
 <p>The <code>orchaRd</code> package provides the <code>orchard_plot()</code> function, which is a great tool for communicating meta-analytic results and heterogeneity at the same time <span class="citation" data-cites="Nakagawa2021c Nakagawa2023">(<a href="#ref-Nakagawa2021c" role="doc-biblioref">Nakagawa et al., 2021</a>; <a href="#ref-Nakagawa2023" role="doc-biblioref">Nakagawa et al., 2023</a>)</span>. The plot shows:</p>
 <ul>
-<li>the <strong>meta-analytic mean</strong> as a point estimate (the filled circle in <a href="#fig-orchard" class="quarto-xref">Figure&nbsp;<span>6.1</span></a>);</li>
+<li>the <strong>meta-analytic mean</strong> as a point estimate (the filled circle in <a href="#fig-orchard" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>);</li>
 <li>a <strong>thick bar</strong> spanning the 95% confidence interval (uncertainty around the mean);</li>
 <li>a <strong>thin bar</strong> spanning the 95% <strong>prediction interval</strong> (the expected range of a future effect size — the key to visualising heterogeneity);</li>
 <li>individual effect sizes are plotted as points scaled by their precision (<span class="math inline">\(1/\sqrt{v_i}\)</span>), so precise estimates appear larger.</li>
@@ -503,20 +508,20 @@ e_{i} &amp;\sim N(0, \sigma_{e}^2)
 <img src="het_files/figure-html/fig-orchard-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-orchard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.1: Orchard plot of acclimation response ratio (ARR) estimates across ectotherm species. The filled circle is the meta-analytic mean, the thick bar is the 95% confidence interval, and the thin bar is the 95% prediction interval. Individual effect sizes are scaled by precision.
+Figure&nbsp;7.1: Orchard plot of acclimation response ratio (ARR) estimates across ectotherm species. The filled circle is the meta-analytic mean, the thick bar is the 95% confidence interval, and the thin bar is the 95% prediction interval. Individual effect sizes are scaled by precision.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The wide prediction interval in <a href="#fig-orchard" class="quarto-xref">Figure&nbsp;<span>6.1</span></a> immediately makes clear that there is substantial heterogeneity in ARR across species — the spread of effects is far greater than sampling error alone would produce. The numerical heterogeneity metrics below quantify this formally.</p>
+<p>The wide prediction interval in <a href="#fig-orchard" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> immediately makes clear that there is substantial heterogeneity in ARR across species — the spread of effects is far greater than sampling error alone would produce. The numerical heterogeneity metrics below quantify this formally.</p>
 </section>
 <section id="proportion-of-total-heterogeneity-i_total2" class="level3">
 <h3 class="anchored" data-anchor-id="proportion-of-total-heterogeneity-i_total2">Proportion of Total Heterogeneity: <span class="math inline">\(I_{total}^2\)</span></h3>
 <p><span class="math inline">\(I^2\)</span> estimates are probably most commonly presented in the literature <span class="citation" data-cites="Higgins2003 Higgins2002 Nakagawa2017 Senior2016 Borenstein2019">(<a href="#ref-Borenstein2019" role="doc-biblioref">Borenstein, 2019</a>; <a href="#ref-Higgins2002" role="doc-biblioref">Higgins and Thompson, 2002</a>; <a href="#ref-Higgins2003" role="doc-biblioref">Higgins et al., 2003</a>; <a href="#ref-Nakagawa2017" role="doc-biblioref">Nakagawa et al., 2017a</a>; <a href="#ref-Senior2016" role="doc-biblioref">Senior et al., 2016</a>)</span>. There are different forms of <span class="math inline">\(I^2\)</span> that can be calculated, but the one that describes the proportion of effect size variation after accounting for total sampling variation is <span class="math inline">\(I_{total}^2\)</span> <span class="citation" data-cites="NakagawaSantos2012">(<a href="#ref-NakagawaSantos2012" role="doc-biblioref">Nakagawa and Santos, 2012</a>)</span>. Assuming we’re using our multilevel model described above, it’s calculated as follows:</p>
 <p><span id="eq-itot"><span class="math display">\[
 I^2_{total} = \frac{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}{\sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}}
-\tag{6.1}\]</span></span></p>
+\tag{7.1}\]</span></span></p>
 <p>where <span class="math inline">\(\sigma^2_{total} = \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual} +\sigma^2_{m}\)</span> is the total effect size variance and <span class="math inline">\(\sigma^2_{m}\)</span> is the ‘typical’ sampling error variance calculated as:</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -528,13 +533,13 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><a href="#eq-itot" class="quarto-xref">Equation&nbsp;<span>6.1</span></a> is the general form and may include a phylogenetic variance component (<span class="math inline">\(\sigma^2_{phylogeny}\)</span>) when a phylogenetic correlation structure is added to the model. In the model fitted here, no phylogenetic term is included, so <span class="math inline">\(\sigma^2_{phylogeny} = 0\)</span> and the numerator reduces to <span class="math inline">\(\sigma^2_{study} + \sigma^2_{species} + \sigma^2_{residual}\)</span>.</p>
+<p><a href="#eq-itot" class="quarto-xref">Equation&nbsp;<span>7.1</span></a> is the general form and may include a phylogenetic variance component (<span class="math inline">\(\sigma^2_{phylogeny}\)</span>) when a phylogenetic correlation structure is added to the model. In the model fitted here, no phylogenetic term is included, so <span class="math inline">\(\sigma^2_{phylogeny} = 0\)</span> and the numerator reduces to <span class="math inline">\(\sigma^2_{study} + \sigma^2_{species} + \sigma^2_{residual}\)</span>.</p>
 </div>
 </div>
 <p><span id="eq-w"><span class="math display">\[
 \sigma_{m}^2 = \sum w_{i}\left( k-1\right) / \left[ \left( \sum w_{i}\right)^2  + \sum w_{i}^2\right]
-\tag{6.2}\]</span></span></p>
-<p>where <em>k</em> is the number of studies and the weights, <span class="math inline">\(w_{i} = \frac{1}{v_{i}}\)</span>, can be calculated using the inverse of the sampling variance (<span class="math inline">\(v_{i}\)</span>) for each effect size, <em>i</em>. Below, we’ll make use of the <code>orchaRd</code> R package <span class="citation" data-cites="Nakagawa2021c Nakagawa2023">(<a href="#ref-Nakagawa2021c" role="doc-biblioref">Nakagawa et al., 2021</a>; <a href="#ref-Nakagawa2023" role="doc-biblioref">Nakagawa et al., 2023</a>)</span> to calculate various <span class="math inline">\(I^2\)</span> metrics. In fact, we can simply change what is in the numerator of <a href="#eq-itot" class="quarto-xref">Equation&nbsp;<span>6.1</span></a> to calculate a multitude of different <span class="math inline">\(I^2\)</span> metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We’ll do this below:</p>
+\tag{7.2}\]</span></span></p>
+<p>where <em>k</em> is the number of studies and the weights, <span class="math inline">\(w_{i} = \frac{1}{v_{i}}\)</span>, can be calculated using the inverse of the sampling variance (<span class="math inline">\(v_{i}\)</span>) for each effect size, <em>i</em>. Below, we’ll make use of the <code>orchaRd</code> R package <span class="citation" data-cites="Nakagawa2021c Nakagawa2023">(<a href="#ref-Nakagawa2021c" role="doc-biblioref">Nakagawa et al., 2021</a>; <a href="#ref-Nakagawa2023" role="doc-biblioref">Nakagawa et al., 2023</a>)</span> to calculate various <span class="math inline">\(I^2\)</span> metrics. In fact, we can simply change what is in the numerator of <a href="#eq-itot" class="quarto-xref">Equation&nbsp;<span>7.1</span></a> to calculate a multitude of different <span class="math inline">\(I^2\)</span> metrics that can be useful in understanding the relative importance of factors most important in explaining effect size variation. We’ll do this below:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -612,11 +617,11 @@ I2_es_ID      37.81 20.0  66.0</code></pre>
 <p><span class="math inline">\(I^2\)</span> is a <em>variance-partitioning</em> metric: it tells you what fraction of total variance is genuine heterogeneity, not sampling error. That is useful, but it says nothing about whether the heterogeneity is large or small <em>relative to the mean effect</em>. Consider two studies that both have <span class="math inline">\(I^2_{total} = 0.90\)</span>. If one has a mean ARR of 0.001 °C/°C the absolute spread of effects is biologically negligible; if the other has a mean of 1 °C/°C the same 90% translates to enormous between-study variation. <span class="citation" data-cites="Yang2025het">Yang et al. (<a href="#ref-Yang2025het" role="doc-biblioref">2025</a>)</span> propose two mean-standardised alternatives that capture this information:</p>
 <p><span id="eq-cvh2"><span class="math display">\[
 CVH_2 = \frac{\sum \sigma^2}{\hat{\mu}^2}
-\tag{6.3}\]</span></span></p>
+\tag{7.3}\]</span></span></p>
 <p><span id="eq-m2"><span class="math display">\[
 M_2 = \frac{\sum \sigma^2}{\hat{\mu}^2 + \sum \sigma^2}
-\tag{6.4}\]</span></span></p>
-<p>where <span class="math inline">\(\hat{\mu}\)</span> is the meta-analytic mean and <span class="math inline">\(\sum \sigma^2\)</span> is the sum of all random-effect variance components (excluding sampling variance <span class="math inline">\(\sigma^2_m\)</span>). <span class="math inline">\(CVH_2\)</span> (<a href="#eq-cvh2" class="quarto-xref">Equation&nbsp;<span>6.3</span></a>) is analogous to a squared coefficient of variation: values <span class="math inline">\(&gt; 1\)</span> indicate that heterogeneity variance exceeds the mean effect squared. <span class="math inline">\(M_2\)</span> (<a href="#eq-m2" class="quarto-xref">Equation&nbsp;<span>6.4</span></a>) is bounded <span class="math inline">\([0, 1]\)</span> and can be read as the proportion of total ‘signal’ (mean<span class="math inline">\(^2\)</span> + variance) that is heterogeneity. <span class="citation" data-cites="Yang2025het">Yang et al. (<a href="#ref-Yang2025het" role="doc-biblioref">2025</a>)</span> recommend reporting both <span class="math inline">\(CVH_2\)</span> and <span class="math inline">\(M_2\)</span> alongside <span class="math inline">\(I^2\)</span> for a more complete picture. These metrics are implemented in <code>orchaRd</code>:</p>
+\tag{7.4}\]</span></span></p>
+<p>where <span class="math inline">\(\hat{\mu}\)</span> is the meta-analytic mean and <span class="math inline">\(\sum \sigma^2\)</span> is the sum of all random-effect variance components (excluding sampling variance <span class="math inline">\(\sigma^2_m\)</span>). <span class="math inline">\(CVH_2\)</span> (<a href="#eq-cvh2" class="quarto-xref">Equation&nbsp;<span>7.3</span></a>) is analogous to a squared coefficient of variation: values <span class="math inline">\(&gt; 1\)</span> indicate that heterogeneity variance exceeds the mean effect squared. <span class="math inline">\(M_2\)</span> (<a href="#eq-m2" class="quarto-xref">Equation&nbsp;<span>7.4</span></a>) is bounded <span class="math inline">\([0, 1]\)</span> and can be read as the proportion of total ‘signal’ (mean<span class="math inline">\(^2\)</span> + variance) that is heterogeneity. <span class="citation" data-cites="Yang2025het">Yang et al. (<a href="#ref-Yang2025het" role="doc-biblioref">2025</a>)</span> recommend reporting both <span class="math inline">\(CVH_2\)</span> and <span class="math inline">\(M_2\)</span> alongside <span class="math inline">\(I^2\)</span> for a more complete picture. These metrics are implemented in <code>orchaRd</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -661,11 +666,11 @@ M_2 = \frac{\sum \sigma^2}{\hat{\mu}^2 + \sum \sigma^2}
 <p>Prediction intervals can be calculated in a similar way to confidence intervals but instead of just using the standard error, like we do with confidence interval construction, we add in the extra random-effect variance estimates. For our model above, the <strong>total</strong> PI — spanning all sources of variance — is:</p>
 <p><span id="eq-pi"><span class="math display">\[
 PI_{total} \sim  \bar{\mu} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species} + \sigma^2_{residual}}
-\tag{6.5}\]</span></span></p>
+\tag{7.5}\]</span></span></p>
 <p>However, <span class="citation" data-cites="Yang2024pi">Yang et al. (<a href="#ref-Yang2024pi" role="doc-biblioref">2024</a>)</span> highlight that the total PI conflates two distinct questions: (1) how variable are individual <em>effect size estimates</em> across all studies (which includes within-study residual variance, <span class="math inline">\(\sigma^2_{residual}\)</span>), and (2) how variable are <em>study-level means</em> across different biological contexts (which excludes within-study residual variance). The latter — called the <strong>study-level PI</strong> — is often the more relevant question for biological generality, because it captures how much we expect the average result to shift if we replicated the study in a new species or population context:</p>
 <p><span id="eq-pi-study"><span class="math display">\[
 PI_{study} \sim  \bar{\mu} \pm 1.96 \sqrt{SE^2 + \sigma^2_{study} +  \sigma^2_{species}}
-\tag{6.6}\]</span></span></p>
+\tag{7.6}\]</span></span></p>
 <p><span class="citation" data-cites="Yang2024pi">Yang et al. (<a href="#ref-Yang2024pi" role="doc-biblioref">2024</a>)</span> found that across 512 ecological and evolutionary meta-analyses, most of the wide total PI came from within-study (residual) variance, and that study-level generality was far more common than the total PI implied.</p>
 <p>We can compute both types easily:</p>
 <div class="cell">
@@ -778,7 +783,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>You will probably have noticed that <span class="math inline">\(I^2\)</span> looks awfully familiar. It looks a lot like the way we might calculate <span class="math inline">\(R^2\)</span> described by <span class="citation" data-cites="NakagawaSchielzeth2013">Nakagawa and Schielzeth (<a href="#ref-NakagawaSchielzeth2013" role="doc-biblioref">2013</a>)</span>. Well, you would be correct! Often we also want to quantify how much variation is explained by our moderators and random effects in our multilevel meta-regression model <span class="citation" data-cites="Nakagawa2017ab NakagawaSchielzeth2013">(<a href="#ref-NakagawaSchielzeth2013" role="doc-biblioref">Nakagawa and Schielzeth, 2013</a>; <a href="#ref-Nakagawa2017ab" role="doc-biblioref">Nakagawa et al., 2017b</a>)</span>. This is done using <span class="math inline">\(R^2\)</span>. We can calculate different <span class="math inline">\(R^2\)</span> values depending on whether we ignore or include random effects in the numerator. If only the variation explained by moderators is included in the numerator than we call this <span class="math inline">\(R_{marginal}^2\)</span>, which is defined as:</p>
 <p><span id="eq-r2"><span class="math display">\[
 R^2_{marginal} = \frac{\sigma^2_{fixed}}{\sigma^2_{fixed} + \sigma^2_{study} + \sigma^2_{phylogeny} + \sigma^2_{species} + \sigma^2_{residual}}
-\tag{6.7}\]</span></span></p>
+\tag{7.7}\]</span></span></p>
 <p>Note that this formula does not include <span class="math inline">\(\sigma^2_{m}\)</span> as sampling error variance is assumed to be known in meta-analysis. We won’t go into the details on how to calculate and interpret these because we’ll cover this in a later tutorial on <a href="./pub-bias1.html">publication bias</a>. Suffice it to say that this is a useful statistic for describing how much variation your moderators or model explain.</p>
 </section>
 </section>
