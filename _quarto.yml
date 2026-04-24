@@ -17,6 +17,7 @@ book:
     - part: "**Fundamentals of Meta-Analysis**"
       chapters:
         - introduction-to-meta.qmd
+        - systematic_review.qmd
     - part: "**Effect Sizes**"
       chapters:
         - effect-size.qmd
