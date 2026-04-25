@@ -26,7 +26,7 @@ A **Quarto book** of teaching materials for a meta-analysis workshop. Co-authore
 
 ## Literature and citations
 
-A non-exhustive list of some of the core researchers in meta-analysis for ecology and evolution whose work you should consult carefully:
+A non-exhaustive list of some of the core researchers in meta-analysis for ecology and evolution whose work you should consult carefully:
 
 - Shinichi Nakagawa
 - Wolfgang Viechtbauer
@@ -86,6 +86,10 @@ When writing or revising material:
 **Always plan before doing anything substantive.** For non-trivial work — drafting a chapter, restructuring a section, adding a worked example, ingesting a body of literature — present the plan first and wait for sign-off before editing chapter files or `refs.bib`.
 
 Small mechanical fixes (typos, broken links, obvious code errors in a single chunk) do not need a plan.
+
+**Quarto rendering is pre-approved.** Run `quarto render` (whole book) or `quarto render <file>.qmd` (single chapter) whenever it's useful — to verify a change, refresh `_book/`, or check that a citation links correctly. Do not ask first.
+
+**All web searches are pre-approved.** WebSearch and WebFetch can be used at any time without asking — for literature, package docs, DOI lookups, anything. Still report search effort when the result feeds into bib or chapter content (per the literature-and-citations rule above).
 
 ## File layout cheatsheet
 

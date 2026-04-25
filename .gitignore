@@ -67,3 +67,8 @@ rsconnect/
 .DS_Store
 .DS_Store
 .DS_Store
+scripts/enrich_bib.py
+bib/refs.bib.bak
+bib/refs.bib
+scripts/retry_bib.py
+bib/refs_enrichment_report.tsv
