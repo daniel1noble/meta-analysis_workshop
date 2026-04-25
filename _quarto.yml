@@ -34,8 +34,8 @@ book:
         - metaregression.qmd
     - part: "**Advanced Topics**"
       chapters:
-        - complex-nonind.qmd
         - phylo.qmd
+        - complex-nonind.qmd
     - part: "**Publication Bias**"
       chapters:
         - pub-bias1.qmd
