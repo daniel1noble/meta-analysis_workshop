@@ -86,7 +86,7 @@ set.seed(1)
 tree <- ape::compute.brlen(tree, method = "Grafen", power = 1)
 tree <- ape::multi2di(tree, random = TRUE)
 
-phylo_cor <- vcv(tree, cor = TRUE)
+phylo_cov <- vcv(tree, cor = FALSE)
 
 zr_data <- zr_data %>%
   dplyr::mutate(species_OTL = stringr::str_replace_all(species_OTL, " ", "_"))
@@ -101,7 +101,7 @@ brms::get_prior(
   Zr | se(sqrt(V_Zr)) ~ 1 +
     (1 | study_ID) + (1 | es_ID) + (1 | species) + (1 | gr(species_OTL, cov = A)),
   data  = zr_data,
-  data2 = list(A = phylo_cor)
+  data2 = list(A = phylo_cov)
 )
 ```
 
@@ -128,9 +128,9 @@ bayes_phylo <- brms::brm(
   Zr | se(sqrt(V_Zr)) ~ 1 +
     (1 | study_ID) + (1 | es_ID) + (1 | species) + (1 | gr(species_OTL, cov = A)),
   data    = zr_data,
-  data2   = list(A = phylo_cor),
+  data2   = list(A = phylo_cov),
   prior   = priors,
-  chains  = 4, iter = 2000, cores = 4, seed = 42,
+  chains  = 4, iter = 3000, warmup = 1000, thin = 1, cores = 4, seed = 42,
   control = list(adapt_delta = 0.95),
   file    = "models/bayes_phylo"
 )
@@ -140,7 +140,34 @@ bayes_phylo <- brms::brm(
 The first render will compile and sample the model (a few minutes). Subsequent renders read the cached fit from `models/bayes_phylo.rds` and complete in seconds. Delete the `.rds` to force a refit (e.g. after editing the formula or priors).
 :::
 
-A few things to note. First, the `| se(sqrt(V_Zr))` syntax tells `brms` to use the sampling variances to control for uncertainty in the effect sizes. The `se` stands for standard error, which is why we need to take the square root of the sampling variance. The `gr()` function around the phylogenetic random effect is a special syntax that tells `brms` to use the supplied covariance matrix `A` for that grouping factor. The `data2` argument is where we pass the phylogenetic covariance matrix. Also note that the phylogenetic A matrix differs from metafor because it's a covariance matrix whereas `metafor` expects a correlation matrix. Finally, the `control` argument is where we can tweak the MCMC sampling parameters. `adapt_delta` controls the target acceptance rate for the Hamiltonian Monte Carlo sampler; increasing it can help with convergence when the model is complex.
+A few things to note: 
+
+First, the `| se(sqrt(V_Zr))` syntax tells `brms` to use the sampling variances to control for uncertainty in the effect sizes. The `se` stands for standard error, which is why we need to take the square root of the sampling variance. Now, there are a couple of ways we can use the `se()` function. Currently, we are not setting the `sigma` argument within the function to `TRUE`, i.e., `se(sqrt(V_Zr), sigma = FALSE)`, which means that the model will not estimate a separate residual SD for the model. If we set `sigma = TRUE` we will allow the model to estimate a separate residual SD for the model. Instead, we are fitting an observation-level random effect (to keep consistent with `metafor`) which is a common way to model residual error in meta-analysis. If we had set `sigma = TRUE` as well the model would have estimated a separate residual SD for the model, but we would need to drop the observation-level random effect as these would be redundant. We can try that formulation below to show it's roughly the same:
+
+
+```{r fit-bayes2}
+#| label: bayes-fit2
+#| message: false
+#| warning: false
+#| results: hide
+
+bayes_phylo2 <- brms::brm(
+  Zr | se(sqrt(V_Zr), sigma = TRUE) ~ 1 +
+    (1 | study_ID) + (1 | species) + (1 | gr(species_OTL, cov = A)),
+  data    = zr_data,
+  data2   = list(A = phylo_cov),
+  prior   = priors,
+  chains  = 4, iter = 3000, warmup = 1000, thin = 1, cores = 4, seed = 42,
+  control = list(adapt_delta = 0.95),
+  file    = "models/bayes_phylo2"
+)
+```
+
+here, we can see that `sigma` is estimated and it should match the `sd_es_ID__Intercept` from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in `metafor` and is more parsimonious (fewer parameters to estimate).
+
+Second, the `gr()` function around the phylogenetic random effect is a special syntax that tells `brms` to use the supplied covariance matrix `A` for that grouping factor. The `data2` argument is where we pass the phylogenetic covariance matrix. Also note that the phylogenetic A matrix differs from metafor because it's a covariance matrix whereas `metafor` expects a correlation matrix. In our specific case the distinction is purely terminological: because we built the tree with `ape::compute.brlen(..., method = "Grafen", power = 1)` it is ultrametric with root-to-tip distance equal to 1, so every diagonal of `vcv(tree, cor = FALSE)` equals 1 and the covariance matrix is numerically identical to the correlation matrix. The distinction only matters if you use a non-ultrametric tree or skip the Grafen normalisation.
+
+Finally, the `control` argument is where we can tweak the MCMC sampling parameters. `adapt_delta` controls the target acceptance rate for the Hamiltonian Monte Carlo sampler; increasing it can help with convergence when the model is complex.
 
 ### Check MCMC diagnostics
 
@@ -153,7 +180,7 @@ summary(bayes_phylo)
 Two things to look for in the printout:
 
 - **R-hat ($\hat{R}$)** for every parameter should be $< 1.01$. Larger values mean the chains have not mixed.
-- **Bulk_ESS** and **Tail_ESS** should each be ~1000. Low ESS means the posterior summary is based on too few effective draws. Increasing `iter`, `warmup`, and `thin` more can help.
+- **Bulk_ESS** and **Tail_ESS** should each be ~1000, but sometimes it will be lower, but getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing `iter`, `warmup`, and `thin` more can help, but sometimes if the random effects are truly very low then ESS will remain low.
 
 A visual check of the trace plots and posterior densities is also really important to check to ensure proper mixing of the MCMC chains. They usually tell the same story as the printed diagnostics but can sometimes reveal issues that are not obvious from the numbers alone (e.g. multimodality, poor mixing, or a small number of effective samples).
 
@@ -161,6 +188,8 @@ A visual check of the trace plots and posterior densities is also really importa
 #| fig-height: 6
 plot(bayes_phylo, ask = FALSE)
 ```
+
+Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.
 
 ### Posterior summaries
 
