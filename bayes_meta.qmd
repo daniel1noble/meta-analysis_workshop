@@ -118,7 +118,7 @@ priors <- c(
 
 ### Fit the model in `brms`
 
-```{r fit-bayes}
+```{r}
 #| label: bayes-fit
 #| message: false
 #| warning: false
@@ -145,7 +145,7 @@ A few things to note:
 First, the `| se(sqrt(V_Zr))` syntax tells `brms` to use the sampling variances to control for uncertainty in the effect sizes. The `se` stands for standard error, which is why we need to take the square root of the sampling variance. Now, there are a couple of ways we can use the `se()` function. Currently, we are not setting the `sigma` argument within the function to `TRUE`, i.e., `se(sqrt(V_Zr), sigma = FALSE)`, which means that the model will not estimate a separate residual SD for the model. If we set `sigma = TRUE` we will allow the model to estimate a separate residual SD for the model. Instead, we are fitting an observation-level random effect (to keep consistent with `metafor`) which is a common way to model residual error in meta-analysis. If we had set `sigma = TRUE` as well the model would have estimated a separate residual SD for the model, but we would need to drop the observation-level random effect as these would be redundant. We can try that formulation below to show it's roughly the same:
 
 
-```{r fit-bayes2}
+```{r}
 #| label: bayes-fit2
 #| message: false
 #| warning: false
@@ -197,21 +197,21 @@ Recall that we also fit the same model with `sigma = TRUE`. We can look how the 
 summary(bayes_phylo2)
 ```
 
-Here, we can see that `sigma` is estimated and it should match the `sd_es_ID__Intercept` from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in `metafor` and is more parsimonious (fewer parameters to estimate).
+Here, we can see that `sigma` is estimated and it matches the `sd_es_ID__Intercept` from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in `metafor`. However, we can see that this is a more elegant way to model residual error for meta-analysis with `brms` (which we recommend) as you can see improvements in the MCMC diagnostics for the second model compared to the first one because of the different way the model is parameterised. So, we've solved our mixing issues!
 
 ### Posterior summaries
 
 The overall effect (intercept on the $Z_r$ scale) and 95% credible interval:
 
 ```{r posterior-summary}
-brms::posterior_summary(bayes_phylo, variable = "b_Intercept")
+brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")
 ```
 
-Variance components — between-study, within-study (effect-size-level), non-phylogenetic species, and phylogenetic species:
+Variance components — between-study, within-study residual (here estimated as `sigma` because we used `se(..., sigma = TRUE)` and dropped the OLRE), non-phylogenetic species, and phylogenetic species:
 
 ```{r variance-components}
-brms::posterior_summary(bayes_phylo, variable = c("sd_study_ID__Intercept",
-                                                   "sd_es_ID__Intercept",
+brms::posterior_summary(bayes_phylo2, variable = c("sd_study_ID__Intercept",
+                                                   "sigma",
                                                    "sd_species__Intercept",
                                                    "sd_species_OTL__Intercept"))
 ```
@@ -226,7 +226,7 @@ brms::posterior_summary(bayes_phylo, variable = c("sd_study_ID__Intercept",
 
 ## Answer
 
-> The posterior mean for the intercept is `r round(brms::posterior_summary(bayes_phylo, variable = "b_Intercept")[, "Estimate"], 3)` with a 95% credible interval of `r round(brms::posterior_summary(bayes_phylo, variable = "b_Intercept")[, "Q2.5"], 3)` to `r round(brms::posterior_summary(bayes_phylo, variable = "b_Intercept")[, "Q97.5"], 3)`. As in the [REML analysis](phylo.qmd), the overall relationship is **positive** and the credible interval excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should agree closely, which is reassuring: the Bayesian and frequentist machinery are returning the same biological answer, but the Bayesian fit also gives us full posterior distributions for every variance component (try `brms::mcmc_plot(bayes_phylo, variable = "^sd_", regex = TRUE)`).
+> The posterior mean for the intercept is `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Estimate"], 3)` with a 95% credible interval of `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q2.5"], 3)` to `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q97.5"], 3)`. As in the [REML analysis](phylo.qmd), the overall relationship is **positive** and the credible interval excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should agree closely, which is reassuring: the Bayesian and frequentist machinery are returning the same biological answer, but the Bayesian fit also gives us full posterior distributions for every variance component (try `brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)`).
 
 :::
 
@@ -253,9 +253,11 @@ k        <- nrow(zr_data)
 sigma2_m <- (k - 1) * sum(w) / (sum(w)^2 - sum(w^2))
 
 # Posterior draws of every random-effect SD; square to get variances!
-draws        <- brms::as_draws_df(bayes_phylo)
+# For bayes_phylo2 the within-study residual variance is estimated as `sigma`
+# (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) OLRE).
+draws        <- brms::as_draws_df(bayes_phylo2)
 sigma2_study <- draws$sd_study_ID__Intercept^2
-sigma2_es    <- draws$sd_es_ID__Intercept^2
+sigma2_es    <- draws$sigma^2
 sigma2_spp   <- draws$sd_species__Intercept^2
 sigma2_phylo <- draws$sd_species_OTL__Intercept^2
 
@@ -267,6 +269,31 @@ quantile(I2_total, c(0.025, 0.5, 0.975))
 ```
 
 Because we computed $I^2_{total}$ per draw, we have the *posterior distribution* of $I^2_{total}$ rather than a single point estimate. The 95% interval reported above is a credible interval that fully reflects uncertainty in every variance component simultaneously — something that is awkward to obtain from the REML fit without bootstrapping.
+
+#### Your turn: $I^2_{study}$
+
+::: {.panel-tabset}
+
+## Task
+
+> **Adapt the code above to compute the posterior of $I^2_{study}$** — the fraction of total variance attributable to *between-study* heterogeneity alone. Report the posterior median and 95% credible interval, and contrast it with $I^2_{total}$.
+
+## Answer
+
+> Only the numerator changes; we re-use `sigma2_study`, `var_total` and `sigma2_m` from the chunk above. Formally:
+>
+> $$
+> I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 + \sigma_{m}^2}
+> $$
+>
+> ```{r I2-study}
+> I2_study <- sigma2_study / (var_total + sigma2_m)
+> quantile(I2_study, c(0.025, 0.5, 0.975))
+> ```
+>
+> The posterior median for $I^2_{study}$ is `r round(median(I2_study), 3)` with a 95% credible interval of `r round(quantile(I2_study, 0.025), 3)` to `r round(quantile(I2_study, 0.975), 3)`. Comparing this with $I^2_{total}$ (median `r round(median(I2_total), 3)`) tells you how much of the *real* heterogeneity is concentrated at the study level versus spread across the other variance components (within-study residual, non-phylogenetic species, phylogenetic). You can compute $I^2$ for any single component the same way — just put its squared SD in the numerator.
+
+:::
 
 <br>
 
