@@ -32,15 +32,16 @@ book:
     - part: "**Meta-Regression**"
       chapters:
         - metaregression.qmd
+    - part: "**Publication Bias**"
+      chapters:
+        - pub-bias1.qmd
+        - pub-bias2.qmd
     - part: "**Advanced Topics**"
       chapters:
         - complex-nonind.qmd
         - phylo.qmd
         - bayes_meta.qmd
-    - part: "**Publication Bias**"
-      chapters:
-        - pub-bias1.qmd
-        - pub-bias2.qmd
+
   repo-url: https://github.com/noble-lab/meta-analysis_workshop
   sharing: [twitter, facebook, linkedin]
   

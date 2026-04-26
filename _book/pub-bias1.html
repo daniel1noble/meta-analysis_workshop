@@ -85,7 +85,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./pub-bias2.html" rel="next">
-<link href="./bayes_meta.html" rel="prev">
+<link href="./metaregression.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -333,13 +333,34 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
- <span class="menu-text"><strong>Advanced Topics</strong></span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Publication Bias</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Publication Bias in Meta-analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pub-bias2.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Publication Bias: Analytical Approaches</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
+ <span class="menu-text"><strong>Advanced Topics</strong></span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./complex-nonind.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Complex Non-independence in Meta-analysis</span></a>
@@ -353,27 +374,6 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./bayes_meta.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Bayesian Meta-analysis</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text"><strong>Publication Bias</strong></span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pub-bias1.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Publication Bias in Meta-analysis</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pub-bias2.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Publication Bias: Analytical Approaches</span></a>
   </div>
 </li>
       </ul>
@@ -487,13 +487,13 @@ window.Quarto = {
 <img src="pub-bias1_files/figure-html/fig-funnel-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12.1: Funnel plot depicting the correlation between metabolism and fitness as a function of precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant.
+Figure&nbsp;9.1: Funnel plot depicting the correlation between metabolism and fitness as a function of precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>12.1</span></a> above the typical funnel shape. You will notice that most effects lie in the positive correlation space – in other words there is a strong positive correlation between BMR and fitness. However, we also find some studies that show the opposite pattern. We expect that based on sampling theory alone, and indeed many of these effects fall close to the dotted sampling error intervals. Studies in the light grey regions are studies where the p-value was significant.</p>
+<p>We can see from <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> above the typical funnel shape. You will notice that most effects lie in the positive correlation space – in other words there is a strong positive correlation between BMR and fitness. However, we also find some studies that show the opposite pattern. We expect that based on sampling theory alone, and indeed many of these effects fall close to the dotted sampling error intervals. Studies in the light grey regions are studies where the p-value was significant.</p>
 <section id="what-do-we-expect-if-publication-bias-were-present" class="level4">
 <h4 class="anchored" data-anchor-id="what-do-we-expect-if-publication-bias-were-present"><strong>What do we expect if publication bias were present?</strong></h4>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -513,7 +513,7 @@ Figure&nbsp;12.1: Funnel plot depicting the correlation between metabolism and f
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
 <blockquote class="blockquote">
-<p>If we look at <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>12.1</span></a> we do see some hint of this scenario. There is a noticeable blank space in the bottom left corner with negative correlations based on very small sample sizes that are generally small to moderate in magnitude going unpublished. The contour-enhanced funnel plot also tells us that these are studies that failed to find a significant correlation. But, interestingly, we also see that if the magnitude of correlation is large enough in the negative direction even with small sample sizes these can get published, but for the most part these are significant at 0.05. We can only speculate as to why or if this is even a real signature of publication bias. However, this might suggest that if folks estimate large enough correlations and these are in the opposite direction to what one might expect these arguably ‘surprising’ results are more likely to be published than if the correlation is weak and in the opposite direction.</p>
+<p>If we look at <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> we do see some hint of this scenario. There is a noticeable blank space in the bottom left corner with negative correlations based on very small sample sizes that are generally small to moderate in magnitude going unpublished. The contour-enhanced funnel plot also tells us that these are studies that failed to find a significant correlation. But, interestingly, we also see that if the magnitude of correlation is large enough in the negative direction even with small sample sizes these can get published, but for the most part these are significant at 0.05. We can only speculate as to why or if this is even a real signature of publication bias. However, this might suggest that if folks estimate large enough correlations and these are in the opposite direction to what one might expect these arguably ‘surprising’ results are more likely to be published than if the correlation is weak and in the opposite direction.</p>
 </blockquote>
 </div>
 </div>
@@ -609,7 +609,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="funnel-plot-with-residuals" class="level4">
 <h4 class="anchored" data-anchor-id="funnel-plot-with-residuals">Funnel Plot with Residuals</h4>
-<p>Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals (<a href="#fig-funnelresid" class="quarto-xref">Figure&nbsp;<span>12.2</span></a>).</p>
+<p>Now that we have a full model estimated, we can extract the residuals from this model and re-make our funnel plot using the residuals (<a href="#fig-funnelresid" class="quarto-xref">Figure&nbsp;<span>9.2</span></a>).</p>
 <div class="cell" data-layout-align="center">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -642,7 +642,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <img src="pub-bias1_files/figure-html/fig-funnelresid-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-funnelresid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12.2: Funnel plot of meta-analytic residuals against precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant.
+Figure&nbsp;9.2: Funnel plot of meta-analytic residuals against precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant.
 </figcaption>
 </figure>
 </div>
@@ -656,7 +656,7 @@ Figure&nbsp;12.2: Funnel plot of meta-analytic residuals against precision (1 / 
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <blockquote class="blockquote">
-<p><strong>After looking at the new funnel plots (<a href="#fig-funnelresid" class="quarto-xref">Figure&nbsp;<span>12.2</span></a>) that account for varying amounts of heterogeneity in the model would you say our conclusions about publication bias being present or not change at all? If not, why not?</strong></p>
+<p><strong>After looking at the new funnel plots (<a href="#fig-funnelresid" class="quarto-xref">Figure&nbsp;<span>9.2</span></a>) that account for varying amounts of heterogeneity in the model would you say our conclusions about publication bias being present or not change at all? If not, why not?</strong></p>
 </blockquote>
 <p><br></p>
 </div>
@@ -1178,8 +1178,8 @@ Figure&nbsp;12.2: Funnel plot of meta-analytic residuals against precision (1 / 
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./bayes_meta.html" class="pagination-link" aria-label="Bayesian Meta-analysis">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Bayesian Meta-analysis</span></span>
+      <a href="./metaregression.html" class="pagination-link" aria-label="Multi-level Meta-regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Multi-level Meta-regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
