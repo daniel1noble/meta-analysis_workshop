@@ -72,3 +72,6 @@ bib/refs.bib.bak
 bib/refs.bib
 scripts/retry_bib.py
 bib/refs_enrichment_report.tsv
+
+# brms compiled-model cache
+models/*.rds

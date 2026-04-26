@@ -36,6 +36,7 @@ book:
       chapters:
         - phylo.qmd
         - complex-nonind.qmd
+        - bayes_meta.qmd
     - part: "**Publication Bias**"
       chapters:
         - pub-bias1.qmd
