@@ -226,7 +226,7 @@ brms::posterior_summary(bayes_phylo2, variable = c("sd_study_ID__Intercept",
 
 ## Answer
 
-> The posterior mean for the intercept is `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Estimate"], 3)` with a 95% credible interval of `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q2.5"], 3)` to `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q97.5"], 3)`. As in the [REML analysis](phylo.qmd), the overall relationship is **positive** and the credible interval excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should agree closely, which is reassuring: the Bayesian and frequentist machinery are returning the same biological answer, but the Bayesian fit also gives us full posterior distributions for every variance component (try `brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)`).
+> The posterior mean for the intercept is `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Estimate"], 3)` with a 95% credible interval of `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q2.5"], 3)` to `r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q97.5"], 3)`. As in the [REML analysis](phylo.qmd), the overall relationship is **positive** and the credible interval nearly excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should be fairly similar. However, the Bayesian fit also gives us full posterior distributions for all parameters. For example, we can look at every variance component with `brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)`.
 
 :::
 
@@ -244,7 +244,7 @@ $$
 \sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}
 $$
 
-Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total:
+Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with `brms::as_draws_df()`, which gives us one column per parameter and one row per draw.
 
 ```{r derived-quantities}
 # Typical sampling variance 
@@ -253,8 +253,9 @@ k        <- nrow(zr_data)
 sigma2_m <- (k - 1) * sum(w) / (sum(w)^2 - sum(w^2))
 
 # Posterior draws of every random-effect SD; square to get variances!
-# For bayes_phylo2 the within-study residual variance is estimated as `sigma`
-# (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) OLRE).
+# Remember, for bayes_phylo2 the within-study residual variance is estimated as 
+# `sigma` (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) 
+# observation-level random effect).
 draws        <- brms::as_draws_df(bayes_phylo2)
 sigma2_study <- draws$sd_study_ID__Intercept^2
 sigma2_es    <- draws$sigma^2
@@ -269,6 +270,16 @@ quantile(I2_total, c(0.025, 0.5, 0.975))
 ```
 
 Because we computed $I^2_{total}$ per draw, we have the *posterior distribution* of $I^2_{total}$ rather than a single point estimate. The 95% interval reported above is a credible interval that fully reflects uncertainty in every variance component simultaneously — something that is awkward to obtain from the REML fit without bootstrapping.
+
+We can also now nicely visualise the posterior distribution of $I^2_{total}$:
+
+```{r I2-plot}
+ggplot(data.frame(I2_total), aes(x = I2_total)) +
+  geom_density(fill = "skyblue", alpha = 0.5) +
+  geom_vline(xintercept = quantile(I2_total, c(0.025, 0.5, 0.975)), linetype = "dashed") +
+  labs(x = expression(I^2[total]), y = "Density") +
+  theme_classic()
+```
 
 #### Your turn: $I^2_{study}$
 
@@ -296,6 +307,8 @@ Because we computed $I^2_{total}$ per draw, we have the *posterior distribution*
 :::
 
 <br>
+
+This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn't present by defualt. 
 
 ## **References**
 

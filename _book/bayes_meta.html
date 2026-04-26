@@ -736,7 +736,7 @@ sd_species_OTL__Intercept   0.0669    0.0564 0.00242 0.215</code></pre>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <blockquote class="blockquote">
-<p>The posterior mean for the intercept is 0.107 with a 95% credible interval of -0.01 to 0.242. As in the <a href="./phylo.html">REML analysis</a>, the overall relationship is <strong>positive</strong> and the credible interval excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should agree closely, which is reassuring: the Bayesian and frequentist machinery are returning the same biological answer, but the Bayesian fit also gives us full posterior distributions for every variance component (try <code>brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)</code>).</p>
+<p>The posterior mean for the intercept is 0.107 with a 95% credible interval of -0.01 to 0.242. As in the <a href="./phylo.html">REML analysis</a>, the overall relationship is <strong>positive</strong> and the credible interval nearly excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should be fairly similar. However, the Bayesian fit also gives us full posterior distributions for all parameters. For example, we can look at every variance component with <code>brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)</code>.</p>
 </blockquote>
 </div>
 </div>
@@ -754,7 +754,7 @@ I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 
 <p><span class="math display">\[
 \sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}
 \]</span></p>
-<p>Omitting <span class="math inline">\(\sigma^2_m\)</span> would inflate <span class="math inline">\(I^2_{total}\)</span> because the denominator would no longer represent total variance. With <span class="math inline">\(\sigma^2_m\)</span> in hand, we compute the posterior of <span class="math inline">\(I^2_{total}\)</span> by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total:</p>
+<p>Omitting <span class="math inline">\(\sigma^2_m\)</span> would inflate <span class="math inline">\(I^2_{total}\)</span> because the denominator would no longer represent total variance. With <span class="math inline">\(\sigma^2_m\)</span> in hand, we compute the posterior of <span class="math inline">\(I^2_{total}\)</span> by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <code>brms::as_draws_df()</code>, which gives us one column per parameter and one row per draw.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -764,19 +764,20 @@ I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>sigma2_m <span class="ot">&lt;-</span> (k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sum</span>(w) <span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span>))</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of every random-effect SD; square to get variances!</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># For bayes_phylo2 the within-study residual variance is estimated as `sigma`</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) OLRE).</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>draws        <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">as_draws_df</span>(bayes_phylo2)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>sigma2_study <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_study_ID__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>sigma2_es    <span class="ot">&lt;-</span> draws<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>sigma2_spp   <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>sigma2_phylo <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species_OTL__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>var_total <span class="ot">&lt;-</span> sigma2_study <span class="sc">+</span> sigma2_es <span class="sc">+</span> sigma2_spp <span class="sc">+</span> sigma2_phylo</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>I2_total  <span class="ot">&lt;-</span> var_total <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summary (median + 95% credible interval)</span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Remember, for bayes_phylo2 the within-study residual variance is estimated as </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># `sigma` (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) </span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># observation-level random effect).</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>draws        <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">as_draws_df</span>(bayes_phylo2)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>sigma2_study <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_study_ID__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>sigma2_es    <span class="ot">&lt;-</span> draws<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>sigma2_spp   <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>sigma2_phylo <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species_OTL__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>var_total <span class="ot">&lt;-</span> sigma2_study <span class="sc">+</span> sigma2_es <span class="sc">+</span> sigma2_spp <span class="sc">+</span> sigma2_phylo</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>I2_total  <span class="ot">&lt;-</span> var_total <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summary (median + 95% credible interval)</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> 2.5%   50% 97.5% 
@@ -784,6 +785,24 @@ I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 
 </div>
 </div>
 <p>Because we computed <span class="math inline">\(I^2_{total}\)</span> per draw, we have the <em>posterior distribution</em> of <span class="math inline">\(I^2_{total}\)</span> rather than a single point estimate. The 95% interval reported above is a credible interval that fully reflects uncertainty in every variance component simultaneously — something that is awkward to obtain from the REML fit without bootstrapping.</p>
+<p>We can also now nicely visualise the posterior distribution of <span class="math inline">\(I^2_{total}\)</span>:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(I2_total), <span class="fu">aes</span>(<span class="at">x =</span> I2_total)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(I<span class="sc">^</span><span class="dv">2</span>[total]), <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="bayes_meta_files/figure-html/I2-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <section id="your-turn-i2_study" class="level4">
 <h4 class="anchored" data-anchor-id="your-turn-i2_study">Your turn: <span class="math inline">\(I^2_{study}\)</span></h4>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -805,8 +824,8 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>I2_study <span class="ot">&lt;-</span> sigma2_study <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_study, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>I2_study <span class="ot">&lt;-</span> sigma2_study <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_study, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>    2.5%      50%    97.5% 
@@ -821,6 +840,7 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 </div>
 </div>
 <p><br></p>
+<p>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn’t present by defualt.</p>
 </section>
 </section>
 <section id="references" class="level2">
@@ -1324,318 +1344,331 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Bayesian Meta-analysis</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-bayes</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, brms, ape, rotl, phytools, tidyverse, orchaRd, flextable, pander, mathjaxr, bayesplot)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">3</span>)</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Introduction to Bayesian Meta-analysis**</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>Throughout the previous chapters we have estimated meta-analytic models with <span class="co">[</span><span class="ot">`metafor`</span><span class="co">](fixed-vs-random.qmd)</span> using restricted maximum likelihood (REML). The model objects we obtained — overall effects, variance components, confidence intervals — are *frequentist* estimates.</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>A **Bayesian** meta-analysis instead returns a *posterior distribution* for every parameter in the model, by combining the data (through the likelihood) with prior beliefs about plausible parameter values. This re-framing brings several practical benefits when synthesising data in ecology, evolution and physiology:</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Honest uncertainty for variance components.** REML-based confidence intervals for variance components (e.g. $\tau^2$, phylogenetic $\sigma_{a}^2$) can be poorly behaved when the number of studies is small or when an estimate is near the boundary of zero <span class="co">[</span><span class="ot">@Burkner2017</span><span class="co">]</span>. Posterior credible intervals do not have this problem.</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Propagating uncertainty more easily.** The Bayesian framing lets you propagate uncertainty into derived quantities (e.g. between-study heterogeneity ratios, prediction intervals) and gives you more flexibility in the derived quantities you present within your paper.</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Easy to extend.** Once we have the Bayesian machinery in place, adding non-Gaussian likelihoods, missing-data models, or measurement-error structures is mostly a one-line change.</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>Bayesian methods are well-established in ecological and evolutionary meta-analysis, not just a fashionable alternative, but are not used as often as frequentist methods. @Pappalardo2020 compared traditional REML and Bayesian fits across a range of ecological meta-analytic scenarios and found that the two approaches generally recover the same overall effect, but that the Bayesian fit gives better-calibrated uncertainty when the number of studies is small or when variance components are near zero. Similarly, @Nakagawa2022comment, in their re-analysis of the simulations of @Song2020, included a Bayesian multilevel model alongside the frequentist alternatives and showed that it can help control the inflated Type I error rates that arise when effect sizes are non-independent (see the simulation figure in their Comment). Together, these papers position Bayesian multilevel models as a robust, often preferable, complement to REML for the kinds of complex, multi-strata data routinely synthesised in our field.</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>In this tutorial we use the <span class="co">[</span><span class="ot">`brms`</span><span class="co">](https://paulbuerkner.com/brms/)</span> R package <span class="co">[</span><span class="ot">@Burkner2017</span><span class="co">]</span>. <span class="in">`brms`</span> provides a <span class="in">`lme4`</span>-style formula interface to the <span class="co">[</span><span class="ot">Stan</span><span class="co">](https://mc-stan.org/)</span> probabilistic programming language, which means the syntax will look familiar if you have used <span class="in">`lmer`</span> or <span class="in">`metafor::rma.mv`</span>. We re-fit the **phylogenetic multilevel meta-analysis** from the <span class="co">[</span><span class="ot">previous chapter</span><span class="co">](phylo.qmd)</span> so you can directly compare the Bayesian and REML estimates on the same data.</span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Formal Definition of the Bayesian Phylogenetic Meta-analytic Model**</span></span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Recall</span><span class="co">](phylo.qmd)</span> the phylogenetic multilevel meta-analytic model:</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + a_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
-<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>a_{k} &amp;\sim N(0, \sigma_{a}^2\textbf{A}) <span class="sc">\\</span></span>
-<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})</span>
-<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>The model is structurally identical to the one we fit with <span class="in">`metafor::rma.mv`</span>. To make it Bayesian we add **priors** on every estimated parameter:</span>
-<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>\mu &amp;\sim N(0, 1) <span class="sc">\\</span></span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>\tau, \sigma_{k}, \sigma_{a}, \sigma_{e} &amp;\sim t^{+}_{3}(0, 2.5)</span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>These are *weakly informative* priors. For an effect size on the Fisher's $Z_r$ scale, $\mu \sim N(0, 1)$ says we expect the overall correlation to be near zero with a standard deviation that easily covers the range of biologically plausible effects. For each random-effect standard deviation we use a half-Student-t prior with 3 degrees of freedom and scale 2.5 — written $t^{+}_{3}(0, 2.5)$. This is the conventional default for variance components in <span class="in">`brms`</span> and Stan: it concentrates posterior mass on small, biologically plausible SDs while keeping heavier tails than a half-Normal, so the prior does not pull large variance components down toward zero when the data really do support them. We will discuss how to override these defaults below.</span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example: Bayesian Phylogenetic Meta-analysis**</span></span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Format raw data for analysis</span></span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>We re-use the dispersal data set (Z-transformed correlation coefficients, $Z_r$) from <span class="co">[</span><span class="ot">@WuSeebacher2022</span><span class="co">](https://www.nature.com/articles/s42003-022-03055-y)</span> introduced in the <span class="co">[</span><span class="ot">Effect Size tutorial</span><span class="co">](effect-size.qmd)</span> and analysed with REML in the <span class="co">[</span><span class="ot">Phylogenetic Meta-analysis tutorial</span><span class="co">](phylo.qmd)</span>.</span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw-data-bayes}</span></span>
-<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span></span>
-<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>))</span>
-<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size,</span>
-<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
-<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Build the tree and the phylogenetic correlation matrix</span></span>
-<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>This step is identical to the <span class="co">[</span><span class="ot">Phylogenetic Meta-analysis chapter</span><span class="co">](phylo.qmd)</span>; we reproduce it here so the chapter is self-contained.</span>
-<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree-bayes</span></span>
-<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL)))</span>
-<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species)</span>
-<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
-<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>)</span>
-<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a>phylo_cov <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> zr_data <span class="sc">%&gt;%</span></span>
-<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>))</span>
-<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### Specify priors</span></span>
-<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a><span class="in">`brms`</span> will assign reasonable defaults for any parameter you do not name explicitly. To see what <span class="in">`brms`</span> *would* use, ask for the prior skeleton implied by the model formula:</span>
-<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r priors-default, eval=FALSE}</span></span>
-<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">get_prior</span>(</span>
-<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> es_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
-<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> zr_data,</span>
-<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2 =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov)</span>
-<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a>We override the defaults with weakly-informative priors that match the formal definition above:</span>
-<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r priors}</span></span>
-<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a>  brms<span class="sc">::</span><span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>),         <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
-<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a>  brms<span class="sc">::</span><span class="fu">prior</span>(<span class="fu">student_t</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="fl">2.5</span>), <span class="at">class =</span> <span class="st">"sd"</span>)</span>
-<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a><span class="in">`class = "sd"`</span> applies the same prior to every group-level standard deviation. To put a different prior on, say, the phylogenetic SD only, use <span class="in">`class = "sd", group = "species_OTL"`</span>.</span>
-<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fit the model in `brms`</span></span>
-<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bayes-fit</span></span>
-<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a>bayes_phylo <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">brm</span>(</span>
-<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> es_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
-<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> zr_data,</span>
-<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2   =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov),</span>
-<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> priors,</span>
-<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains  =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">3000</span>, <span class="at">warmup =</span> <span class="dv">1000</span>, <span class="at">thin =</span> <span class="dv">1</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">seed =</span> <span class="dv">42</span>,</span>
-<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>),</span>
-<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">"models/bayes_phylo"</span></span>
-<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a>The first render will compile and sample the model (a few minutes). Subsequent renders read the cached fit from <span class="in">`models/bayes_phylo.rds`</span> and complete in seconds. Delete the <span class="in">`.rds`</span> to force a refit (e.g. after editing the formula or priors).</span>
-<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a>A few things to note: </span>
-<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a>First, the <span class="in">`| se(sqrt(V_Zr))`</span> syntax tells <span class="in">`brms`</span> to use the sampling variances to control for uncertainty in the effect sizes. The <span class="in">`se`</span> stands for standard error, which is why we need to take the square root of the sampling variance. Now, there are a couple of ways we can use the <span class="in">`se()`</span> function. Currently, we are not setting the <span class="in">`sigma`</span> argument within the function to <span class="in">`TRUE`</span>, i.e., <span class="in">`se(sqrt(V_Zr), sigma = FALSE)`</span>, which means that the model will not estimate a separate residual SD for the model. If we set <span class="in">`sigma = TRUE`</span> we will allow the model to estimate a separate residual SD for the model. Instead, we are fitting an observation-level random effect (to keep consistent with <span class="in">`metafor`</span>) which is a common way to model residual error in meta-analysis. If we had set <span class="in">`sigma = TRUE`</span> as well the model would have estimated a separate residual SD for the model, but we would need to drop the observation-level random effect as these would be redundant. We can try that formulation below to show it's roughly the same:</span>
-<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bayes-fit2</span></span>
-<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
-<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a>bayes_phylo2 <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">brm</span>(</span>
-<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr), <span class="at">sigma =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
-<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> zr_data,</span>
-<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2   =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov),</span>
-<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> priors,</span>
-<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains  =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">3000</span>, <span class="at">warmup =</span> <span class="dv">1000</span>, <span class="at">thin =</span> <span class="dv">1</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">seed =</span> <span class="dv">42</span>,</span>
-<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>),</span>
-<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">"models/bayes_phylo2"</span></span>
-<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a>We'll explore below the similarities between these models.</span>
-<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a>Second, the <span class="in">`gr()`</span> function around the phylogenetic random effect is a special syntax that tells <span class="in">`brms`</span> to use the supplied covariance matrix <span class="in">`A`</span> for that grouping factor. The <span class="in">`data2`</span> argument is where we pass the phylogenetic covariance matrix. Also note that the phylogenetic A matrix differs from metafor because it's a covariance matrix whereas <span class="in">`metafor`</span> expects a correlation matrix. In our specific case the distinction is purely terminological: because we built the tree with <span class="in">`ape::compute.brlen(..., method = "Grafen", power = 1)`</span> it is ultrametric with root-to-tip distance equal to 1, so every diagonal of <span class="in">`vcv(tree, cor = FALSE)`</span> equals 1 and the covariance matrix is numerically identical to the correlation matrix. The distinction only matters if you use a non-ultrametric tree or skip the Grafen normalisation.</span>
-<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a>Finally, the <span class="in">`control`</span> argument is where we can tweak the MCMC sampling parameters. <span class="in">`adapt_delta`</span> controls the target acceptance rate for the Hamiltonian Monte Carlo sampler; increasing it can help with convergence when the model is complex.</span>
-<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### Check MCMC diagnostics</span></span>
-<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a>Before interpreting any posterior summary, it is important to confirm that the chains have converged. We can usually get a good sense of this from the printed summary of the model fit already but it's also good to visually inspect the trace plots and posterior densities.</span>
-<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics}</span></span>
-<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bayes_phylo)</span>
-<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a>Two things to look for in the printout:</span>
-<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**R-hat ($\hat{R}$)** for every parameter should be $&lt; 1.01$. Larger values mean the chains have not mixed.</span>
-<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bulk_ESS** and **Tail_ESS** should each be ~1000, but sometimes it will be lower, but getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <span class="in">`iter`</span>, <span class="in">`warmup`</span>, and <span class="in">`thin`</span> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</span>
-<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a>A visual check of the trace plots and posterior densities is also really important to check to ensure proper mixing of the MCMC chains. They usually tell the same story as the printed diagnostics but can sometimes reveal issues that are not obvious from the numbers alone (e.g. multimodality, poor mixing, or a small number of effective samples).</span>
-<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics-plots}</span></span>
-<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
-<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bayes_phylo, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a>Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.</span>
-<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a>Recall that we also fit the same model with <span class="in">`sigma = TRUE`</span>. We can look how the output for that model compares to the one we have just fit:</span>
-<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics2}</span></span>
-<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bayes_phylo2)</span>
-<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a>Here, we can see that <span class="in">`sigma`</span> is estimated and it matches the <span class="in">`sd_es_ID__Intercept`</span> from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in <span class="in">`metafor`</span>. However, we can see that this is a more elegant way to model residual error for meta-analysis with <span class="in">`brms`</span> (which we recommend) as you can see improvements in the MCMC diagnostics for the second model compared to the first one because of the different way the model is parameterised. So, we've solved our mixing issues!</span>
-<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posterior summaries</span></span>
-<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-212"><a href="#cb20-212" aria-hidden="true" tabindex="-1"></a>The overall effect (intercept on the $Z_r$ scale) and 95% credible interval:</span>
-<span id="cb20-213"><a href="#cb20-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r posterior-summary}</span></span>
-<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">posterior_summary</span>(bayes_phylo2, <span class="at">variable =</span> <span class="st">"b_Intercept"</span>)</span>
-<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a>Variance components — between-study, within-study residual (here estimated as <span class="in">`sigma`</span> because we used <span class="in">`se(..., sigma = TRUE)`</span> and dropped the OLRE), non-phylogenetic species, and phylogenetic species:</span>
-<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r variance-components}</span></span>
-<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">posterior_summary</span>(bayes_phylo2, <span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"sd_study_ID__Intercept"</span>,</span>
-<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sigma"</span>,</span>
-<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sd_species__Intercept"</span>,</span>
-<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sd_species_OTL__Intercept"</span>))</span>
-<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
-<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
-<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Is there an overall positive or negative relationship between physiology and movement?**</span></span>
-<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
-<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; The posterior mean for the intercept is </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Estimate"], 3)`</span><span class="at"> with a 95% credible interval of </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q2.5"], 3)`</span><span class="at"> to </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q97.5"], 3)`</span><span class="at">. As in the </span><span class="co">[</span><span class="ot">REML analysis</span><span class="co">](phylo.qmd)</span><span class="at">, the overall relationship is **positive** and the credible interval excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should agree closely, which is reassuring: the Bayesian and frequentist machinery are returning the same biological answer, but the Bayesian fit also gives us full posterior distributions for every variance component (try </span><span class="in">`brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)`</span><span class="at">).</span></span>
-<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Extracting Posterior distributions and Derived Quantities**</span></span>
-<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a>One of the key benefits of the Bayesian framework is that we can propagate uncertainty into any derived quantity simply by computing it draw-by-draw across the posterior. As an example, we will compute a full posterior distribution for $I^2_{total}$ — the proportion of total variance attributable to genuine heterogeneity (rather than sampling noise) — using the same definition as in the <span class="co">[</span><span class="ot">Heterogeneity chapter</span><span class="co">](het.qmd)</span>:</span>
-<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a>I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 + \sigma_{m}^2}</span>
-<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a>The denominator includes the **typical sampling variance** $\sigma^2_m$, which is a fixed function of the inverse-variance weights $w_i = 1/v_i$ and is computed once from the data (not estimated by the model):</span>
-<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a>\sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}</span>
-<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a>Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total:</span>
-<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-257"><a href="#cb20-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r derived-quantities}</span></span>
-<span id="cb20-258"><a href="#cb20-258" aria-hidden="true" tabindex="-1"></a><span class="co"># Typical sampling variance </span></span>
-<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a>w        <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> zr_data<span class="sc">$</span>V_Zr</span>
-<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a>k        <span class="ot">&lt;-</span> <span class="fu">nrow</span>(zr_data)</span>
-<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a>sigma2_m <span class="ot">&lt;-</span> (k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sum</span>(w) <span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of every random-effect SD; square to get variances!</span></span>
-<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a><span class="co"># For bayes_phylo2 the within-study residual variance is estimated as `sigma`</span></span>
-<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a><span class="co"># (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) OLRE).</span></span>
-<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a>draws        <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">as_draws_df</span>(bayes_phylo2)</span>
-<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a>sigma2_study <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_study_ID__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a>sigma2_es    <span class="ot">&lt;-</span> draws<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a>sigma2_spp   <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a>sigma2_phylo <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species_OTL__Intercept<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a>var_total <span class="ot">&lt;-</span> sigma2_study <span class="sc">+</span> sigma2_es <span class="sc">+</span> sigma2_spp <span class="sc">+</span> sigma2_phylo</span>
-<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a>I2_total  <span class="ot">&lt;-</span> var_total <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
-<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summary (median + 95% credible interval)</span></span>
-<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span>
-<span id="cb20-277"><a href="#cb20-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb20-278"><a href="#cb20-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a>Because we computed $I^2_{total}$ per draw, we have the *posterior distribution* of $I^2_{total}$ rather than a single point estimate. The 95% interval reported above is a credible interval that fully reflects uncertainty in every variance component simultaneously — something that is awkward to obtain from the REML fit without bootstrapping.</span>
-<span id="cb20-280"><a href="#cb20-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-281"><a href="#cb20-281" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Your turn: $I^2_{study}$</span></span>
-<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
-<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
-<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Adapt the code above to compute the posterior of $I^2_{study}$** — the fraction of total variance attributable to *between-study* heterogeneity alone. Report the posterior median and 95% credible interval, and contrast it with $I^2_{total}$.</span></span>
-<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-289"><a href="#cb20-289" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
-<span id="cb20-290"><a href="#cb20-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-291"><a href="#cb20-291" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Only the numerator changes; we re-use </span><span class="in">`sigma2_study`</span><span class="at">, </span><span class="in">`var_total`</span><span class="at"> and </span><span class="in">`sigma2_m`</span><span class="at"> from the chunk above. Formally:</span></span>
-<span id="cb20-292"><a href="#cb20-292" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
-<span id="cb20-293"><a href="#cb20-293" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; $$</span></span>
-<span id="cb20-294"><a href="#cb20-294" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 + \sigma_{m}^2}</span></span>
-<span id="cb20-295"><a href="#cb20-295" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; $$</span></span>
-<span id="cb20-296"><a href="#cb20-296" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
-<span id="cb20-297"><a href="#cb20-297" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; ```{r I2-study}</span></span>
-<span id="cb20-298"><a href="#cb20-298" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; I2_study &lt;- sigma2_study / (var_total + sigma2_m)</span></span>
-<span id="cb20-299"><a href="#cb20-299" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; quantile(I2_study, c(0.025, 0.5, 0.975))</span></span>
-<span id="cb20-300"><a href="#cb20-300" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; ```</span></span>
-<span id="cb20-301"><a href="#cb20-301" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
-<span id="cb20-302"><a href="#cb20-302" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; The posterior median for $I^2_{study}$ is `r round(median(I2_study), 3)` with a 95% credible interval of `r round(quantile(I2_study, 0.025), 3)` to `r round(quantile(I2_study, 0.975), 3)`. Comparing this with $I^2_{total}$ (median </span><span class="in">`r round(median(I2_total), 3)`</span><span class="at">) tells you how much of the *real* heterogeneity is concentrated at the study level versus spread across the other variance components (within-study residual, non-phylogenetic species, phylogenetic). You can compute $I^2$ for any single component the same way — just put its squared SD in the numerator.</span></span>
-<span id="cb20-303"><a href="#cb20-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-304"><a href="#cb20-304" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb20-305"><a href="#cb20-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-306"><a href="#cb20-306" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb20-307"><a href="#cb20-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-308"><a href="#cb20-308" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
-<span id="cb20-309"><a href="#cb20-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-310"><a href="#cb20-310" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
-<span id="cb20-311"><a href="#cb20-311" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
-<span id="cb20-312"><a href="#cb20-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-313"><a href="#cb20-313" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
-<span id="cb20-314"><a href="#cb20-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-317"><a href="#cb20-317" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb20-318"><a href="#cb20-318" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-bayes</span></span>
-<span id="cb20-319"><a href="#cb20-319" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb21" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Bayesian Meta-analysis</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-bayes</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(metafor, brms, ape, rotl, phytools, tidyverse, orchaRd, flextable, pander, mathjaxr, bayesplot)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">digits=</span><span class="dv">3</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Introduction to Bayesian Meta-analysis**</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>Throughout the previous chapters we have estimated meta-analytic models with <span class="co">[</span><span class="ot">`metafor`</span><span class="co">](fixed-vs-random.qmd)</span> using restricted maximum likelihood (REML). The model objects we obtained — overall effects, variance components, confidence intervals — are *frequentist* estimates.</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>A **Bayesian** meta-analysis instead returns a *posterior distribution* for every parameter in the model, by combining the data (through the likelihood) with prior beliefs about plausible parameter values. This re-framing brings several practical benefits when synthesising data in ecology, evolution and physiology:</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Honest uncertainty for variance components.** REML-based confidence intervals for variance components (e.g. $\tau^2$, phylogenetic $\sigma_{a}^2$) can be poorly behaved when the number of studies is small or when an estimate is near the boundary of zero <span class="co">[</span><span class="ot">@Burkner2017</span><span class="co">]</span>. Posterior credible intervals do not have this problem.</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Propagating uncertainty more easily.** The Bayesian framing lets you propagate uncertainty into derived quantities (e.g. between-study heterogeneity ratios, prediction intervals) and gives you more flexibility in the derived quantities you present within your paper.</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Easy to extend.** Once we have the Bayesian machinery in place, adding non-Gaussian likelihoods, missing-data models, or measurement-error structures is mostly a one-line change.</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>Bayesian methods are well-established in ecological and evolutionary meta-analysis, not just a fashionable alternative, but are not used as often as frequentist methods. @Pappalardo2020 compared traditional REML and Bayesian fits across a range of ecological meta-analytic scenarios and found that the two approaches generally recover the same overall effect, but that the Bayesian fit gives better-calibrated uncertainty when the number of studies is small or when variance components are near zero. Similarly, @Nakagawa2022comment, in their re-analysis of the simulations of @Song2020, included a Bayesian multilevel model alongside the frequentist alternatives and showed that it can help control the inflated Type I error rates that arise when effect sizes are non-independent (see the simulation figure in their Comment). Together, these papers position Bayesian multilevel models as a robust, often preferable, complement to REML for the kinds of complex, multi-strata data routinely synthesised in our field.</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>In this tutorial we use the <span class="co">[</span><span class="ot">`brms`</span><span class="co">](https://paulbuerkner.com/brms/)</span> R package <span class="co">[</span><span class="ot">@Burkner2017</span><span class="co">]</span>. <span class="in">`brms`</span> provides a <span class="in">`lme4`</span>-style formula interface to the <span class="co">[</span><span class="ot">Stan</span><span class="co">](https://mc-stan.org/)</span> probabilistic programming language, which means the syntax will look familiar if you have used <span class="in">`lmer`</span> or <span class="in">`metafor::rma.mv`</span>. We re-fit the **phylogenetic multilevel meta-analysis** from the <span class="co">[</span><span class="ot">previous chapter</span><span class="co">](phylo.qmd)</span> so you can directly compare the Bayesian and REML estimates on the same data.</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Formal Definition of the Bayesian Phylogenetic Meta-analytic Model**</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Recall</span><span class="co">](phylo.qmd)</span> the phylogenetic multilevel meta-analytic model:</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>y_{i} &amp;= \mu + s_{j<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + spp_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + a_{k<span class="co">[</span><span class="ot">i</span><span class="co">]</span>} + e_{i} + m_{i} <span class="sc">\\</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>m_{i} &amp;\sim N(0, v_{i}\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>s_{j} &amp;\sim N(0, \tau^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>spp_{k} &amp;\sim N(0, \sigma_{k}^2\textbf{I}) <span class="sc">\\</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>a_{k} &amp;\sim N(0, \sigma_{a}^2\textbf{A}) <span class="sc">\\</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>e_{i} &amp;\sim N(0, \sigma_{e}^2\textbf{I})</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>The model is structurally identical to the one we fit with <span class="in">`metafor::rma.mv`</span>. To make it Bayesian we add **priors** on every estimated parameter:</span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>\mu &amp;\sim N(0, 1) <span class="sc">\\</span></span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>\tau, \sigma_{k}, \sigma_{a}, \sigma_{e} &amp;\sim t^{+}_{3}(0, 2.5)</span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>These are *weakly informative* priors. For an effect size on the Fisher's $Z_r$ scale, $\mu \sim N(0, 1)$ says we expect the overall correlation to be near zero with a standard deviation that easily covers the range of biologically plausible effects. For each random-effect standard deviation we use a half-Student-t prior with 3 degrees of freedom and scale 2.5 — written $t^{+}_{3}(0, 2.5)$. This is the conventional default for variance components in <span class="in">`brms`</span> and Stan: it concentrates posterior mass on small, biologically plausible SDs while keeping heavier tails than a half-Normal, so the prior does not pull large variance components down toward zero when the data really do support them. We will discuss how to override these defaults below.</span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Example: Bayesian Phylogenetic Meta-analysis**</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a><span class="al">![](./figs/WuSeebacher.png)</span></span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Format raw data for analysis</span></span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>We re-use the dispersal data set (Z-transformed correlation coefficients, $Z_r$) from <span class="co">[</span><span class="ot">@WuSeebacher2022</span><span class="co">](https://www.nature.com/articles/s42003-022-03055-y)</span> introduced in the <span class="co">[</span><span class="ot">Effect Size tutorial</span><span class="co">](effect-size.qmd)</span> and analysed with REML in the <span class="co">[</span><span class="ot">Phylogenetic Meta-analysis tutorial</span><span class="co">](phylo.qmd)</span>.</span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw-data-bayes}</span></span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/daniel1noble/meta-workshop/gh-pages/data/ind_disp_raw_data.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>dispersal_def) <span class="sc">%&gt;%</span></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">rowid_to_column</span>(<span class="st">"es_ID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">"_"</span>, <span class="st">" "</span>))</span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> metafor<span class="sc">::</span><span class="fu">escalc</span>(<span class="at">measure =</span> <span class="st">"ZCOR"</span>, <span class="at">ri =</span> corr_coeff, <span class="at">ni =</span> sample_size,</span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data =</span> zr_data, <span class="at">var.names =</span> <span class="fu">c</span>(<span class="st">"Zr"</span>, <span class="st">"V_Zr"</span>))</span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Build the tree and the phylogenetic correlation matrix</span></span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>This step is identical to the <span class="co">[</span><span class="ot">Phylogenetic Meta-analysis chapter</span><span class="co">](phylo.qmd)</span>; we reproduce it here so the chapter is self-contained.</span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tree-bayes</span></span>
+<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb21-82"><a href="#cb21-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a>species <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(zr_data<span class="sc">$</span>species_OTL)))</span>
+<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>taxa    <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tnrs_match_names</span>(<span class="at">names =</span> species)</span>
+<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> rotl<span class="sc">::</span><span class="fu">tol_induced_subtree</span>(<span class="at">ott_ids =</span> <span class="fu">ott_id</span>(taxa), <span class="at">label_format =</span> <span class="st">"name"</span>)</span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">compute.brlen</span>(tree, <span class="at">method =</span> <span class="st">"Grafen"</span>, <span class="at">power =</span> <span class="dv">1</span>)</span>
+<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> ape<span class="sc">::</span><span class="fu">multi2di</span>(tree, <span class="at">random =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>phylo_cov <span class="ot">&lt;-</span> <span class="fu">vcv</span>(tree, <span class="at">cor =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a>zr_data <span class="ot">&lt;-</span> zr_data <span class="sc">%&gt;%</span></span>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">species_OTL =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(species_OTL, <span class="st">" "</span>, <span class="st">"_"</span>))</span>
+<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### Specify priors</span></span>
+<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a><span class="in">`brms`</span> will assign reasonable defaults for any parameter you do not name explicitly. To see what <span class="in">`brms`</span> *would* use, ask for the prior skeleton implied by the model formula:</span>
+<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r priors-default, eval=FALSE}</span></span>
+<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">get_prior</span>(</span>
+<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> es_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
+<span id="cb21-107"><a href="#cb21-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">data  =</span> zr_data,</span>
+<span id="cb21-108"><a href="#cb21-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2 =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov)</span>
+<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a>We override the defaults with weakly-informative priors that match the formal definition above:</span>
+<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a><span class="in">```{r priors}</span></span>
+<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb21-116"><a href="#cb21-116" aria-hidden="true" tabindex="-1"></a>  brms<span class="sc">::</span><span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>),         <span class="at">class =</span> <span class="st">"Intercept"</span>),</span>
+<span id="cb21-117"><a href="#cb21-117" aria-hidden="true" tabindex="-1"></a>  brms<span class="sc">::</span><span class="fu">prior</span>(<span class="fu">student_t</span>(<span class="dv">3</span>, <span class="dv">0</span>, <span class="fl">2.5</span>), <span class="at">class =</span> <span class="st">"sd"</span>)</span>
+<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-119"><a href="#cb21-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-120"><a href="#cb21-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-121"><a href="#cb21-121" aria-hidden="true" tabindex="-1"></a><span class="in">`class = "sd"`</span> applies the same prior to every group-level standard deviation. To put a different prior on, say, the phylogenetic SD only, use <span class="in">`class = "sd", group = "species_OTL"`</span>.</span>
+<span id="cb21-122"><a href="#cb21-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-123"><a href="#cb21-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fit the model in `brms`</span></span>
+<span id="cb21-124"><a href="#cb21-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-127"><a href="#cb21-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-128"><a href="#cb21-128" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bayes-fit</span></span>
+<span id="cb21-129"><a href="#cb21-129" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb21-130"><a href="#cb21-130" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb21-131"><a href="#cb21-131" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb21-132"><a href="#cb21-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-133"><a href="#cb21-133" aria-hidden="true" tabindex="-1"></a>bayes_phylo <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">brm</span>(</span>
+<span id="cb21-134"><a href="#cb21-134" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr)) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb21-135"><a href="#cb21-135" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> es_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
+<span id="cb21-136"><a href="#cb21-136" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> zr_data,</span>
+<span id="cb21-137"><a href="#cb21-137" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2   =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov),</span>
+<span id="cb21-138"><a href="#cb21-138" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> priors,</span>
+<span id="cb21-139"><a href="#cb21-139" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains  =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">3000</span>, <span class="at">warmup =</span> <span class="dv">1000</span>, <span class="at">thin =</span> <span class="dv">1</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">seed =</span> <span class="dv">42</span>,</span>
+<span id="cb21-140"><a href="#cb21-140" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>),</span>
+<span id="cb21-141"><a href="#cb21-141" aria-hidden="true" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">"models/bayes_phylo"</span></span>
+<span id="cb21-142"><a href="#cb21-142" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-143"><a href="#cb21-143" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-144"><a href="#cb21-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-145"><a href="#cb21-145" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb21-146"><a href="#cb21-146" aria-hidden="true" tabindex="-1"></a>The first render will compile and sample the model (a few minutes). Subsequent renders read the cached fit from <span class="in">`models/bayes_phylo.rds`</span> and complete in seconds. Delete the <span class="in">`.rds`</span> to force a refit (e.g. after editing the formula or priors).</span>
+<span id="cb21-147"><a href="#cb21-147" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb21-148"><a href="#cb21-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-149"><a href="#cb21-149" aria-hidden="true" tabindex="-1"></a>A few things to note: </span>
+<span id="cb21-150"><a href="#cb21-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-151"><a href="#cb21-151" aria-hidden="true" tabindex="-1"></a>First, the <span class="in">`| se(sqrt(V_Zr))`</span> syntax tells <span class="in">`brms`</span> to use the sampling variances to control for uncertainty in the effect sizes. The <span class="in">`se`</span> stands for standard error, which is why we need to take the square root of the sampling variance. Now, there are a couple of ways we can use the <span class="in">`se()`</span> function. Currently, we are not setting the <span class="in">`sigma`</span> argument within the function to <span class="in">`TRUE`</span>, i.e., <span class="in">`se(sqrt(V_Zr), sigma = FALSE)`</span>, which means that the model will not estimate a separate residual SD for the model. If we set <span class="in">`sigma = TRUE`</span> we will allow the model to estimate a separate residual SD for the model. Instead, we are fitting an observation-level random effect (to keep consistent with <span class="in">`metafor`</span>) which is a common way to model residual error in meta-analysis. If we had set <span class="in">`sigma = TRUE`</span> as well the model would have estimated a separate residual SD for the model, but we would need to drop the observation-level random effect as these would be redundant. We can try that formulation below to show it's roughly the same:</span>
+<span id="cb21-152"><a href="#cb21-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-153"><a href="#cb21-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-156"><a href="#cb21-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-157"><a href="#cb21-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: bayes-fit2</span></span>
+<span id="cb21-158"><a href="#cb21-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb21-159"><a href="#cb21-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb21-160"><a href="#cb21-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| results: hide</span></span>
+<span id="cb21-161"><a href="#cb21-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-162"><a href="#cb21-162" aria-hidden="true" tabindex="-1"></a>bayes_phylo2 <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">brm</span>(</span>
+<span id="cb21-163"><a href="#cb21-163" aria-hidden="true" tabindex="-1"></a>  Zr <span class="sc">|</span> <span class="fu">se</span>(<span class="fu">sqrt</span>(V_Zr), <span class="at">sigma =</span> <span class="cn">TRUE</span>) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb21-164"><a href="#cb21-164" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> study_ID) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> species) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> <span class="fu">gr</span>(species_OTL, <span class="at">cov =</span> A)),</span>
+<span id="cb21-165"><a href="#cb21-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">data    =</span> zr_data,</span>
+<span id="cb21-166"><a href="#cb21-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">data2   =</span> <span class="fu">list</span>(<span class="at">A =</span> phylo_cov),</span>
+<span id="cb21-167"><a href="#cb21-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior   =</span> priors,</span>
+<span id="cb21-168"><a href="#cb21-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains  =</span> <span class="dv">4</span>, <span class="at">iter =</span> <span class="dv">3000</span>, <span class="at">warmup =</span> <span class="dv">1000</span>, <span class="at">thin =</span> <span class="dv">1</span>, <span class="at">cores =</span> <span class="dv">4</span>, <span class="at">seed =</span> <span class="dv">42</span>,</span>
+<span id="cb21-169"><a href="#cb21-169" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>),</span>
+<span id="cb21-170"><a href="#cb21-170" aria-hidden="true" tabindex="-1"></a>  <span class="at">file    =</span> <span class="st">"models/bayes_phylo2"</span></span>
+<span id="cb21-171"><a href="#cb21-171" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-172"><a href="#cb21-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-173"><a href="#cb21-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-174"><a href="#cb21-174" aria-hidden="true" tabindex="-1"></a>We'll explore below the similarities between these models.</span>
+<span id="cb21-175"><a href="#cb21-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-176"><a href="#cb21-176" aria-hidden="true" tabindex="-1"></a>Second, the <span class="in">`gr()`</span> function around the phylogenetic random effect is a special syntax that tells <span class="in">`brms`</span> to use the supplied covariance matrix <span class="in">`A`</span> for that grouping factor. The <span class="in">`data2`</span> argument is where we pass the phylogenetic covariance matrix. Also note that the phylogenetic A matrix differs from metafor because it's a covariance matrix whereas <span class="in">`metafor`</span> expects a correlation matrix. In our specific case the distinction is purely terminological: because we built the tree with <span class="in">`ape::compute.brlen(..., method = "Grafen", power = 1)`</span> it is ultrametric with root-to-tip distance equal to 1, so every diagonal of <span class="in">`vcv(tree, cor = FALSE)`</span> equals 1 and the covariance matrix is numerically identical to the correlation matrix. The distinction only matters if you use a non-ultrametric tree or skip the Grafen normalisation.</span>
+<span id="cb21-177"><a href="#cb21-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-178"><a href="#cb21-178" aria-hidden="true" tabindex="-1"></a>Finally, the <span class="in">`control`</span> argument is where we can tweak the MCMC sampling parameters. <span class="in">`adapt_delta`</span> controls the target acceptance rate for the Hamiltonian Monte Carlo sampler; increasing it can help with convergence when the model is complex.</span>
+<span id="cb21-179"><a href="#cb21-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-180"><a href="#cb21-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### Check MCMC diagnostics</span></span>
+<span id="cb21-181"><a href="#cb21-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-182"><a href="#cb21-182" aria-hidden="true" tabindex="-1"></a>Before interpreting any posterior summary, it is important to confirm that the chains have converged. We can usually get a good sense of this from the printed summary of the model fit already but it's also good to visually inspect the trace plots and posterior densities.</span>
+<span id="cb21-183"><a href="#cb21-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-184"><a href="#cb21-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics}</span></span>
+<span id="cb21-185"><a href="#cb21-185" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bayes_phylo)</span>
+<span id="cb21-186"><a href="#cb21-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-187"><a href="#cb21-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-188"><a href="#cb21-188" aria-hidden="true" tabindex="-1"></a>Two things to look for in the printout:</span>
+<span id="cb21-189"><a href="#cb21-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-190"><a href="#cb21-190" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**R-hat ($\hat{R}$)** for every parameter should be $&lt; 1.01$. Larger values mean the chains have not mixed.</span>
+<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bulk_ESS** and **Tail_ESS** should each be ~1000, but sometimes it will be lower, but getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <span class="in">`iter`</span>, <span class="in">`warmup`</span>, and <span class="in">`thin`</span> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</span>
+<span id="cb21-192"><a href="#cb21-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-193"><a href="#cb21-193" aria-hidden="true" tabindex="-1"></a>A visual check of the trace plots and posterior densities is also really important to check to ensure proper mixing of the MCMC chains. They usually tell the same story as the printed diagnostics but can sometimes reveal issues that are not obvious from the numbers alone (e.g. multimodality, poor mixing, or a small number of effective samples).</span>
+<span id="cb21-194"><a href="#cb21-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-195"><a href="#cb21-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics-plots}</span></span>
+<span id="cb21-196"><a href="#cb21-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 6</span></span>
+<span id="cb21-197"><a href="#cb21-197" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bayes_phylo, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-198"><a href="#cb21-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-199"><a href="#cb21-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-200"><a href="#cb21-200" aria-hidden="true" tabindex="-1"></a>Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.</span>
+<span id="cb21-201"><a href="#cb21-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-202"><a href="#cb21-202" aria-hidden="true" tabindex="-1"></a>Recall that we also fit the same model with <span class="in">`sigma = TRUE`</span>. We can look how the output for that model compares to the one we have just fit:</span>
+<span id="cb21-203"><a href="#cb21-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-204"><a href="#cb21-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics2}</span></span>
+<span id="cb21-205"><a href="#cb21-205" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bayes_phylo2)</span>
+<span id="cb21-206"><a href="#cb21-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-207"><a href="#cb21-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-208"><a href="#cb21-208" aria-hidden="true" tabindex="-1"></a>Here, we can see that <span class="in">`sigma`</span> is estimated and it matches the <span class="in">`sd_es_ID__Intercept`</span> from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in <span class="in">`metafor`</span>. However, we can see that this is a more elegant way to model residual error for meta-analysis with <span class="in">`brms`</span> (which we recommend) as you can see improvements in the MCMC diagnostics for the second model compared to the first one because of the different way the model is parameterised. So, we've solved our mixing issues!</span>
+<span id="cb21-209"><a href="#cb21-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-210"><a href="#cb21-210" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posterior summaries</span></span>
+<span id="cb21-211"><a href="#cb21-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-212"><a href="#cb21-212" aria-hidden="true" tabindex="-1"></a>The overall effect (intercept on the $Z_r$ scale) and 95% credible interval:</span>
+<span id="cb21-213"><a href="#cb21-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-214"><a href="#cb21-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r posterior-summary}</span></span>
+<span id="cb21-215"><a href="#cb21-215" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">posterior_summary</span>(bayes_phylo2, <span class="at">variable =</span> <span class="st">"b_Intercept"</span>)</span>
+<span id="cb21-216"><a href="#cb21-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-217"><a href="#cb21-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-218"><a href="#cb21-218" aria-hidden="true" tabindex="-1"></a>Variance components — between-study, within-study residual (here estimated as <span class="in">`sigma`</span> because we used <span class="in">`se(..., sigma = TRUE)`</span> and dropped the OLRE), non-phylogenetic species, and phylogenetic species:</span>
+<span id="cb21-219"><a href="#cb21-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-220"><a href="#cb21-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r variance-components}</span></span>
+<span id="cb21-221"><a href="#cb21-221" aria-hidden="true" tabindex="-1"></a>brms<span class="sc">::</span><span class="fu">posterior_summary</span>(bayes_phylo2, <span class="at">variable =</span> <span class="fu">c</span>(<span class="st">"sd_study_ID__Intercept"</span>,</span>
+<span id="cb21-222"><a href="#cb21-222" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sigma"</span>,</span>
+<span id="cb21-223"><a href="#cb21-223" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sd_species__Intercept"</span>,</span>
+<span id="cb21-224"><a href="#cb21-224" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"sd_species_OTL__Intercept"</span>))</span>
+<span id="cb21-225"><a href="#cb21-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-226"><a href="#cb21-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-227"><a href="#cb21-227" aria-hidden="true" tabindex="-1"></a><span class="fu">#### What does the model output tell us?</span></span>
+<span id="cb21-228"><a href="#cb21-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-229"><a href="#cb21-229" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb21-230"><a href="#cb21-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-231"><a href="#cb21-231" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb21-232"><a href="#cb21-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-233"><a href="#cb21-233" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Is there an overall positive or negative relationship between physiology and movement?**</span></span>
+<span id="cb21-234"><a href="#cb21-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-235"><a href="#cb21-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb21-236"><a href="#cb21-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-237"><a href="#cb21-237" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; The posterior mean for the intercept is </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Estimate"], 3)`</span><span class="at"> with a 95% credible interval of </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q2.5"], 3)`</span><span class="at"> to </span><span class="in">`r round(brms::posterior_summary(bayes_phylo2, variable = "b_Intercept")[, "Q97.5"], 3)`</span><span class="at">. As in the </span><span class="co">[</span><span class="ot">REML analysis</span><span class="co">](phylo.qmd)</span><span class="at">, the overall relationship is **positive** and the credible interval nearly excludes zero. Compare these numbers with the REML estimates from the previous chapter — they should be fairly similar. However, the Bayesian fit also gives us full posterior distributions for all parameters. For example, we can look at every variance component with </span><span class="in">`brms::mcmc_plot(bayes_phylo2, variable = "^sd_", regex = TRUE)`</span><span class="at">.</span></span>
+<span id="cb21-238"><a href="#cb21-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-239"><a href="#cb21-239" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb21-240"><a href="#cb21-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-241"><a href="#cb21-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Extracting Posterior distributions and Derived Quantities**</span></span>
+<span id="cb21-242"><a href="#cb21-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-243"><a href="#cb21-243" aria-hidden="true" tabindex="-1"></a>One of the key benefits of the Bayesian framework is that we can propagate uncertainty into any derived quantity simply by computing it draw-by-draw across the posterior. As an example, we will compute a full posterior distribution for $I^2_{total}$ — the proportion of total variance attributable to genuine heterogeneity (rather than sampling noise) — using the same definition as in the <span class="co">[</span><span class="ot">Heterogeneity chapter</span><span class="co">](het.qmd)</span>:</span>
+<span id="cb21-244"><a href="#cb21-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-245"><a href="#cb21-245" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-246"><a href="#cb21-246" aria-hidden="true" tabindex="-1"></a>I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 + \sigma_{m}^2}</span>
+<span id="cb21-247"><a href="#cb21-247" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-248"><a href="#cb21-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-249"><a href="#cb21-249" aria-hidden="true" tabindex="-1"></a>The denominator includes the **typical sampling variance** $\sigma^2_m$, which is a fixed function of the inverse-variance weights $w_i = 1/v_i$ and is computed once from the data (not estimated by the model):</span>
+<span id="cb21-250"><a href="#cb21-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-251"><a href="#cb21-251" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-252"><a href="#cb21-252" aria-hidden="true" tabindex="-1"></a>\sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}</span>
+<span id="cb21-253"><a href="#cb21-253" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb21-254"><a href="#cb21-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-255"><a href="#cb21-255" aria-hidden="true" tabindex="-1"></a>Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <span class="in">`brms::as_draws_df()`</span>, which gives us one column per parameter and one row per draw.</span>
+<span id="cb21-256"><a href="#cb21-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-257"><a href="#cb21-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r derived-quantities}</span></span>
+<span id="cb21-258"><a href="#cb21-258" aria-hidden="true" tabindex="-1"></a><span class="co"># Typical sampling variance </span></span>
+<span id="cb21-259"><a href="#cb21-259" aria-hidden="true" tabindex="-1"></a>w        <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> zr_data<span class="sc">$</span>V_Zr</span>
+<span id="cb21-260"><a href="#cb21-260" aria-hidden="true" tabindex="-1"></a>k        <span class="ot">&lt;-</span> <span class="fu">nrow</span>(zr_data)</span>
+<span id="cb21-261"><a href="#cb21-261" aria-hidden="true" tabindex="-1"></a>sigma2_m <span class="ot">&lt;-</span> (k <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sum</span>(w) <span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb21-262"><a href="#cb21-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-263"><a href="#cb21-263" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of every random-effect SD; square to get variances!</span></span>
+<span id="cb21-264"><a href="#cb21-264" aria-hidden="true" tabindex="-1"></a><span class="co"># Remember, for bayes_phylo2 the within-study residual variance is estimated as </span></span>
+<span id="cb21-265"><a href="#cb21-265" aria-hidden="true" tabindex="-1"></a><span class="co"># `sigma` (we used se(..., sigma = TRUE) and dropped the (1 | es_ID) </span></span>
+<span id="cb21-266"><a href="#cb21-266" aria-hidden="true" tabindex="-1"></a><span class="co"># observation-level random effect).</span></span>
+<span id="cb21-267"><a href="#cb21-267" aria-hidden="true" tabindex="-1"></a>draws        <span class="ot">&lt;-</span> brms<span class="sc">::</span><span class="fu">as_draws_df</span>(bayes_phylo2)</span>
+<span id="cb21-268"><a href="#cb21-268" aria-hidden="true" tabindex="-1"></a>sigma2_study <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_study_ID__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-269"><a href="#cb21-269" aria-hidden="true" tabindex="-1"></a>sigma2_es    <span class="ot">&lt;-</span> draws<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-270"><a href="#cb21-270" aria-hidden="true" tabindex="-1"></a>sigma2_spp   <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-271"><a href="#cb21-271" aria-hidden="true" tabindex="-1"></a>sigma2_phylo <span class="ot">&lt;-</span> draws<span class="sc">$</span>sd_species_OTL__Intercept<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-272"><a href="#cb21-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-273"><a href="#cb21-273" aria-hidden="true" tabindex="-1"></a>var_total <span class="ot">&lt;-</span> sigma2_study <span class="sc">+</span> sigma2_es <span class="sc">+</span> sigma2_spp <span class="sc">+</span> sigma2_phylo</span>
+<span id="cb21-274"><a href="#cb21-274" aria-hidden="true" tabindex="-1"></a>I2_total  <span class="ot">&lt;-</span> var_total <span class="sc">/</span> (var_total <span class="sc">+</span> sigma2_m)</span>
+<span id="cb21-275"><a href="#cb21-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-276"><a href="#cb21-276" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summary (median + 95% credible interval)</span></span>
+<span id="cb21-277"><a href="#cb21-277" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span>
+<span id="cb21-278"><a href="#cb21-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-279"><a href="#cb21-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-280"><a href="#cb21-280" aria-hidden="true" tabindex="-1"></a>Because we computed $I^2_{total}$ per draw, we have the *posterior distribution* of $I^2_{total}$ rather than a single point estimate. The 95% interval reported above is a credible interval that fully reflects uncertainty in every variance component simultaneously — something that is awkward to obtain from the REML fit without bootstrapping.</span>
+<span id="cb21-281"><a href="#cb21-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-282"><a href="#cb21-282" aria-hidden="true" tabindex="-1"></a>We can also now nicely visualise the posterior distribution of $I^2_{total}$:</span>
+<span id="cb21-283"><a href="#cb21-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-284"><a href="#cb21-284" aria-hidden="true" tabindex="-1"></a><span class="in">```{r I2-plot}</span></span>
+<span id="cb21-285"><a href="#cb21-285" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(I2_total), <span class="fu">aes</span>(<span class="at">x =</span> I2_total)) <span class="sc">+</span></span>
+<span id="cb21-286"><a href="#cb21-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-287"><a href="#cb21-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">quantile</span>(I2_total, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>)), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb21-288"><a href="#cb21-288" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(I<span class="sc">^</span><span class="dv">2</span>[total]), <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb21-289"><a href="#cb21-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb21-290"><a href="#cb21-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-291"><a href="#cb21-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-292"><a href="#cb21-292" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Your turn: $I^2_{study}$</span></span>
+<span id="cb21-293"><a href="#cb21-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-294"><a href="#cb21-294" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb21-295"><a href="#cb21-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-296"><a href="#cb21-296" aria-hidden="true" tabindex="-1"></a><span class="fu">## Task</span></span>
+<span id="cb21-297"><a href="#cb21-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-298"><a href="#cb21-298" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Adapt the code above to compute the posterior of $I^2_{study}$** — the fraction of total variance attributable to *between-study* heterogeneity alone. Report the posterior median and 95% credible interval, and contrast it with $I^2_{total}$.</span></span>
+<span id="cb21-299"><a href="#cb21-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-300"><a href="#cb21-300" aria-hidden="true" tabindex="-1"></a><span class="fu">## Answer</span></span>
+<span id="cb21-301"><a href="#cb21-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-302"><a href="#cb21-302" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Only the numerator changes; we re-use </span><span class="in">`sigma2_study`</span><span class="at">, </span><span class="in">`var_total`</span><span class="at"> and </span><span class="in">`sigma2_m`</span><span class="at"> from the chunk above. Formally:</span></span>
+<span id="cb21-303"><a href="#cb21-303" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
+<span id="cb21-304"><a href="#cb21-304" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; $$</span></span>
+<span id="cb21-305"><a href="#cb21-305" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 + \sigma_{m}^2}</span></span>
+<span id="cb21-306"><a href="#cb21-306" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; $$</span></span>
+<span id="cb21-307"><a href="#cb21-307" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
+<span id="cb21-308"><a href="#cb21-308" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; ```{r I2-study}</span></span>
+<span id="cb21-309"><a href="#cb21-309" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; I2_study &lt;- sigma2_study / (var_total + sigma2_m)</span></span>
+<span id="cb21-310"><a href="#cb21-310" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; quantile(I2_study, c(0.025, 0.5, 0.975))</span></span>
+<span id="cb21-311"><a href="#cb21-311" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; ```</span></span>
+<span id="cb21-312"><a href="#cb21-312" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;</span></span>
+<span id="cb21-313"><a href="#cb21-313" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; The posterior median for $I^2_{study}$ is `r round(median(I2_study), 3)` with a 95% credible interval of `r round(quantile(I2_study, 0.025), 3)` to `r round(quantile(I2_study, 0.975), 3)`. Comparing this with $I^2_{total}$ (median </span><span class="in">`r round(median(I2_total), 3)`</span><span class="at">) tells you how much of the *real* heterogeneity is concentrated at the study level versus spread across the other variance components (within-study residual, non-phylogenetic species, phylogenetic). You can compute $I^2$ for any single component the same way — just put its squared SD in the numerator.</span></span>
+<span id="cb21-314"><a href="#cb21-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-315"><a href="#cb21-315" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb21-316"><a href="#cb21-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-317"><a href="#cb21-317" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb21-318"><a href="#cb21-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-319"><a href="#cb21-319" aria-hidden="true" tabindex="-1"></a>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn't present by defualt. </span>
+<span id="cb21-320"><a href="#cb21-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-321"><a href="#cb21-321" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
+<span id="cb21-322"><a href="#cb21-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-323"><a href="#cb21-323" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> id</span><span class="op">=</span><span class="st">"refs"</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span>
+<span id="cb21-324"><a href="#cb21-324" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
+<span id="cb21-325"><a href="#cb21-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-326"><a href="#cb21-326" aria-hidden="true" tabindex="-1"></a><span class="fu">## **Session Information**</span></span>
+<span id="cb21-327"><a href="#cb21-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-330"><a href="#cb21-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb21-331"><a href="#cb21-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: sessioninfo-bayes</span></span>
+<span id="cb21-332"><a href="#cb21-332" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb21-333"><a href="#cb21-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-334"><a href="#cb21-334" aria-hidden="true" tabindex="-1"></a><span class="fu">pander</span>(<span class="fu">sessionInfo</span>(), <span class="at">locale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-335"><a href="#cb21-335" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
