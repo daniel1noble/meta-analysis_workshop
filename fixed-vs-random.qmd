@@ -35,7 +35,7 @@ To demonstrate, we can simulate some data. This is also quite useful for getting
 
 # Generate some simulated effect size data with known sampling variance
 # assumed to come from a common underlying distribution
-set.seed(86) # Set see so that we all get the same simulated results
+set.seed(86) # Set seed so that we all get the same simulated results
  # We will have 5 studies
     stdy  <- 1:5                                      
 # We know the variance for each effect
@@ -83,7 +83,7 @@ We notice a few important differences here. In the RE data set the variance acro
 
 ## **Fixed Effect Meta-Analysis**
 
-What is a fixed effect meta-analysis anyway? If it wasn't clear from the above simulated data lets be more formal. We simulated data according to the following model, a fixed effects meta-analytic model:
+What is a fixed effect meta-analysis anyway? If it wasn't clear from the above simulated data let's be more formal. We simulated data according to the following model, a fixed effects meta-analytic model:
 
 $$
 \begin{aligned}
@@ -91,11 +91,11 @@ y_{i} &= \mu + m_{i} \\
 m_{i} &\sim N(0, v_{i})
 \end{aligned}
 $$
-where $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. You may notice from this model, and the simulated data, that we are assuming that there is a single overall mean from the pooled effect sizes we have, that effects are assumed to be independently, and identically distributed, and that the only deviation from $\mu$ is the result of sampling error, which is related to the sample size or power of the study. There are no additional sources of variance added to effect size estimates. 
+where $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. You may notice from this model, and the simulated data, that we are assuming that there is a single overall mean from the pooled effect sizes we have, that effects are assumed to be independent and identically distributed, and that the only deviation from $\mu$ is the result of sampling error, which is related to the sample size or power of the study. There are no additional sources of variance added to effect size estimates. 
 
 ### Fixed effect meta-analysis with `metafor`
 
-Now that we understand the fixed effect model, both from formal statistical notation and by looking at how the data were generated, lets fit a fixed effect model in `metafor`. 
+Now that we understand the fixed effect model, both from formal statistical notation and by looking at how the data were generated, let's fit a fixed effect model in `metafor`. 
 
 ```{r}
 #| label: fixedma
@@ -184,7 +184,7 @@ se_mean_meta <- m$se
 
 
 ## **Random Effect Meta-Analysis**
-Now lets turn to the formal definition of a random effects meta-analysis. It looks at the outset as being very similar to our fixed effect model, but with a critically important addition:
+Now let's turn to the formal definition of a random effects meta-analysis. It looks at the outset as being very similar to our fixed effect model, but with a critically important addition:
 $$
 \begin{aligned}
 y_{i} &= \mu + s_{i} + m_{i} \\
@@ -192,9 +192,9 @@ m_{i} &\sim N(0, v_{i}) \\
 s_{i} &\sim N(0, \tau^2)
 \end{aligned}
 $$
-Again, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. However, you will notice now that we have an additional source of variation, $s_{i}$, which is the study specific deviation. **Here, we are assuming now that every study has it's own mean effect size which is again sampled from a normal distribution with a between study variance, $\tau^2$ (read, tau-squared)**.  
+Again, $y_{i}$ is the *i*th effect size estimate and $m_{i}$ is the sampling error (deviation from $\mu$) for effect size *i*. Sampling deviations are assumed to be drawn from a normal distribution (N) with a mean of 0 and a sampling variance, $v_{i}$. However, you will notice now that we have an additional source of variation, $s_{i}$, which is the study specific deviation. **Here, we are assuming now that every study has its own mean effect size which is again sampled from a normal distribution with a between study variance, $\tau^2$ (read, tau-squared)**.  
 
-You'll notice from this model, and the simulated data, that we are again assuming that there is a single overall mean and that effects are independently, and identically, distributed. However, now any deviation from the true mean is the result of not only $\mu$ (sampling error) but also because studies vary in their true mean effect sizes as well. Again, beyond these two sources, there are no additional sources of variance added to effect size estimates. 
+You'll notice from this model, and the simulated data, that we are again assuming that there is a single overall mean and that effects are independent and identically distributed. However, now any deviation from the true mean is the result of not only $m_{i}$ (sampling error) but also because studies vary in their true mean effect sizes as well. Again, beyond these two sources, there are no additional sources of variance added to effect size estimates. 
 
 ```{r}
 #| label: fig-fixedrandomeffectmeta
@@ -210,7 +210,7 @@ You'll notice from this model, and the simulated data, that we are again assumin
 
 
 ### Random effect meta-analysis using `metafor`
-Now lets move on to a more complicated situation, a random effect meta-analysis using the RE dataset. Remember, we know from this data set that each effect size comes from a different overall distribution. How might Q change? (Hint: We expect it to get larger!)
+Now let's move on to a more complicated situation, a random effect meta-analysis using the RE dataset. Remember, we know from this data set that each effect size comes from a different overall distribution. How might Q change? (Hint: We expect it to get larger!)
 
 ```{r}
 #| label: re
@@ -233,14 +233,14 @@ metafor::rma(yi = esRE, vi = Ves, method="REML", data = dataRE)
 
 ## Answer
 
->That's because we added in extra variability to the mix because **each effect size is to come from a distribution of true effect sizes**. Because they can all have their own mean they can differ substantially from the other effect sizes and this results in more variance (i.e. heterogeneity) being added to our data over all.
+>That's because we added in extra variability to the mix because **each effect size comes from a distribution of true effect sizes**. Because they can all have their own mean they can differ substantially from the other effect sizes and this results in more variance (i.e. heterogeneity) being added to our data overall.
 
 :::
 
 <br>
 
 ### Random effect meta-analysis by hand!
-Now lets see if we can reproduce these results. We need to remember that we need to add in the between study variance to our weighting of effect sizes for this model. To do this, we need to estimate how much heterogeneity we have between studies above what we would expect from sampling variability. This can be estimated by calculating the $\tau^2$ statistic, which is the variance in the ‘true’ effect sizes. To calculate this we need to calculate Q using our weights, which are the same because we know these to be true.
+Now let's see if we can reproduce these results. We need to remember that we need to add in the between study variance to our weighting of effect sizes for this model. To do this, we need to estimate how much heterogeneity we have between studies above what we would expect from sampling variability. This can be estimated by calculating the $\tau^2$ statistic, which is the variance in the ‘true’ effect sizes. To calculate this we need to calculate Q using our weights, which are the same because we know these to be true.
 
 ```{r}
 #| label: re_hand
@@ -261,7 +261,7 @@ Now lets see if we can reproduce these results. We need to remember that we need
     T2
 ```
 
-Now we can re-calculate our weights by adding in the between study heterogenetity.
+Now we can re-calculate our weights by adding in the between study heterogeneity.
 
 ```{r}
 #| label: re_w
@@ -330,7 +330,7 @@ Now if we compare the `metafor` model with our hand calculations we see they mat
 #| label: tbl-table2
 #| eval: true
 #| echo: false
-#| tbl-cap: "Comparison of our hand calculations with a `metafor` model with with a Dersimion-Laird estimator"
+#| tbl-cap: "Comparison of our hand calculations with a `metafor` model with a DerSimonian-Laird estimator"
 
  m <- metafor::rma(yi = esRE, vi = Ves, method="DL", data = dataRE)
    mean_meta <- coef(m)
@@ -351,7 +351,7 @@ se_mean_meta <- m$se
 ```
 
 ## **Conclusions**
-Hopefully now you have a better understanding of the differences between fixed and random-effect meta-analysis. It should also be clear that meta-analytic models can be easily understood in detail but that results can vary depending on what assumptions and optimizers we are using to obtained pooled results. It's also comforting to know that we can do our own analysis by hand! 
+Hopefully now you have a better understanding of the differences between fixed and random-effect meta-analysis. It should also be clear that meta-analytic models can be easily understood in detail but that results can vary depending on what assumptions and optimizers we are using to obtain pooled results. It's also comforting to know that we can do our own analysis by hand! 
 
 ## **References**
 

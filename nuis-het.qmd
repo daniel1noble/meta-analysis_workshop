@@ -21,20 +21,20 @@ There are two main ways to deal with nuisance heterogeneity. The most common app
 ### **Temperature Coefficient, $Q_{10}$**
 One common and well known effect size that is used in comparative physiology is the [temperature coefficient, $Q_{10}$](https://en.wikipedia.org/wiki/Q10_(temperature_coefficient)). As [discussed](effect-size.qmd), effect sizes need to be: 1) comparable across studies and 2) we need to know, or be able to approximate, the sampling variance in order to make use of meta-analytic models. While $Q_{10}$ satisfies 1), we do *not* know what the sampling variance should be for this effect size. @Noble2022 fixes that issue by deriving its sampling variance.
 
-To begin, recall that $Q_{10}$, is defined as: 
+To begin, recall that $Q_{10}$ is defined as: 
 
 
 $$
 Q_{10} = \left( \frac{R_{2}}{R_{1}} \right)^{ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }
 $$ {#eq-q10}
 
-Here, $R_{1}$ and $R_{2}$ are mean physiological rates and $T_{1}$ and $T_{2}$ are the temperatures that these rates are measured. Natural log transformation of @eq-q10 leads to the following log transformed $Q_{10}$:
+Here, $R_{1}$ and $R_{2}$ are mean physiological rates and $T_{1}$ and $T_{2}$ are the temperatures at which these rates are measured. Natural log transformation of @eq-q10 leads to the following log transformed $Q_{10}$:
 
 $$
 lnRR_{Q_{10}} = ln\left( \frac{R_{2}}{R_{1}} \right){ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }
 $$ {#eq-lnq10}
 
-@Noble2022 call this transformed effect size $LnRR_{Q_{10}}$ because of its similarities with the log response ratio. @eq-lnq10 is essentially a temperature-corrected equivalent of *lnRR* when the numerator and denominator are measured at different temperatures. $lnRR_{Q_{10}}$ is more likely to satisfy the assumption of residual normality than $Q_{10}$ and given it's similarities to *lnRR* we can now approximate it's sampling variance [see @Hedges1999]. The recognition of this equivalence means that we can calculate the sampling variance for @eq-lnq10 as follows:
+@Noble2022 call this transformed effect size $LnRR_{Q_{10}}$ because of its similarities with the log response ratio. @eq-lnq10 is essentially a temperature-corrected equivalent of *lnRR* when the numerator and denominator are measured at different temperatures. $lnRR_{Q_{10}}$ is more likely to satisfy the assumption of residual normality than $Q_{10}$ and given its similarities to *lnRR* we can now approximate its sampling variance [see @Hedges1999]. The recognition of this equivalence means that we can calculate the sampling variance for @eq-lnq10 as follows:
 
 $$
 s^2_{lnRR_{Q_{10}}} = \left( \frac{SD_{2}^2}{R^2_{2}N_{2}} + \frac{SD_{1}^2}{R^2_{1}N_{1}} \right){ \left(\ \frac{10^{\circ}C}{T_{2}-T_{1}} \right) }^2
@@ -152,7 +152,7 @@ $$
 \left( \frac{SD^2_{\text{high}}}{N_{\text{high}}} + \frac{SD^2_{\text{low}}}{N_{\text{low}}} \right)
 $$ {#eq-varr}
 
-In this example, we will use a simplified data set from @Pottier2021, and demonstrate how to investigate the mean effect of acclimation temperature on heat tolerance.This effect size is calculated as the difference between the heat tolerance at the higher (`mean_high`) and the lower (`mean_low`) acclimation temperatures, divided by the difference between acclimation temperatures (`acc_temp_high` - `acc_temp_low`). 
+In this example, we will use a simplified data set from @Pottier2021, and demonstrate how to investigate the mean effect of acclimation temperature on heat tolerance. This effect size is calculated as the difference between the heat tolerance at the higher (`mean_high`) and the lower (`mean_low`) acclimation temperatures, divided by the difference between acclimation temperatures (`acc_temp_high` - `acc_temp_low`). 
 
 #### Download Data and Functions for $ARR$
 

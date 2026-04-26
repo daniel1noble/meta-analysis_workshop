@@ -12,7 +12,7 @@ options(digits=3)
 
 ## **Introduction to Multi-level Meta-analysis**
 
-Ecological and evolutionary meta-analysis more often than not need much more sophisticated multilevel meta-analytic models [@NakagawaSantos2012; @Hadfield2010; @Noble2017] compared with [random effect models](fixed-vs-random.qmd) to analyse data. Biological data from field and lab-based experiments are highly structured -- many studies could be done on the same species or they could be done by the same lab group or student sharing similar methodology [@Noble2017; @NakagawaSantos2012]. In addition, we might have many effect size estimates from a single study because many traits are measured, or many treatments are applied [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
+Ecological and evolutionary meta-analysis more often than not needs much more sophisticated multilevel meta-analytic models [@NakagawaSantos2012; @Hadfield2010; @Noble2017] compared with [random effect models](fixed-vs-random.qmd) to analyse data. Biological data from field and lab-based experiments are highly structured -- many studies could be done on the same species or they could be done by the same lab group or student sharing similar methodology [@Noble2017; @NakagawaSantos2012]. In addition, we might have many effect size estimates from a single study because many traits are measured, or many treatments are applied [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
 
 In the past, complex non-independence was often dealt with by: **1)** conducting separate meta-analyses on subsets of non-independent data sets, usually using random effect models; **2)** taking one or only a subset of effect size estimates from a single study to reduce non-independence; and/or **3)** averaging effect size estimates from a single study and modelling the average [@NakagawaSantos2012]. **These approaches can be problematic because disposing of useful effect size data will result in a loss of statistical power or even inflated Type I error rates if average effect size estimates were not calculated accounting for non-independence [@Nakagawa2021]**. Furthermore, removing effect size estimates from an analysis prevents estimation of biological and methodologically relevant information that can help shape the field [@NakagawaSantos2012; @Nakagawa2021]. While the above approaches could still be useful at times, where possible, we recommend you model all available data [@Nakagawa2021; @Noble2017; @NakagawaSantos2012].
 
@@ -111,7 +111,7 @@ return(data.frame(ARR, V_ARR))
 ```
 
 
-### Calculating $ARR$ and It's Sampling Variance
+### Calculating $ARR$ and Its Sampling Variance
 Using the `arr` function above we can now calculate the acclimation response ratio (ARR). Given @Pottier2021 were interested in comparing the sexes, they calculated the ARR difference between males and females. To simplify here, we'll just focus on estimating the ARR for a single sex, females. As such, we'll calculate our ARR effect size and sampling variance and then sub-set out the data on females.
 
 ```{r}
@@ -127,13 +127,13 @@ asr_dat<-asr_dat %>%
 
 ### Fitting a Multilevel Meta-analytic Model in `metafor`
 
-Our data is now ready for analysis! We will use the `rma.mv` function in `metafor` to fit our first multilevel meta-analysis model. The model takes the ARR as a response variable (`yi`) and accounts for it's sampling variance (`V` = V_ARR). We are also going to estimate a random effect variance for species, between study and within-study grouping variables to control for non-independence and understand sources driving effect size variability. These are all denoted in the `random` argument of `metafor` which takes a list of all the random effects. 
+Our data is now ready for analysis! We will use the `rma.mv` function in `metafor` to fit our first multilevel meta-analysis model. The model takes the ARR as a response variable (`yi`) and accounts for its sampling variance (`V` = V_ARR). We are also going to estimate a random effect variance for species, between study and within-study grouping variables to control for non-independence and understand sources driving effect size variability. These are all denoted in the `random` argument of `metafor` which takes a list of all the random effects. 
 
 You will notice two additional arguments being specified: 
 
 * The first, `dfs`, which calculates the degrees of freedom for the inferential tests in the model. `dfs = "contain"` will calculate the degrees of freedom based on the lowest clustering level minus 1 (in this case study). Simulations have shown that this is a more robust measure to protect against type I errors [@Nakagawa2021]. 
 
-* The second argument, `test` specifies the test statistic used. `metafor` defaults to z values based on the standard normal distribution, however, simulations have shown [@Pappalardo2021] and it has been recommended [@Rosenberg2013b], that the t-distribution be used because samples sizes are often small and the true variance of the test is being estimated. 
+* The second argument, `test` specifies the test statistic used. `metafor` defaults to z values based on the standard normal distribution, however, simulations have shown [@Pappalardo2021] and it has been recommended [@Rosenberg2013b], that the t-distribution be used because sample sizes are often small and the true variance of the test is being estimated. 
 
 ```{r}
 
@@ -156,7 +156,7 @@ print(MLMA)
 
 ## Task
 
->**What is the overall mean estimate and variance of the model, and how much heterogeneity exist?** 
+>**What is the overall mean estimate and variance of the model, and how much heterogeneity exists?** 
 
 <br>
 

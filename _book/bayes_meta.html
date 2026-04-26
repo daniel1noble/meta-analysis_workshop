@@ -627,7 +627,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Two things to look for in the printout:</p>
 <ul>
 <li><strong>R-hat (<span class="math inline">\(\hat{R}\)</span>)</strong> for every parameter should be <span class="math inline">\(&lt; 1.01\)</span>. Larger values mean the chains have not mixed.</li>
-<li><strong>Bulk_ESS</strong> and <strong>Tail_ESS</strong> should each be ~1000, but sometimes it will be lower, but getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <code>iter</code>, <code>warmup</code>, and <code>thin</code> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</li>
+<li><strong>Bulk_ESS</strong> and <strong>Tail_ESS</strong> should each be ~1000, though sometimes they will be lower; getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <code>iter</code>, <code>warmup</code>, and <code>thin</code> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</li>
 </ul>
 <p>A visual check of the trace plots and posterior densities is also really important to check to ensure proper mixing of the MCMC chains. They usually tell the same story as the printed diagnostics but can sometimes reveal issues that are not obvious from the numbers alone (e.g.&nbsp;multimodality, poor mixing, or a small number of effective samples).</p>
 <div class="cell">
@@ -650,8 +650,8 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
 </div>
-<p>Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn’t bad for demonstration purposes.</p>
-<p>Recall that we also fit the same model with <code>sigma = TRUE</code>. We can look how the output for that model compares to the one we have just fit:</p>
+<p>Note that there appear to be some issues with mixing for some parameters (low ESS and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn’t bad for demonstration purposes.</p>
+<p>Recall that we also fit the same model with <code>sigma = TRUE</code>. We can look at how the output for that model compares to the one we have just fit:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -753,7 +753,7 @@ I^2_{total} = \frac{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2}{\tau^2 
 <p><span class="math display">\[
 \sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}
 \]</span></p>
-<p>Omitting <span class="math inline">\(\sigma^2_m\)</span> would inflate <span class="math inline">\(I^2_{total}\)</span> because the denominator would no longer represent total variance. With <span class="math inline">\(\sigma^2_m\)</span> in hand, we compute the posterior of <span class="math inline">\(I^2_{total}\)</span> by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <code>brms::as_draws_df()</code>, which gives us one column per parameter and one row per draw.</p>
+<p>Omitting <span class="math inline">\(\sigma^2_m\)</span> would inflate <span class="math inline">\(I^2_{total}\)</span> because the denominator would no longer represent total variance. With <span class="math inline">\(\sigma^2_m\)</span> in hand, we compute the posterior of <span class="math inline">\(I^2_{total}\)</span> by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should have 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <code>brms::as_draws_df()</code>, which gives us one column per parameter and one row per draw.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
@@ -839,7 +839,7 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 </div>
 </div>
 <p><br></p>
-<p>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn’t present by defualt.</p>
+<p>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn’t present by default.</p>
 </section>
 </section>
 <section id="references" class="level2">
@@ -1522,7 +1522,7 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 <span id="cb21-188"><a href="#cb21-188" aria-hidden="true" tabindex="-1"></a>Two things to look for in the printout:</span>
 <span id="cb21-189"><a href="#cb21-189" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-190"><a href="#cb21-190" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**R-hat ($\hat{R}$)** for every parameter should be $&lt; 1.01$. Larger values mean the chains have not mixed.</span>
-<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bulk_ESS** and **Tail_ESS** should each be ~1000, but sometimes it will be lower, but getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <span class="in">`iter`</span>, <span class="in">`warmup`</span>, and <span class="in">`thin`</span> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</span>
+<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Bulk_ESS** and **Tail_ESS** should each be ~1000, though sometimes they will be lower; getting above at least 500 is desirable. Low ESS means the posterior summary is based on too few effective draws. Increasing <span class="in">`iter`</span>, <span class="in">`warmup`</span>, and <span class="in">`thin`</span> more can help, but sometimes if the random effects are truly very low then ESS will remain low.</span>
 <span id="cb21-192"><a href="#cb21-192" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-193"><a href="#cb21-193" aria-hidden="true" tabindex="-1"></a>A visual check of the trace plots and posterior densities is also really important to check to ensure proper mixing of the MCMC chains. They usually tell the same story as the printed diagnostics but can sometimes reveal issues that are not obvious from the numbers alone (e.g. multimodality, poor mixing, or a small number of effective samples).</span>
 <span id="cb21-194"><a href="#cb21-194" aria-hidden="true" tabindex="-1"></a></span>
@@ -1531,9 +1531,9 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 <span id="cb21-197"><a href="#cb21-197" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bayes_phylo, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb21-198"><a href="#cb21-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb21-199"><a href="#cb21-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-200"><a href="#cb21-200" aria-hidden="true" tabindex="-1"></a>Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.</span>
+<span id="cb21-200"><a href="#cb21-200" aria-hidden="true" tabindex="-1"></a>Note that there appear to be some issues with mixing for some parameters (low ESS and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.</span>
 <span id="cb21-201"><a href="#cb21-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-202"><a href="#cb21-202" aria-hidden="true" tabindex="-1"></a>Recall that we also fit the same model with <span class="in">`sigma = TRUE`</span>. We can look how the output for that model compares to the one we have just fit:</span>
+<span id="cb21-202"><a href="#cb21-202" aria-hidden="true" tabindex="-1"></a>Recall that we also fit the same model with <span class="in">`sigma = TRUE`</span>. We can look at how the output for that model compares to the one we have just fit:</span>
 <span id="cb21-203"><a href="#cb21-203" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-204"><a href="#cb21-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{r diagnostics2}</span></span>
 <span id="cb21-205"><a href="#cb21-205" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bayes_phylo2)</span>
@@ -1586,7 +1586,7 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 <span id="cb21-252"><a href="#cb21-252" aria-hidden="true" tabindex="-1"></a>\sigma_{m}^2 = \frac{(k-1)\sum w_i}{(\sum w_i)^2 - \sum w_i^2}</span>
 <span id="cb21-253"><a href="#cb21-253" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb21-254"><a href="#cb21-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-255"><a href="#cb21-255" aria-hidden="true" tabindex="-1"></a>Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <span class="in">`brms::as_draws_df()`</span>, which gives us one column per parameter and one row per draw.</span>
+<span id="cb21-255"><a href="#cb21-255" aria-hidden="true" tabindex="-1"></a>Omitting $\sigma^2_m$ would inflate $I^2_{total}$ because the denominator would no longer represent total variance. With $\sigma^2_m$ in hand, we compute the posterior of $I^2_{total}$ by squaring each posterior draw of the random-effect standard deviations, summing them, and dividing by the total. We first want to extract the posterior draws from the model object. We know we should have 8000 draws (rows) in total (4 chains x 2000 iterations) but the effective number of draws may be lower due to autocorrelation. We can extract the posterior draws as a data frame with <span class="in">`brms::as_draws_df()`</span>, which gives us one column per parameter and one row per draw.</span>
 <span id="cb21-256"><a href="#cb21-256" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-257"><a href="#cb21-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r derived-quantities}</span></span>
 <span id="cb21-258"><a href="#cb21-258" aria-hidden="true" tabindex="-1"></a><span class="co"># Typical sampling variance </span></span>
@@ -1650,7 +1650,7 @@ I^2_{study} = \frac{\tau^2}{\tau^2 + \sigma_{k}^2 + \sigma_{a}^2 + \sigma_{e}^2 
 <span id="cb21-316"><a href="#cb21-316" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-317"><a href="#cb21-317" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">br</span><span class="dt">&gt;</span></span>
 <span id="cb21-318"><a href="#cb21-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-319"><a href="#cb21-319" aria-hidden="true" tabindex="-1"></a>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn't present by defualt. </span>
+<span id="cb21-319"><a href="#cb21-319" aria-hidden="true" tabindex="-1"></a>This is one of the powerful features of Bayesian meta-analysis; the ability to derive full posterior distributions for any quantity of interest by computing it draw-by-draw across the posterior. You can use this same approach to get a posterior distribution for the overall effect size, prediction intervals, or any other derived quantity you like. When you have moderators, it also means you can get overall means for each group or even contrasts for specific comparisons between levels of a moderator that maybe the model doesn't present by default. </span>
 <span id="cb21-320"><a href="#cb21-320" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-321"><a href="#cb21-321" aria-hidden="true" tabindex="-1"></a><span class="fu">## **References**</span></span>
 <span id="cb21-322"><a href="#cb21-322" aria-hidden="true" tabindex="-1"></a></span>

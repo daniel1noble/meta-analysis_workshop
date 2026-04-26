@@ -13,9 +13,9 @@ options(digits=3)
 
 ## **Introduction**
 
-We have already introduced the power of [multilevel meta-analytic models](multi-level.qmd) for dealing with non-independence, such as shared species, [phylogeny](phylo.qmd) and study [@Noble2017; @NakagawaSantos2012; @HadfieldNaka2010], but meta-analyses often contain even more complex forms on non-independence. 
+We have already introduced the power of [multilevel meta-analytic models](multi-level.qmd) for dealing with non-independence, such as shared species, [phylogeny](phylo.qmd) and study [@Noble2017; @NakagawaSantos2012; @HadfieldNaka2010], but meta-analyses often contain even more complex forms of non-independence. 
 
-We might have many effect size estimates from a single study because many traits are measured on the **same sample of organisms**, or many treatments are applied and we can create an **effect size with some common control** [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios etc [@Noble2017]. 
+We might have many effect size estimates from a single study because many traits are measured on the **same sample of organisms**, or many treatments are applied and we can create an **effect size with some common control** [@Noble2017]. This adds complexity to the data set and also results in special types of non-independence that are somewhat unique to meta-analysis -- especially when using contrast-based effect sizes like Hedges' g, log response ratios, log odds ratios, etc. [@Noble2017]. 
 
 In this tutorial, we'll overview some of these unique forms of non-independence discussing some of the ways that they can be dealt with using different approaches. Often there are no simple solutions because information collected to derive effect sizes are often lacking important details that would allow some forms of dependence to be dealt with. Thankfully, these problems have been thought about for some time by many meta-analysts and there are solutions that work reasonably well [@GleserOlkin2009; @Lajeunesse2011; @Pustejovsky2021; @Tipton2013; @Hedges2010; @Hedges2019]. 
 
@@ -85,20 +85,20 @@ Our assumption about effects from the same study being independent would likely 
 #| fig-align: center
 #| fig-width: 15
 #| fig-height: 15
-#| fig-cap: "Different forms of non-independence described by Noble et al. 2017. A) Effect size estimates could be correlated as a result of shared evolutionary history; B) could be correlated because they come from the same study with the same types of methodology applied. Effect sizes could also be corrrelated because the effects themselves are correlated to differing degrees because of spatial or temporal correlations (E, F), their samling errors are correlated (D) or a combination of both (C)"
+#| fig-cap: "Different forms of non-independence described by Noble et al. 2017. A) Effect size estimates could be correlated as a result of shared evolutionary history; B) could be correlated because they come from the same study with the same types of methodology applied. Effect sizes could also be correlated because the effects themselves are correlated to differing degrees because of spatial or temporal correlations (E, F), their sampling errors are correlated (D) or a combination of both (C)"
 #| echo: false
 
 img1 <- magick::image_read("./figs/nonIn.png")
 img1
 ```
 
-But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors [@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019]. That could be a serious problem because the inverse sampling errors are what we are using as [weights in our analysis](introduction-to-meta.qmd). If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this but also modifying out sampling error matrix
+But, wait, there's more. In fact, things can get very complicated, as outlined by @Noble2017! (See @fig-fig1). If we have used the same data to calculate multiple effect size values then we are also inducing a correlation among their sampling errors [@GleserOlkin2009; @Noble2017; @Lajeunesse2011; @Hedges2019]. That could be a serious problem because the inverse sampling errors are what we are using as [weights in our analysis](introduction-to-meta.qmd). If there are correlations among sampling errors then we need to account for this in our sampling variance matrix. We can do this by also modifying our sampling error matrix
 
 $$
 m_{i} \sim N(0, \textbf{M})
 $$
 
-The new sampling variance matrix, $\textbf{M}$, now has the sampling variances along the diagonal, which we know because we can calculate these. But, how do we now know what the covariance between the sampling errors are to be put in the off-diagonals of this $\textbf{M}$ matrix? Luckily there are some approximations for us that we can use to construct the entire $\textbf{M}$ sampling (co)variance matrix [@GleserOlkin2009; @Lajeunesse2011; @Hedges2019]. 
+The new sampling variance matrix, $\textbf{M}$, now has the sampling variances along the diagonal, which we know because we can calculate these. But, how do we now know what the covariance between the sampling errors is to be put in the off-diagonals of this $\textbf{M}$ matrix? Luckily there are some approximations for us that we can use to construct the entire $\textbf{M}$ sampling (co)variance matrix [@GleserOlkin2009; @Lajeunesse2011; @Hedges2019]. 
 
 
 ## **Why do we want to control for non-independence?**   
@@ -154,9 +154,9 @@ mass_data$obs <- 1:dim(mass_data)[1]
 
 ### Creating the $\textbf{M}$ matrix to deal with shared controls
 
-When setting the data up it is important that there is a column indicating which rows share a common control conditions. Rows that have the same value within this column indicate which effects need to have a covariance calculated for the off-diagonal element of the $\textbf{M}$ matrix. In this data set the `comparison_ID` column represents this indicator. 
+When setting the data up it is important that there is a column indicating which rows share a common control condition. Rows that have the same value within this column indicate which effects need to have a covariance calculated for the off-diagonal element of the $\textbf{M}$ matrix. In this data set the `comparison_ID` column represents this indicator. 
 
-Once we have a column indicating what effects share a common control we now want to calculate the covariance between the sampling errors for these effects. To do this, we can monopolize of covariance equations for various effect sizes [many large-sample approximations for these can be found in @GleserOlkin2009; and @Lajeunesse2011]. For the log response ratio, @Lajeunesse2011 provides this equation. We won't go over the details, other than to say that it exists and that some of these formulas are already built in to the `make_VCV_matrix` function in the [`metaAidR`](https://github.com/daniel1noble/metaAidR) package. 
+Once we have a column indicating what effects share a common control we now want to calculate the covariance between the sampling errors for these effects. To do this, we can make use of covariance equations for various effect sizes [many large-sample approximations for these can be found in @GleserOlkin2009; and @Lajeunesse2011]. For the log response ratio, @Lajeunesse2011 provides this equation. We won't go over the details, other than to say that it exists and that some of these formulas are already built into the `make_VCV_matrix` function in the [`metaAidR`](https://github.com/daniel1noble/metaAidR) package. 
 
 ```{r}
 #| label: calc-vcv-matrix
@@ -174,7 +174,7 @@ We can see the block structure from the shared controls in the data using `corrp
 ```{r}
 #| label: fig-corrplot
 #| fig-align: center
-#| fig-cap: "Correlation plot of the M matrix. The (co)variance matrix is converted to a correlation matrix and plotted. We can see the blocked structure in the matrix with off-diagonals indicating the effects sizes that share a common control. In this data there are not a huge number, but enough to see."
+#| fig-cap: "Correlation plot of the M matrix. The (co)variance matrix is converted to a correlation matrix and plotted. We can see the blocked structure in the matrix with off-diagonals indicating the effect sizes that share a common control. In this data there are not a huge number, but enough to see."
 #| echo: true
 
 ## Plot the M matrix as a correlation matrix
@@ -196,7 +196,7 @@ mlma <- rma.mv(yi = yi, V = M, mod = ~ 1,
 summary(mlma)
 ```
 
-As you can see in the model, the `V` argument in `metafor` takes the $\textbf{M}$ matrix directly. This will account for the shared-control usage in the data. This model is a little different than the one actually fit in @Raynal2022 because it does not include phylogeny, but it gives us essentially the same result. 
+As you can see in the model, the `V` argument in `metafor` takes the $\textbf{M}$ matrix directly. This will account for the shared-control usage in the data. This model is a little different from the one actually fit in @Raynal2022 because it does not include phylogeny, but it gives us essentially the same result. 
 
 #### What does the model output tell us?
 
@@ -210,7 +210,7 @@ As you can see in the model, the `V` argument in `metafor` takes the $\textbf{M}
 
 ## Answer
 
->In essence, what this model is telling us is that there is, on average, a  **`r (1 - predict(mlma, transf = exp)$pred)*100`% decrease** in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the **95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from a zero** (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.
+>In essence, what this model is telling us is that there is, on average, a  **`r (1 - predict(mlma, transf = exp)$pred)*100`% decrease** in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the **95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from zero** (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.
 
 :::
 
@@ -218,7 +218,7 @@ As you can see in the model, the `V` argument in `metafor` takes the $\textbf{M}
 
 ## **Robust Variance Estimation -- a useful tool to deal with unknown dependency**
 
-Sometimes we may not be able to deal with all sources of dependency. There are a lot of unknowns with respect to how effect sizes might be correlated, to what extent they are related and it might vary across studies. A very promising tool are **robust variance estimators** which relax the need to known and understand the dependency in your data. [James Pustejovsky](https://www.jepusto.com) provides a fantastic overview of the problem and how robust variance estimators can help make it easier to deal with various sources of non-independence. 
+Sometimes we may not be able to deal with all sources of dependency. There are a lot of unknowns with respect to how effect sizes might be correlated, to what extent they are related and it might vary across studies. A very promising tool is **robust variance estimators** which relax the need to know and understand the dependency in your data. [James Pustejovsky](https://www.jepusto.com) provides a fantastic overview of the problem and how robust variance estimators can help make it easier to deal with various sources of non-independence. 
 
 {{< video https://www.youtube.com/watch?v=sJUc39vneWk >}}
 
@@ -231,7 +231,7 @@ We can apply robust variance methods to our model above using the `robust` funct
 robust(mlma, cluster = mass_data$paper_no)
 ```
 
-As we can see here, there are really no changes, which isn't too surprising because we have mostly accounted for all the sources of dependence. In simulations, we and others have shown RVE's do a very good job dealing with dependency [@Nakagawa2021; @Song2021; @Pustejovsky2021; @Tipton2013] .
+As we can see here, there are really no changes, which isn't too surprising because we have mostly accounted for all the sources of dependence. In simulations, we and others have shown RVEs do a very good job dealing with dependency [@Nakagawa2021; @Song2021; @Pustejovsky2021; @Tipton2013].
 
 ## **Conclusions**
 

@@ -60,7 +60,7 @@ arnold_data_endo$obs <- 1:dim(arnold_data_endo)[1]
 
 ### Meta-regression Approaches to Publication Bias 
 
-@Nakagawa2021b [building off of work by @Stanley2012; @Stanley2014] outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can test explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:
+@Nakagawa2021b [building off of work by @Stanley2012; @Stanley2014] outline a method for testing and accounting for publication bias using multilevel meta-regression approaches. Here, we include sampling standard error (SE) (and variance -- V) directly as a moderator in our meta-regression model. We can explicitly test whether sampling SE and V significantly explain variation in our effect size. To be more explicit, we can adjust our multilevel meta-regression model as follows:
 
 $$
 \begin{aligned}
@@ -77,9 +77,9 @@ Of course, we could also include a suite of other moderators in our analysis to 
 $$
 y_{i} = \mu + \sum_{i = 1}^{N_{m}}\beta_{m}x_{m} + \beta_{se}se +  s_{j[i]} + spp_{k[i]} + e_{i} + m_{i} \\
 $$
-Here, $\beta_{m}$ is the slope (or contrast) for the $m^{th}$ moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). Of course, $\beta_{se}se$ can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. @Stanley2012 and @Stanley2014 have shown that when $\mu$ in a model that estimates $\beta_{se}$ is significant than the intercept (in this case, $\mu$) provides the best estimate of an adjusted meta-analytic that accounts for the possibility of publication bias [@Nakagawa2021b] [see correction for original paper @Nakagawa2022cor]. However, @Stanley2012 and @Stanley2014 have shown that when $\mu$ is significant than including SE is best replaced with the sampling variance (i.e., $SE^2$) instead because the intercept using SE is downwardly biased. 
+Here, $\beta_{m}$ is the slope (or contrast) for the $m^{th}$ moderator (where m = 1, ..., $N_{moderator}$ or $N_{m}$). Of course, $\beta_{se}se$ can be included in this term, but for clarity we separate it out to be clear SE or V is included as a moderator in addition to other moderators. @Stanley2012 and @Stanley2014 have shown that when $\mu$ in a model that estimates $\beta_{se}$ is significant, then the intercept (in this case, $\mu$) provides the best estimate of an adjusted meta-analytic mean that accounts for the possibility of publication bias [@Nakagawa2021b] [see correction for original paper @Nakagawa2022cor]. However, @Stanley2012 and @Stanley2014 have shown that when $\mu$ is significant, then including SE is best replaced with the sampling variance (i.e., $SE^2$) instead because the intercept using SE is downwardly biased. 
 
-As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant than re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.
+As such, @Nakagawa2021b recommend a two step approach. First fitting a model with SE. If the intercept of that model is significant, then re-fitting the model using V (or $SE^2$) as this will give us a better estimate of the adjusted mean effect size.
 
 #### **Why does including sampling variance in the model adjust the overall meta-analytic mean?**
 
@@ -106,7 +106,7 @@ $$
 
 ### Fitting a Multi-level Meta-Regression model to Test and Correct for Publication bias
 
-Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/ or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. 
+Let's now apply the methods proposed above to @Arnold2021's data. To simplify, we are just going to remove other moderators and only fit SE and/or V. This just simplifies the interpretation of the intercept, but we could always include the fitness trait type moderator in these models as well. 
 
 ```{r}
 #| echo: true
@@ -139,7 +139,7 @@ summary(metareg_v)
 
 ## Answer!
 
->Yes, there is evidence for publication bias because the slope estimate for `sqrt(Zr)` or the sampling standard error is significant. Given that the `intrcpt` is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted `Zr` when there is *no* uncertainty is `r metareg_se$b[1]`with a 95% confidence interval that overlaps zero (i.e., 95% CI = `r metareg_se$ci.lb[1]` to `r metareg_se$ci.ub[1]`). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the correlation to be, on average, `r tanh(metareg_se$b[1])`. 
+>Yes, there is evidence for publication bias because the slope estimate for `sqrt(Zr)` or the sampling standard error is significant. Given that the `intrcpt` is not significant we can interpret the model using SE instead of V. We can see from this model that the adjusted `Zr` when there is *no* uncertainty is `r metareg_se$b[1]` with a 95% confidence interval that overlaps zero (i.e., 95% CI = `r metareg_se$ci.lb[1]` to `r metareg_se$ci.ub[1]`). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies then we would expect the correlation to be, on average, `r tanh(metareg_se$b[1])`. 
 
 :::
 
@@ -160,7 +160,7 @@ where $\tilde{n}_{1}$ and $\tilde{n}_{2}$ are the per-group sample sizes. This i
 
 ### (2) Testing for Time-lag Bias
 
-Another useful diagnostic asks whether effect sizes are *shrinking over time* -- a pattern often called a **time-lag bias** or **decline effect** [@Nakagawa2021b; @Jennions2013]. The intuition is that for early studies addressing a research question, large and significant results are disproportionately likely to be published first (because they are "exciting", or simply easier to write up and accept). As the field matures, smaller and null results catch up, and the apparent effect size decays. We can test this directly by including publication year as a moderator in the multilevel model. To make the intercept interpretable as the mean effect at the *average* publication year, we mean-centre year first. However, publication year could be centered on any year of interest. 
+Another useful diagnostic asks whether effect sizes are *shrinking over time* -- a pattern often called a **time-lag bias** or **decline effect** [@Nakagawa2021b; @Jennions2013]. The intuition is that for early studies addressing a research question, large and significant results are disproportionately likely to be published first (because they are "exciting", or simply easier to write up and accept). As the field matures, smaller and null results catch up, and the apparent effect size decays. We can test this directly by including publication year as a moderator in the multilevel model. To make the intercept interpretable as the mean effect at the *average* publication year, we mean-centre year first. However, publication year could be centred on any year of interest. 
 
 ```{r}
 #| label: timelag

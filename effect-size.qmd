@@ -13,7 +13,7 @@ options(digits=3)
 
 ## **Introduction**
 
-Meta-analysis quantitatively aggregates effect size data collected from existing research. The effect size one uses for a study question needs to be chosen carefully. Each make certain assumptions about the underlying data. It's important to be weary of these assumptions and identify when something might have gone wrong. 
+Meta-analysis quantitatively aggregates effect size data collected from existing research. The effect size one uses for a study question needs to be chosen carefully. Each makes certain assumptions about the underlying data. It's important to be wary of these assumptions and identify when something might have gone wrong. 
 
 The effect size chosen must satisfy two important features. First, the effect size must be comparable across studies. This means that they must be placed on the same scale so that they can be aggregated. Some effect size estimates can be inter-converted to each other (e.g., Zr, Hedges' g), but this isn't the case for all of them. Second, we must be able to derive or approximate the sampling variance for a given effect size. As [already indicated](introduction-to-meta.qmd), the sampling variance is very important if one wishes to use meta-analytic models that account for sampling variance and is needed to report certain measures of [heterogeneity](het.qmd). 
 
@@ -108,11 +108,11 @@ tablea <- flextable(table_fin)                                                  
 FitFlextableToPage(tablea, pgwidth = 8)
 ```
 
-We'll use `metafor` to demonstrate how to calculate commonly used effect size estimates in the field of comparative physiology, including Z-transformed correlation coefficients (Zr), log response ratios and Hedge's g. 
+We'll use `metafor` to demonstrate how to calculate commonly used effect size estimates in the field of comparative physiology, including Z-transformed correlation coefficients (Zr), log response ratios and Hedges' g. 
 
 ## **Setting up**
 
-To start, well need to load some packages and data. The data is all stored on GitHub. It's downloaded directly from the web. You won't need to have these on hand. We'll first load the packages that we need.
+To start, we'll need to load some packages and data. The data is all stored on GitHub. It's downloaded directly from the web. You won't need to have these on hand. We'll first load the packages that we need.
 
 ```{r}
 #| label: load packages
@@ -163,17 +163,17 @@ zr_data$r <- tanh(zr_data$Zr)
 zr_data %>% select(corr_coeff, r)
 ```
 
-The correlation coefficient itself is a unit less measure that captures both the strength and direction of relationship between two variables. The raw correlation coefficient ranges from -1 to 1. If a correlation is positive it indicates that, as the value of one variable increases so to does the value of the second variable. The magnitude of the value indicates how strong they co-vary. For example, a correlation of 1 indicates that variable 1 perfectly co-varies with variable 2.
+The correlation coefficient itself is a unitless measure that captures both the strength and direction of relationship between two variables. The raw correlation coefficient ranges from -1 to 1. If a correlation is positive it indicates that, as the value of one variable increases so too does the value of the second variable. The magnitude of the value indicates how strongly they co-vary. For example, a correlation of 1 indicates that variable 1 perfectly co-varies with variable 2.
 
 ## **Difference in physiology between populations from range core and edge: Log response ratio (lnRR)**
 
-**Background**: If movement relied on physiological capacities, it may be expected that the variation in physiological characteristics introduces differences in the tendency to move among individuals of the same populations. Such individual differences can have consequences for gene flow and genetic diversification within a species. Individuals with a greater tendency to move may have particular physiological characteristics, leading to core-edge differences. Populations at the range edge is therefore hypothesised to have different physiological phenotype than populations from the core range. 
+**Background**: If movement relied on physiological capacities, it may be expected that the variation in physiological characteristics introduces differences in the tendency to move among individuals of the same populations. Such individual differences can have consequences for gene flow and genetic diversification within a species. Individuals with a greater tendency to move may have particular physiological characteristics, leading to core-edge differences. Populations at the range edge are therefore hypothesised to have a different physiological phenotype than populations from the core range. 
 
 To compare differences in the physiological characteristics between individuals from an established range core to their expanding range edge we collected data from studies that reported physiological response from the range core (core) and range edge (front) in the form of mean, sample size, and variance (SD, SE, or 95% CI). This information is used to calculate the log response ratio (lnRR).
 
 For complete detail on the study aim and design, please see [@WuSeebacher2022](https://doi.org/10.1038/s42003-022-03055-y)
 
-Download the data. The following code illustrates how to calculate the log response ratio (`yi`) and sampling variance (vi) from the mean (`mi`), sample size (`ni`) and standard deviation (`sdi`) from the edge population (1), and core population (2) using 10 row of data from the main dataset.
+Download the data. The following code illustrates how to calculate the log response ratio (`yi`) and sampling variance (vi) from the mean (`mi`), sample size (`ni`) and standard deviation (`sdi`) from the edge population (1), and core population (2) using 10 rows of data from the main dataset.
 
 ```{r}
 #| label: lnRR
@@ -192,7 +192,7 @@ ratio_data <- metafor::escalc(measure = "ROM",
 ratio_data
 ```
 
-Now that we have calculated the log response ratio lets just make sure we understand what is being done. We'll take this subset of data and do some back calculations to make sure we understand how to inter convert. To demonstrate, we'll just convert (and back convert) the first row of data. 
+Now that we have calculated the log response ratio let's just make sure we understand what is being done. We'll take this subset of data and do some back calculations to make sure we understand how to inter-convert. To demonstrate, we'll just convert (and back convert) the first row of data. 
 
 #### **Testing your Understanding of $lnRR$**
 
@@ -204,7 +204,7 @@ Now that we have calculated the log response ratio lets just make sure we unders
 
 ## Answer!
 
->The effect size is positive indicating that the mean of the marginal (`mean_front`) is larger than the mean of the core poulaton (`mean_core`). We can see that by calculating the effect size in two ways, the second of which is easier to see why.
+>The effect size is positive indicating that the mean of the marginal (`mean_front`) is larger than the mean of the core population (`mean_core`). We can see that by calculating the effect size in two ways, the second of which is easier to see why.
  
 ```{r}
 #| label: ConvertLnRR
@@ -212,7 +212,7 @@ Now that we have calculated the log response ratio lets just make sure we unders
 
 ### Let's back calculate effects to make sure we understand why they are interpreted as percentage differences
 
-# First, lets make sure we understand how it's calculated
+# First, let's make sure we understand how it's calculated
 with(ratio_data, log(mean_front[1] / mean_core[1]))
 
 # Alternatively....
@@ -221,7 +221,7 @@ with(ratio_data, log(mean_front[1]) - log(mean_core[1]))
 
 ## Task 2!
 
->**What does the value of the effect size tell you about how much the mean differences between marginal and core populations?**
+>**What does the value of the effect size tell you about how much the mean differs between marginal and core populations?**
 
 ## Answer 2!
 
@@ -231,7 +231,7 @@ with(ratio_data, log(mean_front[1]) - log(mean_core[1]))
 #| label: ConvertLnRR2
 #| echo: true
 
-# Now lets back-transform to odds. 
+# Now let's back-transform to odds. 
 with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])))
 
 # Interpretation: What this tells us is that the numerator is 1.15 times the denominator, or, that the marginal (front) mean is 15% larger compared to the core mean. We can see that this is true as follows:
@@ -241,7 +241,7 @@ with(ratio_data, exp(log(mean_front[1]) - log(mean_core[1])) * mean_core[1])
 with(ratio_data, mean_front[1])
 ```
 
->A simple way to remember how to interpret this is to think that a converted *lnRR* = 1 means the two are the same. If you are 'subtracting` the marginal population from the core population and the effect size is positive, than 1.15 indicates that the marginal population is ~15% larger, whereas if the effect size is -1.15 than it indicates that the core population is 15% larger. 
+>A simple way to remember how to interpret this is to think that a converted *lnRR* = 1 means the two are the same. If you are 'subtracting' the marginal population from the core population and the effect size is positive, than 1.15 indicates that the marginal population is ~15% larger, whereas if the effect size is -1.15 than it indicates that the core population is 15% larger. 
 
 <br>
 
@@ -251,7 +251,7 @@ Hopefully this is useful to interpret the meaning of the effect size data at the
 
 ## **Cohen's d and Hedges g -- Visualising Their Meaning**
 
-We could also use [@WuSeebacher2022](https://doi.org/10.1038/s42003-022-03055-y)'s data to calculate Hedge's g. Hedge's g is very similar to Cohen's d, but it has a small sample correction. This can also be done with `metafor::escalc()` by setting measure to "SMD".  We can use the same data here as all the summary statistics that are needed for calculating lnRR are the same as Hedge's g. We can calculate as follows. 
+We could also use [@WuSeebacher2022](https://doi.org/10.1038/s42003-022-03055-y)'s data to calculate Hedges' g. Hedges' g is very similar to Cohen's d, but it has a small sample correction. This can also be done with `metafor::escalc()` by setting measure to "SMD".  We can use the same data here as all the summary statistics that are needed for calculating lnRR are the same as Hedges' g. We can calculate as follows. 
 
 ```{r hedges}
 # Calculate hedges g as yi = effect size and vi = sampling variances, where m1i = mean of edge population, n1i = sample size of edge population, sd1i = standard deviation of edge population, m2i = mean of core population, n2i = sample size of core population, sd2i = standard deviation of core population.
@@ -262,7 +262,7 @@ hedge_data <- metafor::escalc(measure = "SMD",
 hedge_data
 ```
 
-Visualising and interpreting Hedge's g can be slightly less intuitive compared to log response ratios. There's a great [online resource](https://rpsychologist.com/cohend/) by Kristoffer Magnusson with some visuals that can help you decipher the meaning of Cohen's d effects, which is the same as Hedge's g. 
+Visualising and interpreting Hedges' g can be slightly less intuitive compared to log response ratios. There's a great [online resource](https://rpsychologist.com/cohend/) by Kristoffer Magnusson with some visuals that can help you decipher the meaning of Cohen's d effects, which is the same as Hedges' g. 
 
 ```{=html}
 <iframe width="800px" height="1100px" src="https://rpsychologist.com/cohend/?embed=1&CER=20&M0=100&M0lab=Control&M1=112&M1lab=Treatment&SD=15&c0=r-48_g-57_b-79_a-1&c1=r-0_g-0_b-0_a-1&c2=r-106_g-206_b-235_a-1&d=0.8&slider=1&xlab=Outcome" frameborder="0"></iframe>
