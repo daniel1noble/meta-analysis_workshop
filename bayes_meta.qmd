@@ -163,7 +163,7 @@ bayes_phylo2 <- brms::brm(
 )
 ```
 
-here, we can see that `sigma` is estimated and it should match the `sd_es_ID__Intercept` from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in `metafor` and is more parsimonious (fewer parameters to estimate).
+We'll explore below the similarities between these models.
 
 Second, the `gr()` function around the phylogenetic random effect is a special syntax that tells `brms` to use the supplied covariance matrix `A` for that grouping factor. The `data2` argument is where we pass the phylogenetic covariance matrix. Also note that the phylogenetic A matrix differs from metafor because it's a covariance matrix whereas `metafor` expects a correlation matrix. In our specific case the distinction is purely terminological: because we built the tree with `ape::compute.brlen(..., method = "Grafen", power = 1)` it is ultrametric with root-to-tip distance equal to 1, so every diagonal of `vcv(tree, cor = FALSE)` equals 1 and the covariance matrix is numerically identical to the correlation matrix. The distinction only matters if you use a non-ultrametric tree or skip the Grafen normalisation.
 
@@ -190,6 +190,14 @@ plot(bayes_phylo, ask = FALSE)
 ```
 
 Note that there appears to be some issues with mixing for some parameters (low EES and chains are dragging), so we should play around with MCMC parameters to try to improve this, but this isn't bad for demonstration purposes.
+
+Recall that we also fit the same model with `sigma = TRUE`. We can look how the output for that model compares to the one we have just fit:
+
+```{r diagnostics2}
+summary(bayes_phylo2)
+```
+
+Here, we can see that `sigma` is estimated and it should match the `sd_es_ID__Intercept` from the first model, which is the observation-level random effect. The two models are essentially the same, but the first one is more consistent with the way we have been modelling residual error in `metafor` and is more parsimonious (fewer parameters to estimate).
 
 ### Posterior summaries
 
