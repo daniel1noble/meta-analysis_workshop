@@ -75,3 +75,5 @@ bib/refs_enrichment_report.tsv
 
 # brms compiled-model cache
 models/*.rds
+zr_data.csv
+sims_multilevel.R
