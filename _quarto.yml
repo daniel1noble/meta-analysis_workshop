@@ -42,7 +42,7 @@ book:
         - phylo.qmd
         - bayes_meta.qmd
 
-  repo-url: https://github.com/noble-lab/meta-analysis_workshop
+  repo-url: https://github.com/daniel1noble/meta-analysis_workshop
   sharing: [twitter, facebook, linkedin]
   
 bibliography: bib/refs.bib

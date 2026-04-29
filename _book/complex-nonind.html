@@ -185,7 +185,7 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Meta-Analysis Workshop</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/noble-lab/meta-analysis_workshop" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/daniel1noble/meta-analysis_workshop" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -606,22 +606,22 @@ Figure&nbsp;11.2: Correlation plot of the M matrix. The (co)variance matrix is c
 Multivariate Meta-Analysis Model (k = 50; method: REML)
 
    logLik   Deviance        AIC        BIC       AICc   
-  60.1528  -120.3057  -112.3057  -104.7384  -111.3966   
+  60.1684  -120.3368  -112.3368  -104.7695  -111.4277   
 
 Variance Components:
 
             estim    sqrt  nlvls  fixed         factor 
 sigma^2.1  0.0000  0.0000     19     no       paper_no 
-sigma^2.2  0.0029  0.0540     16     no  Genus_species 
-sigma^2.3  0.0022  0.0465     50     no        data_ID 
+sigma^2.2  0.0029  0.0539     16     no  Genus_species 
+sigma^2.3  0.0022  0.0464     50     no        data_ID 
 
 Test for Heterogeneity:
-Q(df = 49) = 954.2505, p-val &lt; .0001
+Q(df = 49) = 953.6264, p-val &lt; .0001
 
 Model Results:
 
 estimate      se     tval  df    pval    ci.lb   ci.ub    
- -0.0151  0.0169  -0.8916  15  0.3867  -0.0512  0.0210    
+ -0.0151  0.0169  -0.8956  15  0.3846  -0.0512  0.0209    
 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -641,7 +641,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <blockquote class="blockquote">
-<p>In essence, what this model is telling us is that there is, on average, a <strong>1.498% decrease</strong> in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the <strong>95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from zero</strong> (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.</p>
+<p>In essence, what this model is telling us is that there is, on average, a <strong>1.503% decrease</strong> in mass in the fluctuating temperature treatment compared to the control treatment, which is a pretty trivial difference! We can also see that the <strong>95% confidence intervals are wide and overlap zero indicating that the estimate does not differ significantly from zero</strong> (as indicated by the null hypothesis). Having said that, there is a lot of heterogeneity in effects across species and studies included in the analysis suggesting that it might really depend on the study.</p>
 </blockquote>
 </div>
 </div>
@@ -668,11 +668,11 @@ Variance Components:
 
             estim    sqrt  nlvls  fixed         factor 
 sigma^2.1  0.0000  0.0000     19     no       paper_no 
-sigma^2.2  0.0029  0.0540     16     no  Genus_species 
-sigma^2.3  0.0022  0.0465     50     no        data_ID 
+sigma^2.2  0.0029  0.0539     16     no  Genus_species 
+sigma^2.3  0.0022  0.0464     50     no        data_ID 
 
 Test for Heterogeneity:
-Q(df = 49) = 954.2505, p-val &lt; .0001
+Q(df = 49) = 953.6264, p-val &lt; .0001
 
 Number of estimates:   50
 Number of clusters:    19
@@ -681,7 +681,7 @@ Estimates per cluster: 1-6 (mean: 2.63, median: 2)
 Model Results:
 
 estimate      se¹     tval¹  df¹    pval¹    ci.lb¹   ci.ub¹    
- -0.0151  0.0169   -0.8950   18   0.3826   -0.0505   0.0203     
+ -0.0151  0.0168   -0.8990   18   0.3805   -0.0505   0.0202     
 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -754,7 +754,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 <p><strong>R version 4.5.3 (2026-03-11)</strong></p>
 <p><strong>Platform:</strong> aarch64-apple-darwin20</p>
 <p><strong>attached base packages:</strong> <em>stats</em>, <em>graphics</em>, <em>grDevices</em>, <em>utils</em>, <em>datasets</em>, <em>methods</em> and <em>base</em></p>
-<p><strong>other attached packages:</strong> <em>corrplot(v.0.95)</em>, <em>metaAidR(v.0.0.0.9000)</em>, <em>magick(v.2.9.1)</em>, <em>equatags(v.0.2.1)</em>, <em>mathjaxr(v.2.0-0)</em>, <em>pander(v.0.6.6)</em>, <em>orchaRd(v.2.2.0)</em>, <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.1)</em>, <em>purrr(v.1.2.2)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.3)</em>, <em>tidyverse(v.2.0.0)</em>, <em>flextable(v.0.9.9)</em>, <em>metafor(v.4.8-0)</em>, <em>numDeriv(v.2016.8-1.1)</em>, <em>metadat(v.1.4-0)</em> and <em>Matrix(v.1.7-4)</em></p>
+<p><strong>other attached packages:</strong> <em>corrplot(v.0.95)</em>, <em>metaAidR(v.0.0.0.9000)</em>, <em>magick(v.2.9.1)</em>, <em>equatags(v.0.2.1)</em>, <em>mathjaxr(v.2.0-0)</em>, <em>pander(v.0.6.6)</em>, <em>orchaRd(v.2.2.0)</em>, <em>lubridate(v.1.9.5)</em>, <em>forcats(v.1.0.1)</em>, <em>stringr(v.1.6.0)</em>, <em>dplyr(v.1.2.1)</em>, <em>purrr(v.1.2.2)</em>, <em>readr(v.2.2.0)</em>, <em>tidyr(v.1.3.2)</em>, <em>tibble(v.3.3.1)</em>, <em>ggplot2(v.4.0.3)</em>, <em>tidyverse(v.2.0.0)</em>, <em>flextable(v.0.9.9)</em>, <em>metafor(v.5.0-1)</em>, <em>numDeriv(v.2016.8-1.1)</em>, <em>metadat(v.1.4-0)</em> and <em>Matrix(v.1.7-4)</em></p>
 <p><strong>loaded via a namespace (and not attached):</strong> <em>tidyselect(v.1.2.1)</em>, <em>farver(v.2.1.2)</em>, <em>S7(v.0.2.2)</em>, <em>fastmap(v.1.2.0)</em>, <em>fontquiver(v.0.2.1)</em>, <em>pacman(v.0.5.1)</em>, <em>promises(v.1.5.0)</em>, <em>digest(v.0.6.39)</em>, <em>mime(v.0.13)</em>, <em>timechange(v.0.4.0)</em>, <em>lifecycle(v.1.0.5)</em>, <em>ellipsis(v.0.3.3)</em>, <em>magrittr(v.2.0.5)</em>, <em>compiler(v.4.5.3)</em>, <em>rlang(v.1.2.0)</em>, <em>tools(v.4.5.3)</em>, <em>yaml(v.2.3.12)</em>, <em>data.table(v.1.18.2.1)</em>, <em>knitr(v.1.51)</em>, <em>askpass(v.1.2.1)</em>, <em>htmlwidgets(v.1.6.4)</em>, <em>pkgbuild(v.1.4.8)</em>, <em>curl(v.7.1.0)</em>, <em>xml2(v.1.5.2)</em>, <em>RColorBrewer(v.1.1-3)</em>, <em>pkgload(v.1.5.1)</em>, <em>miniUI(v.0.1.2)</em>, <em>withr(v.3.0.2)</em>, <em>grid(v.4.5.3)</em>, <em>urlchecker(v.1.0.1)</em>, <em>profvis(v.0.4.0)</em>, <em>gdtools(v.0.4.2)</em>, <em>xtable(v.1.8-8)</em>, <em>scales(v.1.4.0)</em>, <em>cli(v.3.6.6)</em>, <em>rmarkdown(v.2.31)</em>, <em>remotes(v.2.5.0)</em>, <em>ragg(v.1.5.2)</em>, <em>generics(v.0.1.4)</em>, <em>otel(v.0.2.0)</em>, <em>tzdb(v.0.5.0)</em>, <em>sessioninfo(v.1.2.3)</em>, <em>katex(v.1.5.0)</em>, <em>cachem(v.1.1.0)</em>, <em>vctrs(v.0.7.3)</em>, <em>devtools(v.2.4.5)</em>, <em>V8(v.6.0.4)</em>, <em>jsonlite(v.2.0.0)</em>, <em>fontBitstreamVera(v.0.1.1)</em>, <em>hms(v.1.1.4)</em>, <em>systemfonts(v.1.3.2)</em>, <em>xslt(v.1.5.1)</em>, <em>glue(v.1.8.1)</em>, <em>stringi(v.1.8.7)</em>, <em>gtable(v.0.3.6)</em>, <em>later(v.1.4.8)</em>, <em>pillar(v.1.11.1)</em>, <em>htmltools(v.0.5.9)</em>, <em>openssl(v.2.4.0)</em>, <em>R6(v.2.6.1)</em>, <em>textshaping(v.1.0.5)</em>, <em>evaluate(v.1.0.5)</em>, <em>shiny(v.1.13.0)</em>, <em>lattice(v.0.22-9)</em>, <em>png(v.0.1-8)</em>, <em>memoise(v.2.0.1)</em>, <em>fontLiberation(v.0.1.0)</em>, <em>httpuv(v.1.6.16)</em>, <em>Rcpp(v.1.1.1-1.1)</em>, <em>zip(v.2.3.3)</em>, <em>uuid(v.1.2-2)</em>, <em>nlme(v.3.1-168)</em>, <em>officer(v.0.6.10)</em>, <em>xfun(v.0.57)</em>, <em>usethis(v.3.2.1)</em>, <em>fs(v.2.1.0)</em> and <em>pkgconfig(v.2.0.3)</em></p>
 </div>
 </div>
